@@ -9,9 +9,11 @@
     name: "Canvas",
     data: () => ({
         path: null,
+        path2: null,
         line: null,
         scope: null,
-        previewStartEvent: null
+        previewStartEvent: null,
+        previewStartPoint: null
     }),
     methods: {
       printXYCoords(event){
@@ -31,6 +33,16 @@
             strokeWidth: 1.5
         })
       },
+      linePathCreate(scope, start, end){
+        scope.activate();
+        return new paper.Path.Line({
+          from: start,
+          to: end,
+          strokeColor: "#FF4400",
+          strokeJoin: 'round',
+          strokeWidth: 1.5
+        })
+      },
       reset() {
         this.scope.project.activeLayer.removeChildren();
       },
@@ -41,19 +53,20 @@
         // Create Tool
         this.tool = this.createTool(this.scope);
 
-        this.tool.onMouseDown = (event) => {
+        this.tool.onMouseDown = (event) => {        // On mouse down
           console.log("Mouse was held down");
-          // save starting position
-          this.previewStartEvent = event;
+          this.previewStartPoint = new paper.Point();
+          this.previewStartPoint = event.point.clone();
         
           // init path
           self.path = this.pathCreate(self.scope);
           self.path.add(event.point);
         };
+
         this.tool.onMouseDrag = (event) => {
-          self.path.add(event.point);
-          //self.path.line(this.previewStartEvent,event)
+          this.linePathCreate(self.scope, this.previewStartPoint, event.point)
         }
+        
         this.tool.onMouseUp = (event) => {              // On mouse Up
             console.log("Mouse was lifted");
             // line completed
