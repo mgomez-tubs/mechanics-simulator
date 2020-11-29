@@ -7,14 +7,13 @@
 
   export default{
     name: "Canvas",
-    data: () => ({
-        path: null,
-        path2: null,
+    data() {
+      return{
         line: null,
         scope: null,
-        previewStartEvent: null,
-        previewStartPoint: null
-    }),
+        previewLine: null
+      }
+    },
     methods: {
       printXYCoords(event){
         console.log(event.pageX);
@@ -24,14 +23,6 @@
         console.log("createTool() was called")
         scope.activate();
         return new paper.Tool();
-      },
-      pathCreate(scope) {
-        scope.activate();
-        return new paper.Path({
-            strokeColor: "#FF00FF",
-            strokeJoin: 'round',
-            strokeWidth: 1.5
-        })
       },
       linePathCreate(scope, start, end){
         scope.activate();
@@ -53,25 +44,19 @@
         // Create Tool
         this.tool = this.createTool(this.scope);
 
-        this.tool.onMouseDown = (event) => {        // On mouse down
-          console.log("Mouse was held down");
-          this.previewStartPoint = new paper.Point();
-          this.previewStartPoint = event.point.clone();
-        
+        this.tool.onMouseDown = (event) => {            // On mouse down      
           // init path
-          self.path = this.pathCreate(self.scope);
-          self.path.add(event.point);
+          this.previewLine = this.linePathCreate(self.scope,event.point, event.point);
         };
 
-        this.tool.onMouseDrag = (event) => {
-          this.linePathCreate(self.scope, this.previewStartPoint, event.point)
-        }
-        
-        this.tool.onMouseUp = (event) => {              // On mouse Up
-            console.log("Mouse was lifted");
-            // line completed
-            self.path.add(event.point);
-        }
+        this.tool.onMouseDrag = (event) => {            // On mouse dragged
+          // Replace the ending point of the line created at onMouseDown() with the current mouse location
+          this.previewLine.segments[1].point = event.point;
+        };
+
+        this.tool.onMouseUp = (event) => {              // On mouse up
+          this.previewLine.segments[1].point = event.point;
+        };
       }
     },
     mounted() {
@@ -86,7 +71,7 @@
 </script>   
 <style scoped>
   .canvas{
-  background-color: black;
+  background-color: rgb(54, 54, 54);
   width: 100%;
 }
 </style>
