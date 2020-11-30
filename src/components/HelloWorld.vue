@@ -12,7 +12,7 @@
   <div id="container">
 
     <CanvasWrapper class = "wrapper"/>
-    <Toolbar id ="toolbar"/>
+    <Toolbar class ="toolbar" @tool-clicked = 'toolbarHandler($event)' />
 
   </div>
 
@@ -29,12 +29,15 @@ export default {
       dynText2: "Hola2"
     }
   },
+  methods : {
+    toolbarHandler(id){
+      console.log("Hellow from HellowWorld.vue, the click has been received.");
+      console.log("Received " + id)
+    }
+  },
   components: {
     CanvasWrapper,
     Toolbar
-  },
-  mounted () {
-    console.log("test");
   }
 }
 </script>
@@ -69,7 +72,7 @@ a {
 
 #container {
   position: absolute; 
-  height: 100%;
+  height: calc(100% - 2em);
   width: 100%;
 }
 
@@ -89,16 +92,11 @@ a {
 }
 
 
-#toolbar{
+.toolbar{
   display: inline-block;
   position:absolute;
-  z-index: 0;
   top:1em;
   left: 1em;
-  width:5em;
-  height:15em;
-  color: red;
-  background-color: blue;
 }
 .wrapper {
   position:absolute;
