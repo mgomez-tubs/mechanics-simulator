@@ -5,7 +5,39 @@
 </template> 
 
 <script>
+//import { tool } from 'paper/dist/paper-core';
   const paper = require('paper');
+
+  class ToolHandler{
+    constructor(){
+        this._tool = null;
+    }
+    set tool(tool){
+        this._tool = tool
+    }
+    get tool(){
+        return this._tool
+    }
+    exec() {
+        this._tool.report();
+    }
+}
+
+class ToolA {
+    report(){
+        console.log("Tool A :)")
+    }
+}
+
+class ToolB {
+    report(){
+        console.log("Tool B :)")
+    }
+}
+
+const th = new ToolHandler();
+const lineTool = new ToolA;
+const balkenTool = new ToolB;
 
   export default{
     name: "Canvas",
@@ -42,8 +74,17 @@
       reset() {
         this.scope.project.activeLayer.removeChildren();
       },
+      mouseDownHandler(){
+
+      },
       mouseDown(){
         console.log("mouseDown() was called");
+
+        th.tool = lineTool;
+        th.exec();
+        th.tool = balkenTool;
+        th.exec();
+
         // To access functions in nested tool
         let self = this;
         // Create Tool

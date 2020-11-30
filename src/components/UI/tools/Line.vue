@@ -2,7 +2,10 @@
 /*
     Needed to pass: scope
 */
-const paper = require('paper');
+//const paper = require('paper');
+
+
+
 export default {
     name: 'Line-comp',
     data() {
@@ -34,6 +37,7 @@ export default {
 
         mouseDown(canvas_scope){
             console.log("mouseDown() was called");
+
             // Create Tool
             this.tool = this.createTool(canvas_scope);
 
