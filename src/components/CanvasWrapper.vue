@@ -1,6 +1,6 @@
 <!-- TODO: Update content when canvas is resized -->
 <template>
-  <canvas id="canvasId" v-on:mousedown="mouseDown" v-on:click="printXYCoords($event)">
+  <canvas id="canvasId" v-on:mousedown="mouseDown">
   </canvas>  
 </template> 
 
@@ -52,10 +52,6 @@ const balkenTool = new ToolB;
         currentTool: String
     },
     methods: {
-      printXYCoords(event){
-        console.log(event.pageX);
-        console.log(event.pageY);
-      },
       createTool(scope) {
         console.log("createTool() was called")
         scope.activate();
