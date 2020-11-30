@@ -11,8 +11,8 @@
   <!-- Drawing Canvas -->
   <div id="container">
 
-    <CanvasWrapper class = "wrapper"/>
-    <Toolbar class ="toolbar" @tool-clicked = 'toolbarHandler($event)' />
+    <CanvasWrapper  class = "wrapper" :currentTool = "selectedTool"/>
+    <Toolbar        class = "toolbar" @tool-clicked = 'toolbarHandler($event)' />
 
   </div>
 
@@ -25,13 +25,12 @@ export default {
   data() {
     return {
       container: null,
-      dynText : "Este es un texto dinámico. Si.",
-      dynText2: "Hola2"
+      selectedTool: "cursor123"
     }
   },
   methods : {
     toolbarHandler(id){
-      console.log("Hellow from HellowWorld.vue, the click has been received.");
+      this.selectedTool = id;
       console.log("Received " + id)
     }
   },

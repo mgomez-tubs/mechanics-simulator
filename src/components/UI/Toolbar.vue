@@ -1,20 +1,16 @@
 <template>
     <div id="main_toolbar">
         <div class="toolgroup">
-            <div id="drawStab" class="button" @click="toolClicked('stab')"/> 
-            <div id="drawBalken" class="button" @click="toolClicked('balken')"/>
-            <div id="tempdraw1" class="button"/>
-            <div id="tempdraw2" class="button"/>
+            <div id="drawStab"      class="button"  @click="$emit('tool-clicked','stab')"/> 
+            <div id="drawBalken"    class="button"  @click="$emit('tool-clicked','balken')"/>
+            <div id="tempdraw1"     class="button"  @click="$emit('tool-clicked','button3')"/>
+            <div id="tempdraw2"     class="button"  @click="$emit('tool-clicked','button4')"/>
         </div>
     </div>
 </template>
 <script>
 export default {
     methods : {
-        toolClicked(id){
-            console.log("Hellow from Toolbar.vue, the Line button has been clicked.")
-            this.$emit('tool-clicked',id);
-        }
     } 
 }
 </script>

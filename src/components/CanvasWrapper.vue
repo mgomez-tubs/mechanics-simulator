@@ -16,6 +16,9 @@
         previewLine: null
       }
     },
+    props : {
+        currentTool: String
+    },
     methods: {
       printXYCoords(event){
         console.log(event.pageX);
@@ -61,6 +64,11 @@
         };
       }
     },
+    watch: {
+      currentTool : function(val){
+        console.log("The value ofthe currentTool has been changed!, now is " + val)
+      }
+    },
     mounted() {
       console.log("Mounting canvas...")
       this.scope = new paper.PaperScope();  // Since we are working with JavaScript, the PaperScope needs to be manually created
@@ -68,6 +76,7 @@
                                             // It is possible to access the global paper variable, but im not sure if it works with vue.
       
       this.scope.setup(document.getElementById("canvasId"));      // Sets up a empty project. A canvas ID can be passed, in this case, a View is created for it
+      console.log("Current tool is: " + this.currentTool)
     }
   }
 </script>   
