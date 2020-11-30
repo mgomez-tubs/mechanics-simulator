@@ -1,5 +1,7 @@
+<!-- TODO: Update content when canvas is resized -->
 <template>
-  <canvas id="canvasId" class="canvas" v-on:mousedown="mouseDown" v-on:click="printXYCoords($event)"></canvas>  
+  <canvas id="canvasId" v-on:mousedown="mouseDown" v-on:click="printXYCoords($event)">
+  </canvas>  
 </template> 
 
 <script>
@@ -60,7 +62,7 @@
       }
     },
     mounted() {
-      console.log("Mounting...")
+      console.log("Mounting canvas...")
       this.scope = new paper.PaperScope();  // Since we are working with JavaScript, the PaperScope needs to be manually created
                                             // Paper classes can only be accessed through PaperScope Objects
                                             // It is possible to access the global paper variable, but im not sure if it works with vue.
@@ -70,8 +72,9 @@
   }
 </script>   
 <style scoped>
-  .canvas{
+  #canvasId{
   background-color: rgb(54, 54, 54);
   width: 100%;
+  height: 100%;
 }
 </style>

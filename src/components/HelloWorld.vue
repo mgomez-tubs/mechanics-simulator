@@ -1,6 +1,6 @@
 <template>
   <!-- Top Bar -->
-  <div class="bar">
+  <div class="topbar bar">
     <div id="logo"> Mechanics Playground </div>
     <div class="menu">Menu 1</div>
     <div class="menu">Menu 2</div>
@@ -9,24 +9,32 @@
   </div>
 
   <!-- Drawing Canvas -->
-  <CanvasWrapper/>
+  <div id="container">
 
-  <div id="id1">Das ist ein statischer Text.</div>
-  <div id="id2"> {{ dynText }} </div>
-  <div id="id3"> {{ dynText2 }} </div>
+    <CanvasWrapper class = "wrapper"/>
+    <Toolbar id ="toolbar"/>
+
+  </div>
+
 </template>
 
 <script>
 import CanvasWrapper from './CanvasWrapper.vue'
+import Toolbar from './UI/Toolbar.vue'
 export default {
   data() {
     return {
+      container: null,
       dynText : "Este es un texto dinámico. Si.",
       dynText2: "Hola2"
     }
   },
   components: {
-    CanvasWrapper
+    CanvasWrapper,
+    Toolbar
+  },
+  mounted () {
+    console.log("test");
   }
 }
 </script>
@@ -49,10 +57,20 @@ a {
 }
 
 .bar {
-  background-color: red;
   width: 100%;
   height: 2em;
+}
+.topbar {
+  position: relative;
+  top:0px;
+  background-color: red;
   display: flex;
+}
+
+#container {
+  position: absolute; 
+  height: 100%;
+  width: 100%;
 }
 
 .menu {
@@ -70,5 +88,21 @@ a {
   background-color: seashell;
 }
 
+
+#toolbar{
+  display: inline-block;
+  position:absolute;
+  z-index: 0;
+  top:1em;
+  left: 1em;
+  width:5em;
+  height:15em;
+  color: red;
+  background-color: blue;
+}
+.wrapper {
+  position:absolute;
+  z-index: -1;
+}
 
 </style>
