@@ -70,7 +70,6 @@ export default {
 
       // Set timer to hide it again in 1.5s
       window.setTimeout( function(){
-        console.log("hide bottom txt");
         self.showBottomLeftPopUp = false;
       } , 1500 )
 

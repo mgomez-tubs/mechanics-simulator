@@ -28,25 +28,55 @@
     }
 }
 
+// Parent Tool class
+
+class Tool {
+  constructor(){
+    // Empty constructor
+  }
+  static scope = null; // the hashtag is for static
+  static tool = null;
+
+  static set scope(scope){
+    this.scope = scope;
+  }
+
+  static set tool(tool){
+    this.tool = tool;
+  }
+
+  static createTool() {
+      console.log("createTool() was called")
+      this.scope.activate();
+      this.tool = new paper.Tool();
+  }
+
+  static detachToolHandlers(){
+    this.tool.off(['mouseDown','mouseDrag','mouseUp']);
+  }
+}
+
 // Selection Tool
-class SelectionTool {
+class SelectionTool{
     report(){
         console.log("Selection Tool, not ready :)")
     }
 }
+    
 
 // Stab Tool
-class ToolA {
+class ToolA extends Tool{
     constructor(){
-      
+      super();
     }
     report(){
         console.log("Tool A :)")
-        this.mouseDown(this._scope);
+        this.mouseDown();
     }
 
     set scope(scope){
-        this._scope = scope
+        this._scope = scope;
+        Tool.scope = scope;
     } 
 
     createTool() {
@@ -56,7 +86,7 @@ class ToolA {
     }
 
     linePathCreate(start, end){
-        this._scope.activate();
+        Tool.scope.activate();
         return new paper.Path.Line({
         from: start,
         to: end,
@@ -67,22 +97,23 @@ class ToolA {
     }
 
     mouseDown(){
-        console.log("mouseDown() was called");
+        console.log("mouseDown() of Tool A was called");
 
         // Create Tool
-        this.tool = this.createTool();
+        //this.tool = this.createTool();
+        Tool.createTool();
 
-        this.tool.onMouseDown = (event) => {            // On mouse down      
+        Tool.tool.onMouseDown = (event) => {            // On mouse down      
         // init path
         this.previewLine = this.linePathCreate(event.point, event.point);
         };
 
-        this.tool.onMouseDrag = (event) => {            // On mouse dragged
+        Tool.tool.onMouseDrag = (event) => {            // On mouse dragged
         // Replace the ending point of the line created at onMouseDown() with the current mouse location
         this.previewLine.segments[1].point = event.point;
         };
 
-        this.tool.onMouseUp = (event) => {              // On mouse up
+        Tool.tool.onMouseUp = (event) => {              // On mouse up
         this.previewLine.segments[1].point = event.point;
         };
     }
