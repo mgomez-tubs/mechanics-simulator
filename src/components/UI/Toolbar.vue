@@ -2,7 +2,7 @@
     <div id="main_toolbar">
         <div class="toolgroup">
             <div id="select"            class="button"  @click="$emit('tool-clicked','select')"/> 
-            <div id="drawStab"          class="button"  @click="$emit('tool-clicked','stab')"/> 
+            <div id="drawFachwerk"      class="button"  @click="$emit('tool-clicked','stab')"/> 
             <div id="drawFeder"         class="button"  @click="$emit('tool-clicked','feder')"/>
             <div id="placeFestLager"    class="button"  @click="$emit('tool-clicked','festlager')"/>
             <div id="placeLosLager"     class="button"  @click="$emit('tool-clicked','loslager')"/>
@@ -33,12 +33,20 @@ export default {
     align-items: center;
     margin: 0;
 }
+/*  
+    Tools buttons
+*/
 
+.button {
+    display: block;
+    width: 2em;
+    height: 2em;
+}
 #select {
     background: url("../../assets/select.png") center no-repeat;
     background-size: contain;
 }
-#drawStab{
+#drawFachwerk{
     background: url("../../assets/Stab.png") center no-repeat;
     background-size: contain;
 } 
@@ -46,7 +54,6 @@ export default {
     background: url("../../assets/feder.png") center no-repeat;
     background-size: contain;
 }
-
 #placeFestLager{
     background: url("../../assets/festlager.png") center no-repeat;
     background-size: contain;
@@ -56,9 +63,5 @@ export default {
     background-size: contain;
 }
 
-.button {
-    display: block;
-    width: 2em;
-    height: 2em;
-}
+
 </style>
