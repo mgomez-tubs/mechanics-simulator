@@ -1,10 +1,10 @@
 <template>
     <div id="main_toolbar">
         <div class="toolgroup">
-            <div id="drawStab"      class="button"  @click="$emit('tool-clicked','stab')"/> 
-            <div id="drawBalken"    class="button"  @click="$emit('tool-clicked','balken')"/>
-            <div id="tempdraw1"     class="button"  @click="$emit('tool-clicked','button3')"/>
-            <div id="tempdraw2"     class="button"  @click="$emit('tool-clicked','button4')"/>
+            <div id="drawStab"          class="button"  @click="$emit('tool-clicked','stab')"/> 
+            <div id="drawFeder"         class="button"  @click="$emit('tool-clicked','feder')"/>
+            <div id="placeFestLager"    class="button"  @click="$emit('tool-clicked','festlager')"/>
+            <div id="placeLosLager"     class="button"  @click="$emit('tool-clicked','loslager')"/>
         </div>
     </div>
 </template>
@@ -36,15 +36,18 @@ export default {
     background: url("../../assets/Stab.png") center no-repeat;
     background-size: contain;
 } 
-#drawBalken{
-    background-color: green;
+#drawFeder{
+    background: url("../../assets/feder.png") center no-repeat;
+    background-size: contain;
 }
 
-#tempdraw1{
-    background-color: yellow;
+#placeFestLager{
+    background: url("../../assets/festlager.png") center no-repeat;
+    background-size: contain;
 }
-#tempdraw2{
-    background-color: red;
+#placeLosLager{
+    background: url("../../assets/loslager.png") center no-repeat;
+    background-size: contain;
 }
 
 .button {

@@ -1,6 +1,6 @@
 <!-- TODO: Update content when canvas is resized -->
 <template>
-  <canvas id="canvasId" v-on:mousedown="mouseDown">
+  <canvas id="canvasId" v-on:mousedown="mouseDownHandler">
   </canvas>  
 </template> 
 
@@ -15,6 +15,11 @@
     set tool(tool){
         this._tool = tool
     }
+
+    set scope(scope){
+        this._scope = scope
+    } 
+
     get tool(){
         return this._tool
     }
@@ -23,9 +28,56 @@
     }
 }
 
+// Stab Tool
 class ToolA {
+    constructor(){
+      
+    }
     report(){
         console.log("Tool A :)")
+        this.mouseDown(this._scope);
+    }
+
+    set scope(scope){
+        this._scope = scope
+    } 
+
+    createTool() {
+        console.log("createTool() was called")
+        this._scope.activate();
+        return new paper.Tool();
+    }
+
+    linePathCreate(start, end){
+        this._scope.activate();
+        return new paper.Path.Line({
+        from: start,
+        to: end,
+        strokeColor: "#FF4400",
+        strokeJoin: 'round',
+        strokeWidth: 1.5
+        })
+    }
+
+    mouseDown(){
+        console.log("mouseDown() was called");
+
+        // Create Tool
+        this.tool = this.createTool();
+
+        this.tool.onMouseDown = (event) => {            // On mouse down      
+        // init path
+        this.previewLine = this.linePathCreate(event.point, event.point);
+        };
+
+        this.tool.onMouseDrag = (event) => {            // On mouse dragged
+        // Replace the ending point of the line created at onMouseDown() with the current mouse location
+        this.previewLine.segments[1].point = event.point;
+        };
+
+        this.tool.onMouseUp = (event) => {              // On mouse up
+        this.previewLine.segments[1].point = event.point;
+        };
     }
 }
 
@@ -35,9 +87,11 @@ class ToolB {
     }
 }
 
+// Entering forbidden territory. . .
 const th = new ToolHandler();
 const lineTool = new ToolA;
 const balkenTool = new ToolB;
+
 
   export default{
     name: "Canvas",
@@ -71,24 +125,23 @@ const balkenTool = new ToolB;
         this.scope.project.activeLayer.removeChildren();
       },
       mouseDownHandler(){
-
+        console.log("Handle Mouse Down")
+        th.exec();
       },
       mouseDown(){
         console.log("mouseDown() was called");
-
+        
         th.tool = lineTool;
         th.exec();
         th.tool = balkenTool;
         th.exec();
 
-        // To access functions in nested tool
-        let self = this;
         // Create Tool
         this.tool = this.createTool(this.scope);
 
         this.tool.onMouseDown = (event) => {            // On mouse down      
           // init path
-          this.previewLine = this.linePathCreate(self.scope,event.point, event.point);
+          this.previewLine = this.linePathCreate(this.scope,event.point, event.point);
         };
 
         this.tool.onMouseDrag = (event) => {            // On mouse dragged
@@ -114,6 +167,13 @@ const balkenTool = new ToolB;
       
       this.scope.setup(document.getElementById("canvasId"));      // Sets up a empty project. A canvas ID can be passed, in this case, a View is created for it
       console.log("Current tool is: " + this.currentTool)
+
+
+      // Set up scope
+      lineTool.scope = this.scope
+
+      // Set up current tool
+      th.tool = lineTool;
     }
   }
 </script>   

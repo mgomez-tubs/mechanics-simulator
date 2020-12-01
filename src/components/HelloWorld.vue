@@ -10,11 +10,14 @@
 
   <!-- Drawing Canvas -->
   <div id="container">
-
     <CanvasWrapper  class = "wrapper" :currentTool = "selectedTool"/>
     <Toolbar        class = "toolbar" @tool-clicked = 'toolbarHandler($event)' />
-
   </div>
+  
+  <!-- Bottom Left Notifications -->
+  <transition name="fade">
+    <div v-if="showBottomLeftPopUp" class="bottompopup"> {{bottomLeftPopUpText}}</div>
+  </transition>
 
 </template>
 
@@ -24,14 +27,51 @@ import Toolbar from './UI/Toolbar.vue'
 export default {
   data() {
     return {
+      selectedTool: "cursor123",
       container: null,
-      selectedTool: "cursor123"
+      // Notifications
+      showBottomLeftPopUp: false,
+      bottomLeftPopUpText : null
+
     }
   },
   methods : {
     toolbarHandler(id){
       this.selectedTool = id;
-      console.log("Received " + id)
+      console.log("Selected " + id);
+
+      switch(id){   // this is only for demo purpouses, remove
+        case "stab":
+          this.displayBottomLeftNotification("Stab selected");
+          break;
+        case "loslager":
+          this.displayBottomLeftNotification("Loslager selected");
+          break;
+        case "festlager":
+          this.displayBottomLeftNotification("Festlager selected");
+          break;
+        case "feder":
+          this.displayBottomLeftNotification("Feder selected");
+          break;
+      }
+
+    },
+    displayBottomLeftNotification(msg){
+      // Create a self varaiable to allow changing this from encapsulated function
+      let self = this;  // . . . 
+
+      // Set text variable
+      this.bottomLeftPopUpText = msg;
+
+      // Display bottom left div
+      this.showBottomLeftPopUp = true;
+
+      // Set timer to hide it again in 1.5s
+      window.setTimeout( function(){
+        console.log("hide bottom txt");
+        self.showBottomLeftPopUp = false;
+      } , 1500 )
+
     }
   },
   components: {
@@ -69,6 +109,23 @@ a {
   display: flex;
 }
 
+.bottompopup {
+  position: absolute;
+  bottom:0.4em;
+  left: 0.4em;
+  background-color: green;
+  display: flex;
+  transition: opacity 2s;
+  border-radius: 1em;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  padding-left: 0.6em;
+  padding-right: 0.6em;
+  color: white;
+  font-style: italic;
+  font-size: 0.9em;
+}
+
 #container {
   position: absolute; 
   height: calc(100% - 2em);
@@ -101,4 +158,13 @@ a {
   position:absolute;
 }
 
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+} 
 </style>
