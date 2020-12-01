@@ -28,6 +28,13 @@
     }
 }
 
+// Selection Tool
+class SelectionTool {
+    report(){
+        console.log("Selection Tool, not ready :)")
+    }
+}
+
 // Stab Tool
 class ToolA {
     constructor(){
@@ -91,6 +98,7 @@ class ToolB {
 // Entering forbidden territory. . .
 const th = new ToolHandler();
 const lineTool = new ToolA;
+const selectionTool = new SelectionTool;
 //const balkenTool = new ToolB;
 
   export default{
@@ -117,7 +125,29 @@ const lineTool = new ToolA;
     watch: {
       // Watch for changes of the current tool
       currentTool : function(val){
-        console.log("The value ofthe currentTool has been changed!, now is " + val)
+        console.log("The value ofthe currentTool has been changed!, now is " + val);
+        switch(val){
+          case "select":
+            th.tool = selectionTool;
+            console.log("Selection tool");
+            break;
+          case "stab":
+            console.log("Stab");
+            th.tool = lineTool;
+            break;
+          case "loslager":
+            console.log("Loslager");
+            th.tool = selectionTool;
+            break;
+          case "festlager":
+            console.log("Festlager");
+            th.tool = selectionTool;
+            break;
+          case "feder":
+            console.log("Feder");
+            th.tool = selectionTool;
+            break;
+        }
       }
     },
     mounted() {
@@ -129,12 +159,12 @@ const lineTool = new ToolA;
       this.scope.setup(document.getElementById("canvasId"));      // Sets up a empty project. A canvas ID can be passed, in this case, a View is created for it
       console.log("Current tool is: " + this.currentTool)
 
-
-      // Set up scope
+      /* TODO: Hierarchy system for tools */
+      // Set up scopes 
       lineTool.scope = this.scope
 
       // Set up current tool
-      th.tool = lineTool;
+      
     }
   }
 </script>   
