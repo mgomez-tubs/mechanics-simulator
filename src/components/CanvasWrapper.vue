@@ -16,10 +16,6 @@
         this._tool = tool
     }
 
-    set scope(scope){
-        this._scope = scope
-    } 
-
     get tool(){
         return this._tool
     }
@@ -34,7 +30,7 @@ class Tool {
   constructor(){
     // Empty constructor
   }
-  static scope = null; // the hashtag is for static
+  static scope = null;
   static tool = null;
 
   static set scope(scope){
@@ -45,6 +41,10 @@ class Tool {
     this.tool = tool;
   }
 
+  /* 
+    Static Functions
+  */
+
   static createTool() {
       console.log("createTool() was called")
       this.scope.activate();
@@ -52,7 +52,11 @@ class Tool {
   }
 
   static detachToolHandlers(){
-    this.tool.off(['mouseDown','mouseDrag','mouseUp']);
+    console.log("Detached event handlers")
+    console.log(['mouseDown','mouseDrag','mouseUp'])
+    this.tool.off("mousedown");   // there has to be a prettier way . . .
+    this.tool.off("mousedrag");
+    this.tool.off("mouseup");
   }
 }
 
@@ -77,12 +81,6 @@ class ToolA extends Tool{
     set scope(scope){
         this._scope = scope;
         Tool.scope = scope;
-    } 
-
-    createTool() {
-        console.log("createTool() was called")
-        this._scope.activate();
-        return new paper.Tool();
     }
 
     linePathCreate(start, end){
@@ -99,9 +97,7 @@ class ToolA extends Tool{
     mouseDown(){
         console.log("mouseDown() of Tool A was called");
 
-        // Create Tool
-        //this.tool = this.createTool();
-        Tool.createTool();
+        
 
         Tool.tool.onMouseDown = (event) => {            // On mouse down      
         // init path
@@ -156,6 +152,7 @@ const selectionTool = new SelectionTool;
     watch: {
       // Watch for changes of the current tool
       currentTool : function(val){
+        Tool.detachToolHandlers();
         console.log("The value ofthe currentTool has been changed!, now is " + val);
         switch(val){
           case "select":
@@ -191,10 +188,15 @@ const selectionTool = new SelectionTool;
       console.log("Current tool is: " + this.currentTool)
 
       /* TODO: Hierarchy system for tools */
-      // Set up scopes 
-      lineTool.scope = this.scope
+      // Set up scopes
+      Tool.scope = this.scope
+      //lineTool.scope = this.scope
 
-      // Set up current tool
+      // Create PaperJS Tool
+      Tool.createTool();
+
+      // Set up default tool
+      th.tool = selectionTool;
       
     }
   }
