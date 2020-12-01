@@ -80,18 +80,18 @@ class ToolA {
         };
     }
 }
-
+/*
 class ToolB {
     report(){
         console.log("Tool B :)")
     }
 }
+*/
 
 // Entering forbidden territory. . .
 const th = new ToolHandler();
 const lineTool = new ToolA;
-const balkenTool = new ToolB;
-
+//const balkenTool = new ToolB;
 
   export default{
     name: "Canvas",
@@ -106,21 +106,6 @@ const balkenTool = new ToolB;
         currentTool: String
     },
     methods: {
-      createTool(scope) {
-        console.log("createTool() was called")
-        scope.activate();
-        return new paper.Tool();
-      },
-      linePathCreate(scope, start, end){
-        scope.activate();
-        return new paper.Path.Line({
-          from: start,
-          to: end,
-          strokeColor: "#FF4400",
-          strokeJoin: 'round',
-          strokeWidth: 1.5
-        })
-      },
       reset() {
         this.scope.project.activeLayer.removeChildren();
       },
@@ -128,33 +113,9 @@ const balkenTool = new ToolB;
         console.log("Handle Mouse Down")
         th.exec();
       },
-      mouseDown(){
-        console.log("mouseDown() was called");
-        
-        th.tool = lineTool;
-        th.exec();
-        th.tool = balkenTool;
-        th.exec();
-
-        // Create Tool
-        this.tool = this.createTool(this.scope);
-
-        this.tool.onMouseDown = (event) => {            // On mouse down      
-          // init path
-          this.previewLine = this.linePathCreate(this.scope,event.point, event.point);
-        };
-
-        this.tool.onMouseDrag = (event) => {            // On mouse dragged
-          // Replace the ending point of the line created at onMouseDown() with the current mouse location
-          this.previewLine.segments[1].point = event.point;
-        };
-
-        this.tool.onMouseUp = (event) => {              // On mouse up
-          this.previewLine.segments[1].point = event.point;
-        };
-      }
     },
     watch: {
+      // Watch for changes of the current tool
       currentTool : function(val){
         console.log("The value ofthe currentTool has been changed!, now is " + val)
       }

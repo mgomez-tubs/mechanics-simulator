@@ -38,9 +38,11 @@ export default {
   methods : {
     toolbarHandler(id){
       this.selectedTool = id;
-      console.log("Selected " + id);
 
       switch(id){   // this is only for demo purpouses, remove
+        case "select":
+          this.displayBottomLeftNotification("Selection tool selected");
+          break;
         case "stab":
           this.displayBottomLeftNotification("Stab selected");
           break;

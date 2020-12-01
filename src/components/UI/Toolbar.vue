@@ -1,6 +1,7 @@
 <template>
     <div id="main_toolbar">
         <div class="toolgroup">
+            <div id="select"            class="button"  @click="$emit('tool-clicked','select')"/> 
             <div id="drawStab"          class="button"  @click="$emit('tool-clicked','stab')"/> 
             <div id="drawFeder"         class="button"  @click="$emit('tool-clicked','feder')"/>
             <div id="placeFestLager"    class="button"  @click="$emit('tool-clicked','festlager')"/>
@@ -31,6 +32,11 @@ export default {
     justify-content: space-between;
     align-items: center;
     margin: 0;
+}
+
+#select {
+    background: url("../../assets/select.png") center no-repeat;
+    background-size: contain;
 }
 #drawStab{
     background: url("../../assets/Stab.png") center no-repeat;
