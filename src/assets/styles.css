@@ -1,0 +1,68 @@
+.topbarcontainer {
+width: 100%;
+height: 2em;
+background-color: lightsalmon;
+}
+
+.topbar {
+float: left;
+position: relative;
+background-color: red;
+display: flex;
+height: inherit;
+width: 80%;
+}
+
+.modeselection {
+float: right;
+height: inherit;
+margin: auto 0;
+}
+
+.bottompopup {
+position: absolute;
+bottom:0.4em;
+left: 0.4em;
+background-color: green;
+display: flex;
+transition: opacity 2s;
+border-radius: 1em;
+padding-top: 0.2em;
+padding-bottom: 0.2em;
+padding-left: 0.6em;
+padding-right: 0.6em;
+color: white;
+font-style: italic;
+font-size: 0.9em;
+}
+
+#container {
+position: absolute; 
+height: calc(100% - 2em);
+width: 100%;
+}
+
+.menu {
+padding-left: 0.5em;
+padding-right:0.5em;
+margin: auto 0;
+background-color: seagreen;
+font-size:0.8em;
+}
+
+#logo {
+margin: auto 0;
+padding-left: 0.5em;
+padding-right: 3em;
+background-color: seashell;
+}
+
+.toolbar{
+display: inline-block;
+position: absolute;
+top:1em;
+left: 1em;
+}
+.wrapper {
+position:absolute;
+}

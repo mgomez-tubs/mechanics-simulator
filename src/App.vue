@@ -14,6 +14,7 @@ export default {
 </script>
 
 <style>
+@import url('./assets/styles.css');
 body {
   padding: 0px;
   margin: 0px;
