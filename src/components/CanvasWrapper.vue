@@ -14,7 +14,6 @@
     set tool(tool){
         this._tool = tool
     }
-
     get tool(){
         return this._tool
     }

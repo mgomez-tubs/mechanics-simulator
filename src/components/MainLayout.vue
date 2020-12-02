@@ -1,40 +1,26 @@
 <template>
-  <!-- Top Bar -->
-  <div class="topbarcontainer">
-    <div class="topbar bar">
-      <div id="logo"> Mechanics Playground </div>
-      <div class="menu">Menu 1</div>
-      <div class="menu">Menu 2</div>
-      <div class="menu">Menu 3</div>
-      <div class="menu">Help</div>
-    </div>
-    <ModeSelectionMenu class="menu modeselection"/>
-  </div>
-  
-
-  <!-- Drawing Canvas -->
+  <MenuBar/>
+  <!-- Drawing Canvas TO DO: Set up event bus-->
   <div id="container">
     <CanvasWrapper :currentTool = "selectedTool"/>
     <Toolbar        class = "toolbar" @tool-clicked = 'toolbarHandler($event)' />
   </div>
   
-  <!-- Bottom Left Notifications -->
+  <!-- Bottom Left Notifications, TO DO : find a better way of doing this-->
   <transition name="fade">
     <div v-if="showBottomLeftPopUp" class="bottompopup"> {{bottomLeftPopUpText}}</div>
   </transition>
-
 </template>
 
 <script>
 import CanvasWrapper from './CanvasWrapper.vue'
-import Toolbar from './UI/Toolbar.vue'
-import ModeSelectionMenu from './ModeSelectionMenu.vue'
+import Toolbar from './UI/Toolbar'
+import MenuBar from './MenuBar'
 export default {
   data() {
     return {
       selectedTool: "cursor123",
       container: null,
-      // Notifications
       showBottomLeftPopUp: false,
       bottomLeftPopUpText : null
     }
@@ -42,7 +28,6 @@ export default {
   methods : {
     toolbarHandler(id){
       this.selectedTool = id;
-
       switch(id){   // this is only for demo purpouses, remove
         case "select":
           this.displayBottomLeftNotification("Selection tool selected");
@@ -62,9 +47,7 @@ export default {
         case "boden":
           this.displayBottomLeftNotification("Boden selected");
           break;
-      
       }
-
     },
     displayBottomLeftNotification(msg){
       // Create a self varaiable to allow changing this from encapsulated function
@@ -80,13 +63,12 @@ export default {
       window.setTimeout( function(){
         self.showBottomLeftPopUp = false;
       } , 1500 )
-
     }
   },
   components: {
     CanvasWrapper,
     Toolbar,
-    ModeSelectionMenu
+    MenuBar
   }
 }
 </script>

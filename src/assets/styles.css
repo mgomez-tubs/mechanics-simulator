@@ -1,3 +1,7 @@
+/*
+    Main UI
+*/
+
 .topbarcontainer {
 width: 100%;
 height: 2em;
@@ -65,4 +69,55 @@ left: 1em;
 }
 .wrapper {
 position:absolute;
+}
+
+/*
+    Toolbar
+*/
+
+#main_toolbar {
+    background-color: blue;
+    width:5em;
+    height:15em;
+    
+  }
+.toolgroup {
+    height:50%;
+    width:100%;
+    background-color: darkmagenta;
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+}
+
+.button {
+    display: block;
+    width: 2em;
+    height: 2em;
+}
+#select {
+    background: url("./select.png") center no-repeat;
+    background-size: contain;
+}
+#drawFachwerk{
+    background: url("./Stab.png") center no-repeat;
+    background-size: contain;
+} 
+#drawFeder{
+    background: url("./feder.png") center no-repeat;
+    background-size: contain;
+}
+#placeFestLager{
+    background: url("./festlager.png") center no-repeat;
+    background-size: contain;
+}
+#placeLosLager{
+    background: url("./loslager.png") center no-repeat;
+    background-size: contain;
+}
+#drawBoden {
+    background: url("./boden.png") center no-repeat;
+    background-size: contain;
 }
