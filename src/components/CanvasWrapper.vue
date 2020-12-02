@@ -76,15 +76,21 @@ class FachwerkCreateTool extends Tool{
       this.fachwerkStart_preview  = null;
       this.fachwerkEnd_preview    = null;
       this.line_preview = null;
+      this.mouseWasDragged = false;
     }
 
     report(){
         // Create PaperJS Objects
         this.cursor                 =   this.fachwerkCircleCreate([0,0]);
         this.fachwerkStart_preview  =   this.fachwerkCircleCreate([0,0]);     // Preview of the starting circle
-        this.fachwerkEnd_preview    =   this.fachwerkCircleCreate([0,0]);     // Preview of the ending circle
+        this.defaultPosition        =  [-1,-1]
+        this.fachwerkEnd_preview    =   this.fachwerkCircleCreate(this.defaultPosition);     // Preview of the ending circle
         this.line_preview           =   this.linePathCreate([0,0],[0,0]);
+
+        // Set dotted lines for preview graphics
         this.line_preview.dashArray = [10,12];
+        this.fachwerkStart_preview.dashArray = [5,5];
+        this.fachwerkEnd_preview.dashArray = [5,5]; 
 
         // Hide previews
         this.fachwerkStart_preview.visible = false;
@@ -100,7 +106,7 @@ class FachwerkCreateTool extends Tool{
         return new paper.Path.Line({
         from: start,
         to: end,
-        strokeColor: "#FF4400",
+        strokeColor: "yellow",
         strokeJoin: 'round',
         strokeWidth: 1.5,
         })
@@ -110,24 +116,26 @@ class FachwerkCreateTool extends Tool{
           return new paper.Path.Circle({            
             center: p,
             radius: 10,  
-            strokeColor: 'black'})
+            strokeColor: 'yellow'})
     }
 
     mouseEventsHandler(){
-          console.log("mouseDown() of Tool A was called");
-          Tool.tool.onMouseMove = (event) => {            // On mouse move
-          this.cursor.position = event.point;
+        console.log("mouseDown() of Tool A was called");
+        Tool.tool.onMouseMove = (event) => {            // On mouse move
+        this.cursor.position = event.point;
         }
 
         Tool.tool.onMouseDown = (event) => {              // On mouse down
         // Set the preview start circle to the mouse position
         this.fachwerkStart_preview.position = event.point;
+        this.fachwerkEnd_preview.position = event.point;
         // Reset the preview line
         this.line_preview.segments[0].point = event.point;
         this.line_preview.segments[1].point = event.point;
         };
 
         Tool.tool.onMouseDrag = (event) => {              // On mouse dragged
+        this.mouseWasDragged = true;
         // While the mouse is dragging, hide the cursor
         this.cursor.visible = false
 
@@ -138,12 +146,12 @@ class FachwerkCreateTool extends Tool{
         this.line_preview.visible = true;
 
         // Replace the ending point of the line created at onMouseDown() with the current mouse location
-        //this.previewLine.segments[1].point = event.point;
         this.line_preview.segments[1].point = event.point;
         this.fachwerkEnd_preview.position = event.point;
         };
 
         Tool.tool.onMouseUp = (event) => {                // On mouse up
+        
         // Move the cursor to the new position
         this.cursor.position = event.point;
 
@@ -151,46 +159,60 @@ class FachwerkCreateTool extends Tool{
         this.cursor.visible = true;
 
         // Hide the previews
-        /*
         this.fachwerkStart_preview.visible = false;
         this.fachwerkEnd_preview.visible = false;
-        this.line_preview.visible = false;*/
+        this.line_preview.visible = false;
 
         // Create a new Fachwerk object
-        this.fw = new Fachwerk(this.fachwerkStart_preview.position, this.fachwerkEnd_preview.position)
+        if(this.mouseWasDragged === true){
+          this.fw = new Fachwerk(this.fachwerkStart_preview.position, this.fachwerkEnd_preview.position)
+          this.resetTool();
+        }
         };
+    }
+    resetTool(){
+      this.fachwerkStart_preview.position = [-1,-1];
+      this.fachwerkEnd_preview.position = [-1,-1];
+      this.mouseWasDragged = false;
     }
 }
 
 // Fachwerk class
+
 class Fachwerk{
   constructor(startPosition, endPosition){
-    this.startPosition = startPosition;
+    this.startPosition = startPosition
+    ;
     this.endPosition = endPosition;
     this.draw();
   }
 
-  draw(){
-    // Starting Circle
-    this.startCircle = new paper.Path.Circle({
-      strokeColor: 'red',
-      center:this.startPosition,
-      radius: 5
-    });
-    
+  draw(){    
     // Line
     this.line = new paper.Path.Line({
       from: this.startPosition,
       to: this.endPosition,
-      strokeColor: 'green'
+      strokeColor: 'black'
     });
+    this.line.strokeWidth = 3.5;
     
+    // Starting Circle
+    this.startCircle = new paper.Path.Circle({
+      strokeColor: 'black',
+      center:this.startPosition,
+      radius: 5
+    });
+    this.startCircle.strokeWidth = 1.5;
+    this.startCircle.fillColor = "white";
+
     // End Circle
     this.endCircle = new paper.Path.Circle({
-      strokeColor: 'red',
+      strokeColor: 'black',
       center: this.endPosition,
       radius: 5
     });
+    this.endCircle.strokeWidth = 1.5;
+    this.endCircle.fillColor = "white";
   }
 
 
@@ -256,6 +278,10 @@ const selectionTool = new SelectionTool;
             console.log("Feder");
             th.tool = selectionTool;
             break;
+          case "boden":
+            console.log("Boden");
+            th.tool = selectionTool;
+            break;
         }
         // Start mouse event handler
         this.mouseEventHandler();
@@ -287,7 +313,7 @@ const selectionTool = new SelectionTool;
 </script>   
 <style scoped>
   #canvasId{
-  background-color: rgb(54, 54, 54);
+  background-color: rgb(255, 255, 255);
   width: 100%;
   height: 100%;
 }

@@ -1,0 +1,1 @@
+- Stäbe die nicht angeschlossen sind, haben ihre Enden rot gefärbt

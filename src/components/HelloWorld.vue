@@ -55,6 +55,10 @@ export default {
         case "feder":
           this.displayBottomLeftNotification("Feder selected");
           break;
+        case "boden":
+          this.displayBottomLeftNotification("Boden selected");
+          break;
+      
       }
 
     },

@@ -6,6 +6,7 @@
             <div id="drawFeder"         class="button"  @click="$emit('tool-clicked','feder')"/>
             <div id="placeFestLager"    class="button"  @click="$emit('tool-clicked','festlager')"/>
             <div id="placeLosLager"     class="button"  @click="$emit('tool-clicked','loslager')"/>
+            <div id="drawBoden"             class="button"  @click="$emit('tool-clicked','boden')"/>
         </div>
     </div>
 </template>
@@ -60,6 +61,10 @@ export default {
 }
 #placeLosLager{
     background: url("../../assets/loslager.png") center no-repeat;
+    background-size: contain;
+}
+#drawBoden {
+    background: url("../../assets/boden.png") center no-repeat;
     background-size: contain;
 }
 
