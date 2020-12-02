@@ -1,16 +1,20 @@
 <template>
   <!-- Top Bar -->
-  <div class="topbar bar">
-    <div id="logo"> Mechanics Playground </div>
-    <div class="menu">Menu 1</div>
-    <div class="menu">Menu 2</div>
-    <div class="menu">Menu 3</div>
-    <div class="menu">Help</div>
+  <div class="topbarcontainer">
+    <div class="topbar bar">
+      <div id="logo"> Mechanics Playground </div>
+      <div class="menu">Menu 1</div>
+      <div class="menu">Menu 2</div>
+      <div class="menu">Menu 3</div>
+      <div class="menu">Help</div>
+    </div>
+    <ModeSelectionMenu class="menu modeselection"/>
   </div>
+  
 
   <!-- Drawing Canvas -->
   <div id="container">
-    <CanvasWrapper  class = "wrapper" :currentTool = "selectedTool"/>
+    <CanvasWrapper :currentTool = "selectedTool"/>
     <Toolbar        class = "toolbar" @tool-clicked = 'toolbarHandler($event)' />
   </div>
   
@@ -24,6 +28,7 @@
 <script>
 import CanvasWrapper from './CanvasWrapper.vue'
 import Toolbar from './UI/Toolbar.vue'
+import ModeSelectionMenu from './ModeSelectionMenu.vue'
 export default {
   data() {
     return {
@@ -32,7 +37,6 @@ export default {
       // Notifications
       showBottomLeftPopUp: false,
       bottomLeftPopUpText : null
-
     }
   },
   methods : {
@@ -81,7 +85,8 @@ export default {
   },
   components: {
     CanvasWrapper,
-    Toolbar
+    Toolbar,
+    ModeSelectionMenu
   }
 }
 </script>
@@ -102,16 +107,27 @@ li {
 a {
   color: #42b983;
 }
-
-.bar {
+.topbarcontainer {
   width: 100%;
   height: 2em;
+  background-color: lightsalmon;
 }
+
 .topbar {
+  display:inline-block;
   position: relative;
-  top:0px;
   background-color: red;
   display: flex;
+  height: inherit;
+  width: 80%;
+  float: left;
+}
+
+.modeselection {
+  display: inline-block;
+  float: right;
+  height: inherit;
+  margin: auto 0;
 }
 
 .bottompopup {
@@ -152,10 +168,9 @@ a {
   background-color: seashell;
 }
 
-
 .toolbar{
   display: inline-block;
-  position:absolute;
+  position: absolute;
   top:1em;
   left: 1em;
 }

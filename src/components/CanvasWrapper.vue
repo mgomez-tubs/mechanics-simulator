@@ -1,10 +1,10 @@
 <!-- TODO: Update content when canvas is resized -->
 <template>
   <canvas id="canvasId"/>
+  <MouseCoordinates :cx="this.mouseCoordinates[0]" :cy="this.mouseCoordinates[1]"/>
 </template> 
 
 <script>
-//import { tool } from 'paper/dist/paper-core';
   const paper = require('paper');
 
   class ToolHandler{
@@ -46,7 +46,6 @@ class Tool {
 
   static createTool() {
       console.log("createTool() was called")
-      this.scope.activate();
       this.tool = new paper.Tool();
   }
 
@@ -66,7 +65,7 @@ class SelectionTool{
         console.log("Selection Tool, not ready :)")
     }
 }
-    
+  
 
 // Fachwerk creation tool
 class FachwerkCreateTool extends Tool{
@@ -83,7 +82,7 @@ class FachwerkCreateTool extends Tool{
         // Create PaperJS Objects
         this.cursor                 =   this.fachwerkCircleCreate([0,0]);
         this.fachwerkStart_preview  =   this.fachwerkCircleCreate([0,0]);     // Preview of the starting circle
-        this.defaultPosition        =  [-1,-1]
+        this.defaultPosition        =   [-1,-1]
         this.fachwerkEnd_preview    =   this.fachwerkCircleCreate(this.defaultPosition);     // Preview of the ending circle
         this.line_preview           =   this.linePathCreate([0,0],[0,0]);
 
@@ -102,7 +101,6 @@ class FachwerkCreateTool extends Tool{
     }
 
     linePathCreate(start, end){
-        //Tool.scope.activate();
         return new paper.Path.Line({
         from: start,
         to: end,
@@ -232,17 +230,21 @@ const lineTool = new FachwerkCreateTool;
 const selectionTool = new SelectionTool;
 //const balkenTool = new ToolB;
 
+import MouseCoordinates from './MouseCoordinates.vue'
+
   export default{
     name: "Canvas",
     data() {
       return{
         line: null,
         scope: null,
-        previewLine: null
+        previewLine: null,
+        mouseMovedText: null,
+        mouseCoordinates: [null,null]
       }
     },
-    props : {
-        currentTool: String
+    props : {   // Dont forget to declare received Objects as props!!!
+      currentTool: String
     },
     methods: {
       reset() {
@@ -251,6 +253,21 @@ const selectionTool = new SelectionTool;
       mouseEventHandler(){
         th.exec();
       },
+      updateCoords(){
+        this.mouseCoordinates = [event.pageX ,event.pageY];
+      },
+      showMouseCoordinates(){
+        this.scope.activate();
+        console.log("show mouse coord caled")
+        this.mouseCoordinatesTool = new paper.Tool();
+        //this.mouseCoordinatesTool.activate();
+        this.mouseMovedText = new paper.PointText(new paper.Point(400,400));
+        this.mouseMovedText.content = "Lololo"
+        this.mouseCoordinatesTool.onMouseMove = (event) => {
+          this.mouseMovedText.position = event.point;
+          //console.log(event)
+        }
+      }
     },
     watch: {
       // Watch for changes of the current tool
@@ -308,6 +325,12 @@ const selectionTool = new SelectionTool;
 
       // Set up default tool
       th.tool = selectionTool;
+
+      // Show mouse coordinates per default
+      this.showMouseCoordinates();
+    },
+    components : {
+      MouseCoordinates
     }
   }
 </script>   
@@ -316,5 +339,6 @@ const selectionTool = new SelectionTool;
   background-color: rgb(255, 255, 255);
   width: 100%;
   height: 100%;
+  position: absolute;
 }
 </style>
