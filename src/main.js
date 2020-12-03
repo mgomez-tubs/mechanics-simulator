@@ -1,5 +1,14 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import mitt from 'mitt'
 
 // Mount app
-createApp(App).mount('#app')
+let app = createApp(App)
+
+// Global event bus
+const toolbarEvents = mitt();                             // Create an emitter object
+app.config.globalProperties.emitter = emitter;      // Set emitter object as global property
+
+app.mount('#app')
+
+

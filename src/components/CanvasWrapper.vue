@@ -211,8 +211,6 @@ class Fachwerk{
     this.endCircle.strokeWidth = 1.5;
     this.endCircle.fillColor = "white";
   }
-
-
 }
 
 /*
@@ -254,18 +252,6 @@ import MouseCoordinates from './MouseCoordinates.vue'
       },
       updateCoords(){
         this.mouseCoordinates = [event.pageX ,event.pageY];
-      },
-      showMouseCoordinates(){
-        this.scope.activate();
-        console.log("show mouse coord caled")
-        this.mouseCoordinatesTool = new paper.Tool();
-        //this.mouseCoordinatesTool.activate();
-        this.mouseMovedText = new paper.PointText(new paper.Point(400,400));
-        this.mouseMovedText.content = "Lololo"
-        this.mouseCoordinatesTool.onMouseMove = (event) => {
-          this.mouseMovedText.position = event.point;
-          //console.log(event)
-        }
       }
     },
     watch: {
@@ -324,9 +310,6 @@ import MouseCoordinates from './MouseCoordinates.vue'
 
       // Set up default tool
       th.tool = selectionTool;
-
-      // Show mouse coordinates per default
-      this.showMouseCoordinates();
     },
     components : {
       MouseCoordinates
