@@ -240,9 +240,6 @@ import MouseCoordinates from './MouseCoordinates.vue'
         mouseCoordinates: [null,null]
       }
     },
-    props : {   // Dont forget to declare received Objects as props!!!
-      currentTool: String
-    },
     methods: {
       reset() {
         this.scope.project.activeLayer.removeChildren();
@@ -296,7 +293,7 @@ import MouseCoordinates from './MouseCoordinates.vue'
                                             // It is possible to access the global paper variable, but im not sure if it works with vue.
       
       this.scope.setup(document.getElementById("canvasId"));      // Sets up a empty project. A canvas ID can be passed, in this case, a View is created for it
-      console.log("Current tool is: " + this.currentTool)
+      //console.log("Current tool is: " + this.currentTool)
 
       /* TODO: Hierarchy system for tools */
       // Set up scopes
@@ -310,6 +307,41 @@ import MouseCoordinates from './MouseCoordinates.vue'
 
       // Set up default tool
       th.tool = selectionTool;
+
+      // Set up emitters
+      this.toolbarEvents.on("userClickedOnTool", id => {
+        Tool.detachToolHandlers();
+          console.log(id)
+          console.log("The value ofthe currentTool has been changed!, now is " + id);
+        switch(id){
+          case "select":
+            th.tool = selectionTool;
+            console.log("Selection tool");
+            break;
+          case "stab":
+            console.log("Stab");
+            th.tool = lineTool;
+            break;
+          case "loslager":
+            console.log("Loslager");
+            th.tool = selectionTool;
+            break;
+          case "festlager":
+            console.log("Festlager");
+            th.tool = selectionTool;
+            break;
+          case "feder":
+            console.log("Feder");
+            th.tool = selectionTool;
+            break;
+          case "boden":
+            console.log("Boden");
+            th.tool = selectionTool;
+            break;
+        }
+        // Start mouse event handler
+        this.mouseEventHandler();
+      });
     },
     components : {
       MouseCoordinates

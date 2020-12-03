@@ -2,8 +2,8 @@
   <MenuBar/>
   <!-- Drawing Canvas TO DO: Set up event bus-->
   <div id="container">
-    <CanvasWrapper :currentTool = "selectedTool"/>
-    <Toolbar        class = "toolbar" @tool-clicked = 'toolbarHandler($event)' />
+    <CanvasWrapper/>
+    <Toolbar class = "toolbar"/>
   </div>
   
   <!-- Bottom Left Notifications, TO DO : find a better way of doing this-->
@@ -19,36 +19,12 @@ import MenuBar from './MenuBar'
 export default {
   data() {
     return {
-      selectedTool: "cursor123",
       container: null,
       showBottomLeftPopUp: false,
       bottomLeftPopUpText : null
     }
   },
   methods : {
-    toolbarHandler(id){
-      this.selectedTool = id;
-      switch(id){   // this is only for demo purpouses, remove
-        case "select":
-          this.displayBottomLeftNotification("Selection tool selected");
-          break;
-        case "stab":
-          this.displayBottomLeftNotification("Stab selected");
-          break;
-        case "loslager":
-          this.displayBottomLeftNotification("Loslager selected");
-          break;
-        case "festlager":
-          this.displayBottomLeftNotification("Festlager selected");
-          break;
-        case "feder":
-          this.displayBottomLeftNotification("Feder selected");
-          break;
-        case "boden":
-          this.displayBottomLeftNotification("Boden selected");
-          break;
-      }
-    },
     displayBottomLeftNotification(msg){
       // Create a self varaiable to allow changing this from encapsulated function
       let self = this;  // . . . 
@@ -69,6 +45,30 @@ export default {
     CanvasWrapper,
     Toolbar,
     MenuBar
+  },
+  mounted() {
+    this.toolbarEvents.on("userClickedOnTool", id => {
+      switch(id){   // this is only for demo purpouses, remove
+        case "select":
+          this.displayBottomLeftNotification("Selection tool selected");
+          break;
+        case "stab":
+          this.displayBottomLeftNotification("Stab selected");
+          break;
+        case "loslager":
+          this.displayBottomLeftNotification("Loslager selected");
+          break;
+        case "festlager":
+          this.displayBottomLeftNotification("Festlager selected");
+          break;
+        case "feder":
+          this.displayBottomLeftNotification("Feder selected");
+          break;
+        case "boden":
+          this.displayBottomLeftNotification("Boden selected");
+          break;
+      }
+  });
   }
 }
 </script>

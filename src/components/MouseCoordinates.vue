@@ -1,6 +1,6 @@
 <template>
     <div class="container"> <!-- TODO: props for this -->
-        <div class="coords">Coordinates: [{{cx}}, {{cy}}]</div>
+        <div class="coords">Coordinates:</div>
     </div>
 </template>
 
