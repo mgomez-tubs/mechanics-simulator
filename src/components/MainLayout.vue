@@ -3,7 +3,7 @@
   <!-- Drawing Canvas TO DO: Set up event bus-->
   <div id="container">
     <CanvasWrapper/>
-    <Toolbar class = "toolbar"/>
+    <Toolbar/>
   </div>
   
   <!-- Bottom Left Notifications, TO DO : find a better way of doing this-->
