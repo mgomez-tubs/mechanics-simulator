@@ -4,7 +4,17 @@
 
 const paper = require('paper');
 
-export class Tool {
+export class ToolManager {
+  constructor(paperInstance, paperScope){
+    this.paper = paperInstance;
+    this.scope = paperScope;
+
+    // Initialize Tools
+    this.drawFachwerkTool = new FachwerkCreateTool;
+  }
+}
+
+export class Tool {   // scope and tool can be in the constrcutor. consider adding 
   constructor(){
     // Empty constructor
   }
@@ -57,8 +67,7 @@ export class FachwerkCreateTool extends Tool{
         // Create PaperJS Objects
         this.cursor                 =   this.fachwerkCircleCreate([0,0]);
         this.fachwerkStart_preview  =   this.fachwerkCircleCreate([0,0]);     // Preview of the starting circle
-        this.defaultPosition        =   [-1,-1]
-        this.fachwerkEnd_preview    =   this.fachwerkCircleCreate(this.defaultPosition);     // Preview of the ending circle
+        this.fachwerkEnd_preview    =   this.fachwerkCircleCreate([0,0]);     // Preview of the ending circle
         this.line_preview           =   this.linePathCreate([0,0],[0,0]);
 
         // Set dotted lines for preview graphics
@@ -81,66 +90,63 @@ export class FachwerkCreateTool extends Tool{
         to: end,
         strokeColor: "yellow",
         strokeJoin: 'round',
-        strokeWidth: 1.5,
-        })
+        strokeWidth: 1.5})
     }
 
     fachwerkCircleCreate(p){
-          return new paper.Path.Circle({            
-            center: p,
-            radius: 10,  
-            strokeColor: 'yellow'})
+        return new paper.Path.Circle({            
+          center: p,
+          radius: 10,  
+          strokeColor: 'yellow'})
     }
 
     mouseEventsHandler(){
-        console.log("mouseDown() of Tool A was called");
         Tool.tool.onMouseMove = (event) => {            // On mouse move
         this.cursor.position = event.point;
         }
 
         Tool.tool.onMouseDown = (event) => {              // On mouse down
-        // Set the preview start circle to the mouse position
-        this.fachwerkStart_preview.position = event.point;
-        this.fachwerkEnd_preview.position = event.point;
-        // Reset the preview line
-        this.line_preview.segments[0].point = event.point;
-        this.line_preview.segments[1].point = event.point;
+          // Set the preview start circle to the mouse position
+          this.fachwerkStart_preview.position = event.point;
+          this.fachwerkEnd_preview.position = event.point;
+          // Reset the preview line
+          this.line_preview.segments[0].point = event.point;
+          this.line_preview.segments[1].point = event.point;
         };
 
         Tool.tool.onMouseDrag = (event) => {              // On mouse dragged
-        this.mouseWasDragged = true;
-        // While the mouse is dragging, hide the cursor
-        this.cursor.visible = false
+          this.mouseWasDragged = true;
+          // While the mouse is dragging, hide the cursor
+          this.cursor.visible = false
 
-        // Only show previews, while the mouse is down
-        
-        this.fachwerkStart_preview.visible = true;
-        this.fachwerkEnd_preview.visible = true;
-        this.line_preview.visible = true;
+          // Only show previews, while the mouse is down
+          
+          this.fachwerkStart_preview.visible = true;
+          this.fachwerkEnd_preview.visible = true;
+          this.line_preview.visible = true;
 
-        // Replace the ending point of the line created at onMouseDown() with the current mouse location
-        this.line_preview.segments[1].point = event.point;
-        this.fachwerkEnd_preview.position = event.point;
+          // Replace the ending point of the line created at onMouseDown() with the current mouse location
+          this.line_preview.segments[1].point = event.point;
+          this.fachwerkEnd_preview.position = event.point;
         };
 
         Tool.tool.onMouseUp = (event) => {                // On mouse up
-        
-        // Move the cursor to the new position
-        this.cursor.position = event.point;
+          // Move the cursor to the new position
+          this.cursor.position = event.point;
 
-        // Show the cursor again
-        this.cursor.visible = true;
+          // Show the cursor again
+          this.cursor.visible = true;
 
-        // Hide the previews
-        this.fachwerkStart_preview.visible = false;
-        this.fachwerkEnd_preview.visible = false;
-        this.line_preview.visible = false;
+          // Hide the previews
+          this.fachwerkStart_preview.visible = false;
+          this.fachwerkEnd_preview.visible = false;
+          this.line_preview.visible = false;
 
-        // Create a new Fachwerk object
-        if(this.mouseWasDragged === true){
-          this.fw = new Fachwerk(this.fachwerkStart_preview.position, this.fachwerkEnd_preview.position)
-          this.resetTool();
-        }
+          // Create a new Fachwerk object
+          if(this.mouseWasDragged === true){
+            this.fw = new Fachwerk(this.fachwerkStart_preview.position, this.fachwerkEnd_preview.position)
+            this.resetTool();
+          }
         };
     }
     resetTool(){
@@ -150,14 +156,9 @@ export class FachwerkCreateTool extends Tool{
     }
 }
 
-
-/*
-*/
-
 class Fachwerk{
   constructor(startPosition, endPosition){
-    this.startPosition = startPosition
-    ;
+    this.startPosition = startPosition;
     this.endPosition = endPosition;
     this.draw();
   }

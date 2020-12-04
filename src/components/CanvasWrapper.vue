@@ -6,6 +6,7 @@
 
 <script>
 const paper = require('paper');
+
 class ToolSwitcher{
   constructor(){
       this._tool = null;
@@ -22,14 +23,12 @@ class ToolSwitcher{
 }
 
 // Parent Tool class
-
 import {Tool} from './tools/ToolCatalog'
 import {FachwerkCreateTool} from './tools/ToolCatalog'
 import {SelectionTool} from './tools/ToolCatalog'
+import {ToolManager} from './tools/ToolCatalog'
 
 // Fachwerk class
-
-
 /*
 class ToolB {
     report(){
@@ -40,9 +39,7 @@ class ToolB {
 
 // Entering forbidden territory. . .
 const th = new ToolSwitcher();
-
 const fachwerkCreateTool = new FachwerkCreateTool;
-
 const selectionTool = new SelectionTool;
 
 //const balkenTool = new ToolB;
@@ -58,7 +55,8 @@ import MouseCoordinates from './MouseCoordinates.vue'
         previewLine: null,
         mouseMovedText: null,
         mouseCoordinates: [null,null],
-        canvasToolObject: null
+        canvasToolObject: null,
+        paperInstance: require('paper')
       }
     },
     methods: {
@@ -72,59 +70,21 @@ import MouseCoordinates from './MouseCoordinates.vue'
         this.mouseCoordinates = [event.pageX ,event.pageY];
       }
     },
-    watch: {
-      // Watch for changes of the current tool
-      currentTool : function(val){
-        Tool.detachToolHandlers();
-        console.log("The value ofthe currentTool has been changed!, now is " + val);
-        switch(val){
-          case "select":
-            th.tool = selectionTool;
-            console.log("Selection tool");
-            break;
-          case "stab":
-            console.log("Stab");
-            th.tool = fachwerkCreateTool;
-            break;
-          case "loslager":
-            console.log("Loslager");
-            th.tool = selectionTool;
-            break;
-          case "festlager":
-            console.log("Festlager");
-            th.tool = selectionTool;
-            break;
-          case "feder":
-            console.log("Feder");
-            th.tool = selectionTool;
-            break;
-          case "boden":
-            console.log("Boden");
-            th.tool = selectionTool;
-            break;
-        }
-        // Start mouse event handler
-        this.mouseEventHandler();
-      }
-    },
     mounted() {
-      console.log("Mounting canvas...")
+      // Create a new scope
       this.scope = new paper.PaperScope();  // Since we are working with JavaScript, the PaperScope needs to be manually created
                                             // Paper classes can only be accessed through PaperScope Objects
                                             // It is possible to access the global paper variable, but im not sure if it works with vue.
       
+      // Setup scope
       this.scope.setup(document.getElementById("canvasId"));      // Sets up a empty project. A canvas ID can be passed, in this case, a View is created for it
-      //console.log("Current tool is: " + this.currentTool)
+      this.scope.activate();
 
-      /* TODO: Hierarchy system for tools */
+      // Create new ToolManager
+      this.toolManager = new ToolManager(this.paperInstance, this.scope);
+
       // Set up scopes
       Tool.scope = this.scope
-      //fachwerkCreateTool.scope = this.scope
-
-      Tool.scope.activate();
-
-      // Create PaperJS Tool
-      //Tool.createTool();
 
       // something someting
       this.canvasToolObject = new paper.Tool();

@@ -14,7 +14,7 @@
 
 <script>
 import CanvasWrapper from './CanvasWrapper.vue'
-import Toolbar from './UI/Toolbar'
+import Toolbar from './Toolbar'
 import MenuBar from './MenuBar'
 export default {
   data() {
