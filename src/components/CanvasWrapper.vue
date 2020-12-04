@@ -6,43 +6,27 @@
 
 <script>
 const paper = require('paper');
-
 class ToolSwitcher{
   constructor(){
-      this._tool = null;
+      this._currentActiveTool = null;
   }
-  set tool(tool){
-      this._tool = tool
+  set currentActiveTool(tool){
+      this._currentActiveTool = tool
+      this._currentActiveTool.enable()
+      //this._currentActiveTool.report();
   }
-  get tool(){
-      return this._tool
-  }
-  exec() {
-      this._tool.report();
+
+  get currentActiveTool(){
+      return this._currentActiveTool
   }
 }
 
 // Parent Tool class
 import {Tool} from './tools/ToolCatalog'
-import {FachwerkCreateTool} from './tools/ToolCatalog'
-import {SelectionTool} from './tools/ToolCatalog'
 import {ToolManager} from './tools/ToolCatalog'
 
-// Fachwerk class
-/*
-class ToolB {
-    report(){
-        console.log("Tool B :)")
-    }
-}
-*/
-
 // Entering forbidden territory. . .
-const th = new ToolSwitcher();
-const fachwerkCreateTool = new FachwerkCreateTool;
-const selectionTool = new SelectionTool;
-
-//const balkenTool = new ToolB;
+const toolSwitcher = new ToolSwitcher();
 
 import MouseCoordinates from './MouseCoordinates.vue'
 
@@ -50,21 +34,18 @@ import MouseCoordinates from './MouseCoordinates.vue'
     name: "Canvas",
     data() {
       return{
-        line: null,
         scope: null,
         previewLine: null,
         mouseMovedText: null,
         mouseCoordinates: [null,null],
         canvasToolObject: null,
-        paperInstance: require('paper')
+        paperInstance: require('paper'),
+        toolManager: null
       }
     },
     methods: {
       reset() {
         this.scope.project.activeLayer.removeChildren();
-      },
-      mouseEventHandler(){
-        th.exec();
       },
       updateCoords(){
         this.mouseCoordinates = [event.pageX ,event.pageY];
@@ -86,47 +67,31 @@ import MouseCoordinates from './MouseCoordinates.vue'
       // Set up scopes
       Tool.scope = this.scope
 
-      // something someting
-      this.canvasToolObject = new paper.Tool();
-
-      Tool.tool = this.canvasToolObject;
-
       // Set up default tool
-      th.tool = selectionTool;
+      toolSwitcher.currentActiveTool = this.toolManager.selectionTool;
 
       // Set up emitters
       this.toolbarEvents.on("userClickedOnTool", id => {
-        Tool.detachToolHandlers();
-          console.log(id)
-          console.log("The value ofthe currentTool has been changed!, now is " + id);
         switch(id){
           case "select":
-            th.tool = selectionTool;
-            console.log("Selection tool");
+            toolSwitcher.currentActiveTool = this.toolManager.selectionTool;
             break;
           case "stab":
-            console.log("Stab");
-            th.tool = fachwerkCreateTool;
+            toolSwitcher.currentActiveTool = this.toolManager.drawFachwerkTool;
             break;
           case "loslager":
-            console.log("Loslager");
-            th.tool = selectionTool;
+            toolSwitcher.currentActiveTool = this.toolManager.selectionTool;
             break;
           case "festlager":
-            console.log("Festlager");
-            th.tool = selectionTool;
+            toolSwitcher.currentActiveTool = this.toolManager.selectionTool;
             break;
           case "feder":
-            console.log("Feder");
-            th.tool = selectionTool;
+            toolSwitcher.currentActiveTool = this.toolManager.selectionTool;
             break;
           case "boden":
-            console.log("Boden");
-            th.tool = selectionTool;
+            toolSwitcher.currentActiveTool = this.toolManager.selectionTool;
             break;
         }
-        // Start mouse event handler
-        this.mouseEventHandler();
       });
     },
     components : {

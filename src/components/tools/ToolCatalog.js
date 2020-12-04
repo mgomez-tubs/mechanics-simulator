@@ -10,7 +10,17 @@ export class ToolManager {
     this.scope = paperScope;
 
     // Initialize Tools
-    this.drawFachwerkTool = new FachwerkCreateTool;
+    this._selectionTool = new SelectionTool;
+    this._drawFachwerkTool = new FachwerkCreateTool;
+  }
+
+  // Tool getters
+  get selectionTool(){
+    return this._selectionTool;
+  }
+
+  get drawFachwerkTool(){
+    return this._drawFachwerkTool;
   }
 }
 
@@ -19,16 +29,11 @@ export class Tool {   // scope and tool can be in the constrcutor. consider addi
     // Empty constructor
   }
   static scope = null;
-  static tool = null;
 
   static set scope(scope){
     this.scope = scope;
   }
-
-  static set tool(tool){
-    this.tool = tool;
-  }
-
+/*
   static detachToolHandlers(){    // there has to be a prettier way . . .
     console.log("Detaching previous event handlers")
     console.log(['mouseDown','mouseDrag','mouseUp'])
@@ -36,13 +41,21 @@ export class Tool {   // scope and tool can be in the constrcutor. consider addi
     this.tool.off("mousedrag");
     this.tool.off("mouseup");
     this.tool.off("mousemove");
-  }
+  }*/                                               // Keeping this cause ive got an idea
 }
 
 // Selection Tool
-export class SelectionTool{
+export class SelectionTool extends Tool{
+  constructor(){
+    super();
+    this.tool = new paper.Tool();
+  }
     report(){
-        console.log("Selection Tool, not ready :)")
+      console.log("selectionTool: report() called")
+    }
+    enable(){
+      console.log("selectionTool: enable() called");
+      this.tool.activate();
     }
 }
   
@@ -51,19 +64,19 @@ export class SelectionTool{
 export class FachwerkCreateTool extends Tool{
     constructor(){
       super();
-      this.canvasToolObject = null;
       this.cursor = null;
       this.fachwerkStart_preview  = null;
       this.fachwerkEnd_preview    = null;
       this.line_preview = null;
       this.mouseWasDragged = false;
+      this.tool = new paper.Tool();
+      this.setUpPaperJSObjects();
+      this.configurePaperJSToolMouseEvents();
     }
 
-    setCanvasToolObject(o){
-      this.canvasToolObject(o);
-    }
+    setUpPaperJSObjects(){
+        console.log("FachwerkTool: report() called")
 
-    report(){
         // Create PaperJS Objects
         this.cursor                 =   this.fachwerkCircleCreate([0,0]);
         this.fachwerkStart_preview  =   this.fachwerkCircleCreate([0,0]);     // Preview of the starting circle
@@ -79,9 +92,6 @@ export class FachwerkCreateTool extends Tool{
         this.fachwerkStart_preview.visible = false;
         this.fachwerkEnd_preview.visible = false;
         this.line_preview.visible = false;
-
-        // Start mouse event handler
-        this.mouseEventsHandler();
     }
 
     linePathCreate(start, end){
@@ -100,12 +110,12 @@ export class FachwerkCreateTool extends Tool{
           strokeColor: 'yellow'})
     }
 
-    mouseEventsHandler(){
-        Tool.tool.onMouseMove = (event) => {            // On mouse move
+    configurePaperJSToolMouseEvents(){
+        this.tool.onMouseMove = (event) => {              // On mouse move
         this.cursor.position = event.point;
         }
 
-        Tool.tool.onMouseDown = (event) => {              // On mouse down
+        this.tool.onMouseDown = (event) => {              // On mouse down
           // Set the preview start circle to the mouse position
           this.fachwerkStart_preview.position = event.point;
           this.fachwerkEnd_preview.position = event.point;
@@ -114,7 +124,7 @@ export class FachwerkCreateTool extends Tool{
           this.line_preview.segments[1].point = event.point;
         };
 
-        Tool.tool.onMouseDrag = (event) => {              // On mouse dragged
+        this.tool.onMouseDrag = (event) => {              // On mouse dragged
           this.mouseWasDragged = true;
           // While the mouse is dragging, hide the cursor
           this.cursor.visible = false
@@ -130,7 +140,7 @@ export class FachwerkCreateTool extends Tool{
           this.fachwerkEnd_preview.position = event.point;
         };
 
-        Tool.tool.onMouseUp = (event) => {                // On mouse up
+        this.tool.onMouseUp = (event) => {                // On mouse up
           // Move the cursor to the new position
           this.cursor.position = event.point;
 
@@ -153,6 +163,10 @@ export class FachwerkCreateTool extends Tool{
       this.fachwerkStart_preview.position = [-1,-1];
       this.fachwerkEnd_preview.position = [-1,-1];
       this.mouseWasDragged = false;
+    }
+    enable(){
+      console.log("FachwerkTool: enable() called")
+      this.tool.activate();
     }
 }
 
