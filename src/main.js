@@ -13,9 +13,6 @@ let app = createApp(App)
 const toolbarEvents = mitt();                                   // Create an emitter object
 app.config.globalProperties.toolbarEvents = toolbarEvents;      // Set emitter object as global property
 
-// Set up global PaperJS Object
-//app.config.globalProperties.paper
-
 app.mount('#app')
 
 
