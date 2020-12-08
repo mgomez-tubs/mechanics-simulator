@@ -55,6 +55,10 @@ class SelectionTool extends Tool{
   constructor(){
     super();
     this.tool = new paper.Tool();
+    //this.selectSquare = null;
+    this.selectSquare = null
+    this.setUpPaperJSObjects();
+    this.configurePaperJSToolMouseEvents();
   }
   report(){
     console.log("selectionTool: report() called")
@@ -63,6 +67,44 @@ class SelectionTool extends Tool{
     console.log("selectionTool: enable() called");
     this.tool.activate();
   }
+  setUpPaperJSObjects(){
+    // Selection Square
+    this.selectSquare = new paper.Path.Rectangle({
+      from: new paper.Point(-1,-1),
+      to: new paper.Point(-1,-1),
+      strokeColor: "#1a42cc",
+      fillColor: new paper.Color(0.4,0.8,1,0.8)
+  })
+  }
+
+  configurePaperJSToolMouseEvents(){  
+    
+    this.tool.onMouseDown = (event) => { 
+      this.selectSquare.visible = true;
+      this.selectSquare.segments[0].point = event.point 
+      this.selectSquare.segments[1].point = event.point 
+      this.selectSquare.segments[2].point = event.point 
+      this.selectSquare.segments[3].point = event.point } 
+      // Point 0 (arriba izquierda)
+
+    // Point 3
+    this.tool.onMouseDrag = (event) => {
+      // Relcalculate Path
+      // Point 2 (abajo derecha)
+      this.selectSquare.segments[2].point = event.point
+      // Point 1
+      this.selectSquare.segments[1].point.x = this.selectSquare.segments[0].point.x
+      this.selectSquare.segments[1].point.y = this.selectSquare.segments[2].point.y
+      
+      // Point 3
+      this.selectSquare.segments[3].point.x = this.selectSquare.segments[2].point.x
+      this.selectSquare.segments[3].point.y = this.selectSquare.segments[0].point.y
+    }
+    this.tool.onMouseUp = () => {
+      this.selectSquare.visible = false
+    } 
+  }
+
 }
 
 // Fachwerk creation tool
@@ -107,7 +149,8 @@ class FachwerkCreateTool extends Tool{
   fachwerkCircleCreate(p){
       return new paper.Path.Circle({            
         center: p,
-        radius: 10,  
+        radius: 0.1,
+        strokeWidth: 1,
         strokeColor: 'yellow'})
   }
   configurePaperJSToolMouseEvents(){
@@ -190,7 +233,7 @@ class Fachwerk{
     this.startCircle = new paper.Path.Circle({
       strokeColor: 'black',
       center:this.startPosition,
-      radius: 5
+      radius: 0.1
     });
     this.startCircle.strokeWidth = 1.5;
     this.startCircle.fillColor = "white";
@@ -199,7 +242,7 @@ class Fachwerk{
     this.endCircle = new paper.Path.Circle({
       strokeColor: 'black',
       center: this.endPosition,
-      radius: 5
+      radius: 0.1
     });
     this.endCircle.strokeWidth = 1.5;
     this.endCircle.fillColor = "white";

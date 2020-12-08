@@ -1,46 +1,95 @@
 <!-- TODO: Update content when canvas is resized -->
 <template>
-  <canvas id="canvasId"/>
-  <MouseCoordinates :cx="this.mouseCoordinates[0]" :cy="this.mouseCoordinates[1]"/>
+  <canvas id="canvasId" resize="true" hidpi="off"/>
+  <MouseCoordinates v-bind:cx="mouseCoordinateX" v-bind:cy="mouseCoordinateY"/>
 </template> 
 
 <script>
 import ToolManager from './tools/ToolManager'
 import MouseCoordinates from './MouseCoordinates.vue'
+import Grid from './grid'
+
+/*
+  Some PaperJS info
+  paper.path.Line(from, to) does put the object in the layer, but since no stroke color is defined, noting is shown!
+  but paper.path.Line(Object) does!
+*/
 
 export default{
   name: "Canvas",
   data() {
     return{
-      scope: null,
+      paperScope: null,
       previewLine: null,
       mouseMovedText: null,
-      mouseCoordinates: [null,null],
+      mouseCoordinates: [1,2],
+      mouseCoordinateX: 1,
+      mouseCoordinateY: 2,
       canvasToolObject: null,
-      paperInstance: require('paper'),
-      toolManager: null
+      toolManager: null,
+      grid: null
     }
   },
   methods: {
     reset() {
-      this.scope.project.activeLayer.removeChildren();
+      this.paperScope.project.activeLayer.removeChildren();
     },
     updateCoords(){
-      this.mouseCoordinates = [event.pageX ,event.pageY];
+      this.mouseCoordinates = [1 ,2];
     }
   },
   mounted() {
-    // Create a new scope
-    this.scope = new this.paperInstance.PaperScope();   // Since we are working with JavaScript, the PaperScope needs to be manually created
+    // Set up PaperJS
+    /***********************************************/
+    // Create a reference to the canvas object
+    this.canvasElement = document.getElementById("canvasId")
+
+    // Create a new paperScope
+    this.paperScope = require('paper')
+                                                        // Since we are working with JavaScript, the PaperScope needs to be manually created
                                                         // Paper classes can only be accessed through PaperScope Objects
                                                         // It is possible to access the global paper variable, but im not sure if it works with vue.
     
-    // Setup scope
-    this.scope.setup(document.getElementById("canvasId"));      // Sets up a empty project. A canvas ID can be passed, in this case, a View is created for it
-    this.scope.activate();
+    // Setup paperScope
+    this.paperScope.setup(this.canvasElement);          // Sets up a empty project. A canvas ID can be passed, in this case, a View is created for it
+                                                        // Remember: the paperScope is a reference to the paperJS Object
+    this.paperScope.activate();
+    /***********************************************/
+
+    this.paperScope.project.currentStyle.strokeScaling = false;
+
+    // Configure coordinates
+    // Set center of the canvas to coordinate point (0,0)
+    this.paperScope.view.center = new this.paperScope.Point(0,0);
+    this.paperScope.view.zoom = 50;
+    
+
+    // First Layer: Grid
+    this.gridLayer = new this.paperScope.Layer();
+    // Set up grid
+    this.grid = new Grid(this.paperScope, this.canvasElement);
+
+    this.point_cero = this.paperScope.Path.Circle({
+      center: new this.paperScope.Point(0,0),
+      radius: 1,
+      strokeColor: "black",
+      strokeWidth: 1,
+      fillColor: "red"
+    });
+
+    this.point_uno = this.paperScope.Path.Circle({
+      center: new this.paperScope.Point(10,0),
+      radius: 1,
+      strokeColor: "black",
+      strokeWidth: 1,
+      fillColor: "red"
+    });
+
+    // Second Layer: Objects
+    this.objectsLayer = new this.paperScope.Layer();
 
     // Create new ToolManager
-    this.toolManager = new ToolManager(this.paperInstance);
+    this.toolManager = new ToolManager(this.paperScope);
 
     // Set up default tool
     this.toolManager.currentActiveTool = this.toolManager.selectionTool;
@@ -68,6 +117,7 @@ export default{
           break;
       }
     });
+
   },
   components : {
     MouseCoordinates
@@ -76,7 +126,7 @@ export default{
 </script>   
 <style scoped>
   #canvasId{
-  background-color: rgb(255, 255, 255);
+  background-color:#f5edb1;
   width: 100%;
   height: 100%;
   position: absolute;
