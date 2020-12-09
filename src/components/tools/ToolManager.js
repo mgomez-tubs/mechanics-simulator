@@ -142,7 +142,7 @@ class FachwerkCreateTool extends Tool{
       return new paper.Path.Line({
       from: start,
       to: end,
-      strokeColor: "yellow",
+      strokeColor: "brown",
       strokeJoin: 'round',
       strokeWidth: 1.5})
   }
@@ -151,7 +151,7 @@ class FachwerkCreateTool extends Tool{
         center: p,
         radius: 0.1,
         strokeWidth: 1,
-        strokeColor: 'yellow'})
+        strokeColor: 'brown'})
   }
   configurePaperJSToolMouseEvents(){
       this.tool.onMouseMove = (event) => {              // On mouse move

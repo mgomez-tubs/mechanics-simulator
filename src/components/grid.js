@@ -37,24 +37,23 @@ export default class Grid {
             strokeColor:    "5b5b5b",
             strokeWidth:    this.lineWidths.thin
         })
+        // Create Symbol
+        this.vgridline_s = new this.paper.SymbolDefinition(this.vgridline)
 
         // Template horizontal line
-        /*
-        this.hgridline  = new this.paper.Path([this.bounds.x, this.bounds.y], [this.bounds.width, this.bounds.y]);
-        this.hgridline.strokeColor = "5b5b5b"
-        this.hgridline.strokeWidth = this.lineWidths.thin*/
-
         this.hgridline = new this.paper.Path.Line({
             from:           [this.bounds.x, this.bounds.y],
             to:             [this.bounds.width, this.bounds.y],
             strokeColor:    "5b5b5b",
             strokeWidth:    this.lineWidths.thin
         })
+        // Create Symbol
+        this.hgridline_s = new this.paper.SymbolDefinition(this.hgridline)
         
         // Draw vertical lines (see inside for step indicators)
         for(let i = this.xmin; i <= this.xmax; i+= this.step){
             // Create a clone of the line blueprint
-            let clonedLine = this.vgridline.clone();
+            let clonedLine = new this.paper.SymbolItem(this.vgridline_s)
             // Set position to currnent i
             clonedLine.position.x = i;
 
@@ -88,7 +87,7 @@ export default class Grid {
         
         // Draw horizontal lines (see inside for set indicators)
         for(let i = this.ymin; i <= this.ymax; i+= this.step){
-            let clonedLine = this.hgridline.clone();
+            let clonedLine = new this.paper.SymbolItem(this.hgridline_s)
             clonedLine.position.y = i;
 
             // Write the number
