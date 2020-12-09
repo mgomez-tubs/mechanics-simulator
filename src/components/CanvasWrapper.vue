@@ -56,33 +56,31 @@ export default{
     this.paperScope.activate();
     /***********************************************/
 
-    this.paperScope.project.currentStyle.strokeScaling = false;
+    this.paperScope.project.currentStyle.strokeScaling = false;   // Disable scaling of strokes 
+
+    /*
+      TODO : SET UP LAYERS, WILL ALSO HELP TO IMPLEMETNT DarkMODE!!
+
+    */
 
     // Configure coordinates
     // Set center of the canvas to coordinate point (0,0)
     this.paperScope.view.center = new this.paperScope.Point(0,0);
     this.paperScope.view.zoom = 50;
-    
+    this.paperScope.view.applyMatrix = false;
+    this.paperScope.view.scale(1,-1)
+    //this.paperScope.view.transform(new this.paperScope.Matrix(1,0,0,1,0,0))
 
     // First Layer: Grid
-    this.gridLayer = new this.paperScope.Layer();
+    
+
     // Set up grid
     this.grid = new Grid(this.paperScope, this.canvasElement);
 
     this.point_cero = this.paperScope.Path.Circle({
       center: new this.paperScope.Point(0,0),
-      radius: 1,
-      strokeColor: "black",
-      strokeWidth: 1,
-      fillColor: "red"
-    });
-
-    this.point_uno = this.paperScope.Path.Circle({
-      center: new this.paperScope.Point(10,0),
-      radius: 1,
-      strokeColor: "black",
-      strokeWidth: 1,
-      fillColor: "red"
+      radius: 0.1,
+      fillColor: "black"
     });
 
     // Second Layer: Objects
