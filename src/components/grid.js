@@ -31,14 +31,25 @@ export default class Grid {
 
     draw(){
         // Template vertical line
-        this.vgridline  = new this.paper.Path([this.bounds.x, this.bounds.y], [this.bounds.x, this.bounds.height]);
-        this.vgridline.strokeColor = "5b5b5b"
-        this.vgridline.strokeWidth = this.lineWidths.thin
-        
+        this.vgridline = new this.paper.Path.Line({
+            from:           [this.bounds.x, this.bounds.y],
+            to:             [this.bounds.x, this.bounds.height],
+            strokeColor:    "5b5b5b",
+            strokeWidth:    this.lineWidths.thin
+        })
+
         // Template horizontal line
+        /*
         this.hgridline  = new this.paper.Path([this.bounds.x, this.bounds.y], [this.bounds.width, this.bounds.y]);
         this.hgridline.strokeColor = "5b5b5b"
-        this.hgridline.strokeWidth = this.lineWidths.thin
+        this.hgridline.strokeWidth = this.lineWidths.thin*/
+
+        this.hgridline = new this.paper.Path.Line({
+            from:           [this.bounds.x, this.bounds.y],
+            to:             [this.bounds.width, this.bounds.y],
+            strokeColor:    "5b5b5b",
+            strokeWidth:    this.lineWidths.thin
+        })
         
         // Draw vertical lines (see inside for step indicators)
         for(let i = this.xmin; i <= this.xmax; i+= this.step){
