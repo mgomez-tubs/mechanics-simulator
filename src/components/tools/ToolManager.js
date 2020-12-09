@@ -197,6 +197,7 @@ class FachwerkCreateTool extends Tool{
 
         // Create a new Fachwerk object
         if(this.mouseWasDragged === true){
+          console.log("Created a new fachwerk object")
           this.fw = new Fachwerk(this.fachwerkStart_preview.position, this.fachwerkEnd_preview.position)
           this.resetTool();
         }
@@ -225,26 +226,26 @@ class Fachwerk{
     this.line = new paper.Path.Line({
       from: this.startPosition,
       to: this.endPosition,
-      strokeColor: 'black'
+      strokeColor: 'black',
+      strokeWidth: 3.5
     });
-    this.line.strokeWidth = 3.5;
     
     // Starting Circle
     this.startCircle = new paper.Path.Circle({
       strokeColor: 'black',
       center:this.startPosition,
-      radius: 0.1
+      radius: 0.1,
+      strokeWidth: 1.5,
+      fillColor: "white"
     });
-    this.startCircle.strokeWidth = 1.5;
-    this.startCircle.fillColor = "white";
 
     // End Circle
     this.endCircle = new paper.Path.Circle({
       strokeColor: 'black',
       center: this.endPosition,
-      radius: 0.1
+      radius: 0.1,
+      strokeWidth: 1.5,
+      fillColor: "white"
     });
-    this.endCircle.strokeWidth = 1.5;
-    this.endCircle.fillColor = "white";
   }
 }

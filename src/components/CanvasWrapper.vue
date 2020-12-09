@@ -20,14 +20,10 @@ export default{
   data() {
     return{
       paperScope: null,
-      previewLine: null,
       mouseMovedText: null,
       mouseCoordinates: [1,2],
       mouseCoordinateX: 1,
-      mouseCoordinateY: 2,
-      canvasToolObject: null,
-      toolManager: null,
-      grid: null
+      mouseCoordinateY: 2
     }
   },
   methods: {

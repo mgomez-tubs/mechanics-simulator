@@ -58,12 +58,13 @@ export default class Grid {
             clonedLine.position.x = i;
 
             // Write the number
+            /*
             let number = new this.paper.PointText({
                 point: [clonedLine.position.x + 0.1, 0.0 + 0.3],
                 content: i,
                 fontSize: 0.25,
                 fillColor: "red"
-            })
+            })*/
             //console.log(number)
             
             // If x position equals 0, set line to very thick
@@ -91,13 +92,14 @@ export default class Grid {
             clonedLine.position.y = i;
 
             // Write the number
+            /*
             let number = new this.paper.PointText({
                 point: [0 + 0.1, clonedLine.position.y + 0.3],
                 content: -i,
                 fontSize: 0.25,
                 fillColor: "red"
             })
-            console.log(number)
+            console.log(number)*/
 
             if(clonedLine.position.y == 0) {
                 clonedLine.strokeWidth = this.lineWidths.verythick;
