@@ -61,10 +61,19 @@ export default{
 
     // Configure coordinates
     // Set center of the canvas to coordinate point (0,0)
-    this.paperScope.view.center = new this.paperScope.Point(0,0);
+    this.paperScope.view.center = [0, 0];
     this.paperScope.view.zoom = 50;
     this.paperScope.view.applyMatrix = false;
     this.paperScope.view.scale(1,-1)
+    this.paperScope.view.matrix.tx = 0;
+    this.paperScope.view.matrix.ty *=2; // nobody needs to see this
+
+    // Now that everything is positionated, lets shift 
+    this.paperScope.view.matrix.tx += 50;
+    this.paperScope.view.matrix.ty -= 50;
+    
+
+    //this.paperScope.view.matrix.ty = this.paperScope.project.;
     //this.paperScope.view.transform(new this.paperScope.Matrix(1,0,0,1,0,0))
 
     // First Layer: Grid
