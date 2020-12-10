@@ -1,6 +1,6 @@
 <!-- TODO: Update content when canvas is resized -->
 <template>
-  <canvas id="canvasId" resize="true" hidpi="off"/>
+  <canvas id="canvasId" hidpi="off"/>
   <MouseCoordinates v-bind:cx="mouseCoordinateX" v-bind:cy="mouseCoordinateY"/>
 </template> 
 
@@ -19,7 +19,7 @@ export default{
   name: "Canvas",
   data() {
     return{
-      paperScope: null,
+      //paperScope: null,
       mouseMovedText: null,
       mouseCoordinates: [1,2],
       mouseCoordinateX: 1,
@@ -73,11 +73,12 @@ export default{
     // Set up grid
     this.grid = new Grid(this.paperScope, this.canvasElement);
 
+  /*
     this.point_cero = this.paperScope.Path.Circle({
       center: new this.paperScope.Point(0,0),
       radius: 0.1,
       fillColor: "black"
-    });
+    });*/
 
     // Second Layer: Objects
     this.objectsLayer = new this.paperScope.Layer();
@@ -98,10 +99,10 @@ export default{
           this.toolManager.currentActiveTool = this.toolManager.drawFachwerkTool;
           break;
         case "loslager":
-          this.toolManager.currentActiveTool = this.toolManager.selectionTool;
+          this.toolManager.currentActiveTool = this.toolManager.drawLosLagerTool;
           break;
         case "festlager":
-          this.toolManager.currentActiveTool = this.toolManager.selectionTool;
+          this.toolManager.currentActiveTool = this.toolManager.drawFestLagerTool;
           break;
         case "feder":
           this.toolManager.currentActiveTool = this.toolManager.selectionTool;

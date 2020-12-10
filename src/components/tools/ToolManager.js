@@ -8,6 +8,8 @@ export default class ToolManager {
     // Define Tools
     this._selectionTool = new SelectionTool;
     this._drawFachwerkTool = new FachwerkCreateTool;
+    this._drawLosLagerTool = new LosLagerCreateTool;
+    this._drawFestLagerTool = new FestLagerCreateTool;
   }
 
   set currentActiveTool(tool){
@@ -24,9 +26,14 @@ export default class ToolManager {
   get selectionTool(){
     return this._selectionTool;
   }
-
   get drawFachwerkTool(){
     return this._drawFachwerkTool;
+  }
+  get drawLosLagerTool(){
+    return this._drawLosLagerTool;
+  }
+  get drawFestLagerTool(){
+    return this._drawFestLagerTool;
   }
 }
 
@@ -73,18 +80,18 @@ class SelectionTool extends Tool{
       from: new paper.Point(-1,-1),
       to: new paper.Point(-1,-1),
       strokeColor: "#1a42cc",
-      fillColor: new paper.Color(0.4,0.8,1,0.8)
+      fillColor: new paper.Color(0.4,0.8,1,0.8),
+      visible: false
   })
   }
-
   configurePaperJSToolMouseEvents(){  
-    
     this.tool.onMouseDown = (event) => { 
-      this.selectSquare.visible = true;
       this.selectSquare.segments[0].point = event.point 
       this.selectSquare.segments[1].point = event.point 
       this.selectSquare.segments[2].point = event.point 
-      this.selectSquare.segments[3].point = event.point } 
+      this.selectSquare.segments[3].point = event.point;
+      this.selectSquare.visible = true;
+    } 
       // Point 0 (arriba izquierda)
 
     // Point 3
@@ -95,7 +102,6 @@ class SelectionTool extends Tool{
       // Point 1
       this.selectSquare.segments[1].point.x = this.selectSquare.segments[0].point.x
       this.selectSquare.segments[1].point.y = this.selectSquare.segments[2].point.y
-      
       // Point 3
       this.selectSquare.segments[3].point.x = this.selectSquare.segments[2].point.x
       this.selectSquare.segments[3].point.y = this.selectSquare.segments[0].point.y
@@ -104,7 +110,6 @@ class SelectionTool extends Tool{
       this.selectSquare.visible = false
     } 
   }
-
 }
 
 // Fachwerk creation tool
@@ -123,7 +128,7 @@ class FachwerkCreateTool extends Tool{
 
   setUpPaperJSObjects(){
       // Create PaperJS Objects
-      this.cursor                 =   this.fachwerkCircleCreate([0,0]);
+      //this.cursor                 =   this.fachwerkCircleCreate([0,0]);
       this.fachwerkStart_preview  =   this.fachwerkCircleCreate([0,0]);     // Preview of the starting circle
       this.fachwerkEnd_preview    =   this.fachwerkCircleCreate([0,0]);     // Preview of the ending circle
       this.line_preview           =   this.linePathCreate([0,0],[0,0]);
@@ -154,9 +159,6 @@ class FachwerkCreateTool extends Tool{
         strokeColor: 'brown'})
   }
   configurePaperJSToolMouseEvents(){
-      this.tool.onMouseMove = (event) => {              // On mouse move
-      this.cursor.position = event.point;
-      }
 
       this.tool.onMouseDown = (event) => {              // On mouse down
         // Set the preview start circle to the mouse position
@@ -170,7 +172,7 @@ class FachwerkCreateTool extends Tool{
       this.tool.onMouseDrag = (event) => {              // On mouse dragged
         this.mouseWasDragged = true;
         // While the mouse is dragging, hide the cursor
-        this.cursor.visible = false
+        //this.cursor.visible = false
 
         // Only show previews, while the mouse is down
         
@@ -185,10 +187,10 @@ class FachwerkCreateTool extends Tool{
 
       this.tool.onMouseUp = (event) => {                // On mouse up
         // Move the cursor to the new position
-        this.cursor.position = event.point;
+        //this.cursor.position = event.point;
 
         // Show the cursor again
-        this.cursor.visible = true;
+        //this.cursor.visible = true;
 
         // Hide the previews
         this.fachwerkStart_preview.visible = false;
@@ -247,5 +249,169 @@ class Fachwerk{
       strokeWidth: 1.5,
       fillColor: "white"
     });
+  }
+}
+
+class LosLagerCreateTool extends Tool{
+  constructor(){
+    super();
+    this.tool = new paper.Tool();
+    this.cursor = null;
+
+    // Create group
+    this.festLagerGroup = new paper.Group();
+
+    this.midtriangle = new paper.Path.RegularPolygon({
+      center: [0,-0.05],
+      radius: 0.2,
+      sides: 3,
+      strokeColor: "black",
+      strokeWidth: 1.5,
+      fillColor: "white",
+      rotation: 180
+    })
+    this.festLagerGroup.addChild(this.midtriangle);
+
+    this.uppercircle = new paper.Path.Circle({
+      center: [0,0],
+      radius : 0.1,
+      strokeWidth: 1.5,
+      strokeColor: "black",
+      fillColor:"white"
+    })
+    this.festLagerGroup.addChild(this.uppercircle);
+
+    this.lowerline = new paper.Path.Line({
+      from:[-0.2, -0.35],
+      to: [0.2, -0.35],
+      strokeWidth: 1.5,
+      strokeColor: "black"
+    })
+    this.festLagerGroup.addChild(this.lowerline);
+
+    this.lowerline_diag = new paper.Path.Line({
+      from:[-0.2, -0.45],
+      to: [-0.1, -0.35],
+      strokeWidth: 1,
+      strokeColor: "black"
+    })
+    this.festLagerGroup.addChild(this.lowerline_diag);
+
+    for(let i = 0; i < 4 ; i ++){
+      let lowerline_copy = this.lowerline_diag.clone();
+      lowerline_copy.position.x+=0.1*i
+      this.festLagerGroup.addChild(lowerline_copy);
+    }
+
+    this.festLagerGroup.style = { // dark mode is in mind
+      strokeColor : "black"
+    };
+    
+    this.festLagerGroup_raster =  this.festLagerGroup.rasterize(4500);
+    this.festLagerGroup.remove();
+
+    this.configurePaperJSToolMouseEvents();
+  }
+
+  enable(){
+    console.log("LosLagerCreateTool : enable() called")
+    this.tool.activate();
+  }
+
+  configurePaperJSToolMouseEvents(){
+    this.tool.onMouseMove = (event) => {
+        this.festLagerGroup_raster.position = event.point;
+    }
+    this.tool.onMouseDown = (event) => {
+        console.log("asdasdas")
+        return new LosLager(event, this.festLagerGroup_raster)
+    }
+  }
+}
+
+class LosLager {
+  constructor(position, raster){
+    this.position = position;
+    this.raster = raster.clone();
+    console.log("LosLager created")
+  }
+}
+
+// Festlager
+
+class FestLagerCreateTool extends Tool{
+  constructor(){
+    super();
+    this.tool = new paper.Tool();
+    this.cursor = null;
+
+    // Create group
+    this.festLagerGroup = new paper.Group();
+
+    this.midtriangle = new paper.Path.RegularPolygon({
+      center: [0,-0.05],
+      radius: 0.2,
+      sides: 3,
+      strokeColor: "black",
+      strokeWidth: 1.5,
+      fillColor: "white",
+      rotation: 180
+    })
+    this.festLagerGroup.addChild(this.midtriangle);
+
+    this.uppercircle = new paper.Path.Circle({
+      center: [0,0],
+      radius : 0.1,
+      strokeWidth: 1.5,
+      strokeColor: "black",
+      fillColor:"white"
+    })
+    this.festLagerGroup.addChild(this.uppercircle);
+
+    this.lowerline_diag = new paper.Path.Line({
+      from:[-0.2, -0.35],
+      to: [-0.1, -0.25],
+      strokeWidth: 1,
+      strokeColor: "black"
+    })
+    this.festLagerGroup.addChild(this.lowerline_diag);
+
+    for(let i = 0; i < 4 ; i ++){
+      let lowerline_copy = this.lowerline_diag.clone();
+      lowerline_copy.position.x+=0.1*i
+      this.festLagerGroup.addChild(lowerline_copy);
+    }
+
+    this.festLagerGroup.style = { // dark mode is in mind
+      strokeColor : "black"
+    };
+    
+    this.festLagerGroup_raster =  this.festLagerGroup.rasterize(4500);
+    this.festLagerGroup.remove();
+
+    this.configurePaperJSToolMouseEvents();
+  }
+
+  enable(){
+    console.log("LosLagerCreateTool : enable() called")
+    this.tool.activate();
+  }
+
+  configurePaperJSToolMouseEvents(){
+    this.tool.onMouseMove = (event) => {
+        this.festLagerGroup_raster.position = event.point;
+    }
+    this.tool.onMouseDown = (event) => {
+        console.log("asdasdas")
+        return new Festlager(event, this.festLagerGroup_raster)
+    }
+  }
+}
+
+class Festlager {
+  constructor(position, raster){
+    this.position = position;
+    this.raster = raster.clone();
+    console.log("LosLager created")
   }
 }
