@@ -12,7 +12,7 @@ export default class Grid {
 
         // Widths
         this.lineWidths = {
-            thin : 0.5,
+            thin : 1,
             thick: 1,
             verythick: 2
         }
@@ -23,10 +23,10 @@ export default class Grid {
         }
 
         // Coordinates limits
-        this.xmin = -10;
-        this.xmax = 10;
-        this.ymin = -5;
-        this.ymax = 5;
+        this.xmin = 0;
+        this.xmax = 20;
+        this.ymin = 0;      // care: the foor loop is inverted   
+        this.ymax = 10;       
 
         // Step configs ( same in x and y direction!!! )
         this.step = 1;
@@ -40,7 +40,7 @@ export default class Grid {
         
         // Rasterize for performance
         this.gridlayer_raster = this.gridLayer.rasterize(4500);
-        console.log(this.gridlayer_raster)
+        //console.log(this.gridlayer_raster)
 
         // Remove first layer
         this.gridLayer.remove();
@@ -49,24 +49,24 @@ export default class Grid {
     draw(){
         // Template vertical line
         this.vgridline = new this.paper.Path.Line({
-            from:           [this.bounds.x, this.bounds.y],
-            to:             [this.bounds.x, this.bounds.height],
+            from:           [0, 0],
+            to:             [0, - this.bounds.height + 2],              // remember: y axis is reverted
             strokeColor:    this.colors.lines,
             strokeWidth:    this.lineWidths.thin
         })
 
         // Create Symbol
-        this.vgridline_s = new this.paper.SymbolDefinition(this.vgridline)
+        //this.vgridline_s = new this.paper.SymbolDefinition(this.vgridline)
 
         // Template horizontal line
         this.hgridline = new this.paper.Path.Line({
-            from:           [this.bounds.x, this.bounds.y],
-            to:             [this.bounds.width, this.bounds.y],
+            from:           [0, 0],
+            to:             [this.bounds.width, 0],
             strokeColor:    this.colors.lines,
             strokeWidth:    this.lineWidths.thin
         })
         // Create Symbol
-        this.hgridline_s = new this.paper.SymbolDefinition(this.hgridline)
+        //this.hgridline_s = new this.paper.SymbolDefinition(this.hgridline)
 
         // Template vertical step indicator
         this.vstepIndicator = this.paper.Path.Line({
@@ -76,7 +76,7 @@ export default class Grid {
             strokeColor: this.colors.stepIndicators
         })
         // Create Symbol
-        this.vstepIndicator_s = new this.paper.SymbolDefinition(this.vstepIndicator);
+        //this.vstepIndicator_s = new this.paper.SymbolDefinition(this.vstepIndicator);
 
         // Template horizontal step indicator
         this.hstepIndicator = this.paper.Path.Line({
@@ -86,12 +86,12 @@ export default class Grid {
             strokeColor: this.colors.stepIndicators
         })
         // Create Symbol
-        this.hstepIndicator_s = new this.paper.SymbolDefinition(this.hstepIndicator);
+        //this.hstepIndicator_s = new this.paper.SymbolDefinition(this.hstepIndicator);
         
         // Draw vertical lines (see inside for step indicators)
         for(let i = this.xmin; i <= this.xmax; i+= this.step){
             // Create a clone of the line blueprint
-            let clonedLine = new this.paper.SymbolItem(this.vgridline_s)
+            let clonedLine = this.vgridline.clone()
             // Set position to currnent i
             clonedLine.position.x = i;
 
@@ -118,14 +118,15 @@ export default class Grid {
             }*/
 
             // Since we are here, draw the step indicators
-            let stepIndicator = new this.paper.SymbolItem(this.vstepIndicator_s)
+            let stepIndicator = this.vstepIndicator.clone()
             stepIndicator.position = [i,0]
         }
         
         // Draw horizontal lines (see inside for set indicators)
-        for(let i = this.ymin; i <= this.ymax; i+= this.step){
-            let clonedLine = new this.paper.SymbolItem(this.hgridline_s)
-            clonedLine.position.y = i;
+        for(let i = this.ymin; i <=this.ymax; i+=1){
+            console.log(i)
+            let clonedLine = this.hgridline.clone()
+            clonedLine.position.y = -i;
 
             // Write the number
             /*
@@ -145,7 +146,7 @@ export default class Grid {
             }*/
 
             // Since we are here, draw the step indicators
-            let stepIndicator = new this.paper.SymbolItem(this.hstepIndicator_s)
+            let stepIndicator = this.hstepIndicator.clone()
             stepIndicator.position = [0,i]  
         }
     }

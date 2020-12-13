@@ -71,14 +71,12 @@ export default{
     // Now that everything is positionated, lets shift 
     this.paperScope.view.matrix.tx += 50;
     this.paperScope.view.matrix.ty -= 50;
-    
 
     //this.paperScope.view.matrix.ty = this.paperScope.project.;
     //this.paperScope.view.transform(new this.paperScope.Matrix(1,0,0,1,0,0))
 
     // First Layer: Grid
     
-
     // Set up grid
     this.grid = new Grid(this.paperScope, this.canvasElement);
 

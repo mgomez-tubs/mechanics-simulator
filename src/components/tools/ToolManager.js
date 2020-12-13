@@ -22,7 +22,6 @@ export default class ToolManager {
   get currentActiveTool(){
       return this._currentActiveTool
   }
-  
   get selectionTool(){
     return this._selectionTool;
   }
@@ -40,8 +39,13 @@ export default class ToolManager {
 class Tool {   // scope and tool can be in the constrcutor. consider adding 
   constructor(){
     // Empty constructor
+    this.gridSize = 1;
   }
   static scope = null;
+
+  snapToGrid(point) {
+    return point.round();
+  }
 
   static set scope(scope){
     this.scope = scope;
@@ -128,7 +132,7 @@ class FachwerkCreateTool extends Tool{
 
   setUpPaperJSObjects(){
       // Create PaperJS Objects
-      //this.cursor                 =   this.fachwerkCircleCreate([0,0]);
+      this.cursor                 =   this.fachwerkCircleCreate([0,0]);
       this.fachwerkStart_preview  =   this.fachwerkCircleCreate([0,0]);     // Preview of the starting circle
       this.fachwerkEnd_preview    =   this.fachwerkCircleCreate([0,0]);     // Preview of the ending circle
       this.line_preview           =   this.linePathCreate([0,0],[0,0]);
@@ -160,16 +164,23 @@ class FachwerkCreateTool extends Tool{
   }
   configurePaperJSToolMouseEvents(){
 
+      this.tool.onMouseMove = (event) => {
+        this.cursor.position = event.point.round();
+      }
+
       this.tool.onMouseDown = (event) => {              // On mouse down
+        var point = super.snapToGrid(event.point)
         // Set the preview start circle to the mouse position
-        this.fachwerkStart_preview.position = event.point;
-        this.fachwerkEnd_preview.position = event.point;
+        this.fachwerkStart_preview.position =   point;
+        this.fachwerkEnd_preview.position   =   point;
         // Reset the preview line
-        this.line_preview.segments[0].point = event.point;
-        this.line_preview.segments[1].point = event.point;
+        this.line_preview.segments[0].point =   point;
+        this.line_preview.segments[1].point =   point;
       };
 
       this.tool.onMouseDrag = (event) => {              // On mouse dragged
+
+        var point = super.snapToGrid(event.point)
         this.mouseWasDragged = true;
         // While the mouse is dragging, hide the cursor
         //this.cursor.visible = false
@@ -181,8 +192,8 @@ class FachwerkCreateTool extends Tool{
         this.line_preview.visible = true;
 
         // Replace the ending point of the line created at onMouseDown() with the current mouse location
-        this.line_preview.segments[1].point = event.point;
-        this.fachwerkEnd_preview.position = event.point;
+        this.line_preview.segments[1].point = point;
+        this.fachwerkEnd_preview.position = point;
       };
 
       this.tool.onMouseUp = (event) => {                // On mouse up
@@ -259,7 +270,7 @@ class LosLagerCreateTool extends Tool{
     this.cursor = null;
 
     // Create group
-    this.festLagerGroup = new paper.Group();
+    this.losLagerGroup = new paper.Group();
 
     this.midtriangle = new paper.Path.RegularPolygon({
       center: [0,-0.05],
@@ -270,7 +281,7 @@ class LosLagerCreateTool extends Tool{
       fillColor: "white",
       rotation: 180
     })
-    this.festLagerGroup.addChild(this.midtriangle);
+    this.losLagerGroup.addChild(this.midtriangle);
 
     this.uppercircle = new paper.Path.Circle({
       center: [0,0],
@@ -279,7 +290,7 @@ class LosLagerCreateTool extends Tool{
       strokeColor: "black",
       fillColor:"white"
     })
-    this.festLagerGroup.addChild(this.uppercircle);
+    this.losLagerGroup.addChild(this.uppercircle);
 
     this.lowerline = new paper.Path.Line({
       from:[-0.2, -0.35],
@@ -287,7 +298,7 @@ class LosLagerCreateTool extends Tool{
       strokeWidth: 1.5,
       strokeColor: "black"
     })
-    this.festLagerGroup.addChild(this.lowerline);
+    this.losLagerGroup.addChild(this.lowerline);
 
     this.lowerline_diag = new paper.Path.Line({
       from:[-0.2, -0.45],
@@ -295,20 +306,20 @@ class LosLagerCreateTool extends Tool{
       strokeWidth: 1,
       strokeColor: "black"
     })
-    this.festLagerGroup.addChild(this.lowerline_diag);
+    this.losLagerGroup.addChild(this.lowerline_diag);
 
     for(let i = 0; i < 4 ; i ++){
       let lowerline_copy = this.lowerline_diag.clone();
       lowerline_copy.position.x+=0.1*i
-      this.festLagerGroup.addChild(lowerline_copy);
+      this.losLagerGroup.addChild(lowerline_copy);
     }
 
-    this.festLagerGroup.style = { // dark mode is in mind
+    this.losLagerGroup.style = { // dark mode is in mind
       strokeColor : "black"
     };
     
-    this.festLagerGroup_raster =  this.festLagerGroup.rasterize(4500);
-    this.festLagerGroup.remove();
+    this.festLagerGroup_raster =  this.losLagerGroup.rasterize(4500);
+    this.losLagerGroup.remove();
 
     this.configurePaperJSToolMouseEvents();
   }
@@ -319,11 +330,12 @@ class LosLagerCreateTool extends Tool{
   }
 
   configurePaperJSToolMouseEvents(){
+    
     this.tool.onMouseMove = (event) => {
-        this.festLagerGroup_raster.position = event.point;
+        var point = super.snapToGrid(event.point)
+        this.festLagerGroup_raster.position = point;
     }
     this.tool.onMouseDown = (event) => {
-        console.log("asdasdas")
         return new LosLager(event, this.festLagerGroup_raster)
     }
   }
@@ -399,7 +411,8 @@ class FestLagerCreateTool extends Tool{
 
   configurePaperJSToolMouseEvents(){
     this.tool.onMouseMove = (event) => {
-        this.festLagerGroup_raster.position = event.point;
+      var point = super.snapToGrid(event.point)
+      this.festLagerGroup_raster.position = point;
     }
     this.tool.onMouseDown = (event) => {
         console.log("asdasdas")
