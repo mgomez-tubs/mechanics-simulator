@@ -7,6 +7,7 @@
             <div id="placeFestLager"    class="button"  @click='this.toolbarEvents.emit("userClickedOnTool", "festlager")'/>
             <div id="placeLosLager"     class="button"  @click='this.toolbarEvents.emit("userClickedOnTool", "loslager")'/>
             <div id="drawBoden"         class="button"  @click='this.toolbarEvents.emit("userClickedOnTool", "boden")'/>
+            <div id="removeAll"         @click='this.toolbarEvents.emit("userClickedOnTool", "remove-all")' > Remove all!    </div>
         </div>
     </div>
 </template>

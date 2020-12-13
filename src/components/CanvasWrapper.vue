@@ -6,6 +6,7 @@
 
 <script>
 import ToolManager from './tools/ToolManager'
+import ComponentManager from './tools/ComponentManager'
 import MouseCoordinates from './MouseCoordinates.vue'
 import Grid from './grid'
 
@@ -90,8 +91,11 @@ export default{
     // Second Layer: Objects
     this.objectsLayer = new this.paperScope.Layer();
 
+    // Create new ComponentManager
+    this.componentManager = new ComponentManager();
+
     // Create new ToolManager
-    this.toolManager = new ToolManager(this.paperScope);
+    this.toolManager = new ToolManager(this.paperScope, this.componentManager);
 
     // Set up default tool
     this.toolManager.currentActiveTool = this.toolManager.selectionTool;
@@ -116,6 +120,9 @@ export default{
           break;
         case "boden":
           this.toolManager.currentActiveTool = this.toolManager.selectionTool;
+          break;
+        case "remove-all":
+          console.log("AYAYAY");
           break;
       }
     });

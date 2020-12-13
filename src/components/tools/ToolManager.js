@@ -1,12 +1,15 @@
 var paper = null;   // this is terrible and i admit it, but i want paper to be global
 
 export default class ToolManager {
-  constructor(paperInstance){
+  constructor(paperInstance, componentManager){
     paper = paperInstance;
     this._currentActiveTool = null;
 
+    // Set up Tool Class
+    Tool.componentManager = componentManager; 
+
     // Define Tools
-    this._selectionTool = new SelectionTool;
+    this._selectionTool = new SelectionTool();
     this._drawFachwerkTool = new FachwerkCreateTool;
     this._drawLosLagerTool = new LosLagerCreateTool;
     this._drawFestLagerTool = new FestLagerCreateTool;
@@ -42,6 +45,12 @@ class Tool {   // scope and tool can be in the constrcutor. consider adding
     this.gridSize = 1;
   }
   static scope = null;
+
+  static componentManager = null;
+
+  static set componentManager(o){
+    this.componentManager = o;
+  }
 
   snapToGrid(point) {
     return point.round();
@@ -229,8 +238,11 @@ class FachwerkCreateTool extends Tool{
 
 class Fachwerk{
   constructor(startPosition, endPosition){
+    // Receive Value
     this.startPosition = startPosition;
     this.endPosition = endPosition;
+
+    // Draw the object
     this.draw();
   }
 
@@ -330,7 +342,6 @@ class LosLagerCreateTool extends Tool{
   }
 
   configurePaperJSToolMouseEvents(){
-    
     this.tool.onMouseMove = (event) => {
         var point = super.snapToGrid(event.point)
         this.festLagerGroup_raster.position = point;

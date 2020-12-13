@@ -56,8 +56,6 @@ font-size:0.8em;
 
 #logo {
 margin: auto 0;
-padding-left: 0.5em;
-padding-right: 3em;
 background-color: seashell;
 }
 
@@ -82,14 +80,14 @@ position:absolute;
     
   }
 .toolgroup {
-    height:50%;
+    margin-top: 2em;
+    height:70%;
     width:100%;
     background-color: darkmagenta;
     display: flex;
-    flex-flow: column wrap;
-    justify-content: space-between;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
     align-items: center;
-    margin: 0;
 }
 
 .button {
@@ -120,4 +118,15 @@ position:absolute;
 #drawBoden {
     background: url("./boden.png") center no-repeat;
     background-size: contain;
+}
+#removeAll {
+    background-color: rgb(48, 24, 51);
+    color: white;
+    width: 2em;
+    height: 2em;
+    flex-basis: 90%;
+    font-size: 0.7em;
+    margin: auto 0;
+    text-align: center;
+    line-height: 2em;
 }
