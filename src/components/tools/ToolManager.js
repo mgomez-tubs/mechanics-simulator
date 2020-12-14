@@ -1,3 +1,6 @@
+import { Group } from "paper";
+import ComponentManager from "./ComponentManager";
+
 var paper = null;   // this is terrible and i admit it, but i want paper to be global
 
 export default class ToolManager {
@@ -6,13 +9,13 @@ export default class ToolManager {
     this._currentActiveTool = null;
 
     // Set up Tool Class
-    Tool.componentManager = componentManager; 
+    this.componentManager = componentManager; 
 
     // Define Tools
-    this._selectionTool = new SelectionTool();
-    this._drawFachwerkTool = new FachwerkCreateTool;
-    this._drawLosLagerTool = new LosLagerCreateTool;
-    this._drawFestLagerTool = new FestLagerCreateTool;
+    this._selectionTool = new SelectionTool;
+    this._drawFachwerkTool = new FachwerkCreateTool(this.componentManager);
+    this._drawLosLagerTool = new LosLagerCreateTool(this.componentManager);
+    this._drawFestLagerTool = new FestLagerCreateTool(this.componentManager);
   }
 
   set currentActiveTool(tool){
@@ -23,7 +26,7 @@ export default class ToolManager {
 
   // Tool getters
   get currentActiveTool(){
-      return this._currentActiveTool
+    return this._currentActiveTool
   }
   get selectionTool(){
     return this._selectionTool;
@@ -127,9 +130,10 @@ class SelectionTool extends Tool{
 
 // Fachwerk creation tool
 class FachwerkCreateTool extends Tool{
-  constructor(){
+  constructor(componentManager){
     super();
     this.cursor = null;
+    this.componentManager = componentManager;
     this.fachwerkStart_preview  = null;
     this.fachwerkEnd_preview    = null;
     this.line_preview = null;
@@ -220,7 +224,32 @@ class FachwerkCreateTool extends Tool{
         // Create a new Fachwerk object
         if(this.mouseWasDragged === true){
           console.log("Created a new fachwerk object")
-          this.fw = new Fachwerk(this.fachwerkStart_preview.position, this.fachwerkEnd_preview.position)
+
+          // Create a PaperJS group
+          var group = new Group([
+            new paper.Path.Line({
+              from: this.fachwerkStart_preview.position,
+              to: this.fachwerkEnd_preview.position,
+              strokeColor: 'black',
+              strokeWidth: 3.5
+            }),
+            new paper.Path.Circle({
+              strokeColor: 'black',
+              center:this.fachwerkStart_preview.position,
+              radius: 0.1,
+              strokeWidth: 1.5,
+              fillColor: "white"
+            }),
+            new paper.Path.Circle({
+              strokeColor: 'black',
+              center:this.fachwerkEnd_preview.position,
+              radius: 0.1,
+              strokeWidth: 1.5,
+              fillColor: "white"
+            }),
+          ])
+
+          this.componentManager.addFachwerk(group)
           this.resetTool();
         }
       };
@@ -236,48 +265,11 @@ class FachwerkCreateTool extends Tool{
   }
 }
 
-class Fachwerk{
-  constructor(startPosition, endPosition){
-    // Receive Value
-    this.startPosition = startPosition;
-    this.endPosition = endPosition;
-
-    // Draw the object
-    this.draw();
-  }
-
-  draw(){    
-    // Line
-    this.line = new paper.Path.Line({
-      from: this.startPosition,
-      to: this.endPosition,
-      strokeColor: 'black',
-      strokeWidth: 3.5
-    });
-    
-    // Starting Circle
-    this.startCircle = new paper.Path.Circle({
-      strokeColor: 'black',
-      center:this.startPosition,
-      radius: 0.1,
-      strokeWidth: 1.5,
-      fillColor: "white"
-    });
-
-    // End Circle
-    this.endCircle = new paper.Path.Circle({
-      strokeColor: 'black',
-      center: this.endPosition,
-      radius: 0.1,
-      strokeWidth: 1.5,
-      fillColor: "white"
-    });
-  }
-}
-
+// Loslager creation Tool
 class LosLagerCreateTool extends Tool{
-  constructor(){
+  constructor(componentManager){
     super();
+    this.componentManager = componentManager;
     this.tool = new paper.Tool();
     this.cursor = null;
 
@@ -347,24 +339,17 @@ class LosLagerCreateTool extends Tool{
         this.festLagerGroup_raster.position = point;
     }
     this.tool.onMouseDown = (event) => {
-        return new LosLager(event, this.festLagerGroup_raster)
+        //return new LosLager(event, this.festLagerGroup_raster)
+        this.componentManager.addLoslager(event, this.festLagerGroup_raster)
     }
   }
 }
 
-class LosLager {
-  constructor(position, raster){
-    this.position = position;
-    this.raster = raster.clone();
-    console.log("LosLager created")
-  }
-}
-
-// Festlager
-
+// Festlager creation Tool
 class FestLagerCreateTool extends Tool{
-  constructor(){
+  constructor(componentManager){
     super();
+    this.componentManager = componentManager
     this.tool = new paper.Tool();
     this.cursor = null;
 
@@ -426,16 +411,8 @@ class FestLagerCreateTool extends Tool{
       this.festLagerGroup_raster.position = point;
     }
     this.tool.onMouseDown = (event) => {
-        console.log("asdasdas")
-        return new Festlager(event, this.festLagerGroup_raster)
+        //return new Festlager(event, this.festLagerGroup_raster)
+        this.componentManager.addFestlager(event, this.festLagerGroup_raster)
     }
-  }
-}
-
-class Festlager {
-  constructor(position, raster){
-    this.position = position;
-    this.raster = raster.clone();
-    console.log("LosLager created")
   }
 }

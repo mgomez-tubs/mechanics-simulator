@@ -92,7 +92,7 @@ export default{
     this.objectsLayer = new this.paperScope.Layer();
 
     // Create new ComponentManager
-    this.componentManager = new ComponentManager();
+    this.componentManager = new ComponentManager(this.paperScope);
 
     // Create new ToolManager
     this.toolManager = new ToolManager(this.paperScope, this.componentManager);
@@ -123,6 +123,7 @@ export default{
           break;
         case "remove-all":
           console.log("AYAYAY");
+          this.componentManager.removeAllElements();
           break;
       }
     });
