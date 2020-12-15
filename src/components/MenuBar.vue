@@ -1,7 +1,7 @@
 <template>
     <div class="topbarcontainer">
     <div class="topbar bar">
-      <div id="logo"> Mechanics Playground </div>
+      <div id="logo">  </div>
       <div class="menu">Menu 1</div>
       <div class="menu">Menu 2</div>
       <div class="menu">Menu 3</div>

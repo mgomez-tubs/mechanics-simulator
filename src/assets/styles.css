@@ -4,7 +4,7 @@
 
 .topbarcontainer {
 width: 100%;
-height: 2em;
+height: 2.5em;
 background-color: lightsalmon;
 }
 
@@ -42,29 +42,28 @@ font-size: 0.9em;
 
 #container {
 position: absolute; 
-height: calc(100% - 2em);
+height: calc(100% - 2.5em);
 width: 100%;
 }
 
 .menu {
-padding-left: 0.5em;
-padding-right:0.5em;
-margin: auto 0;
-background-color: seagreen;
-font-size:0.8em;
+    padding-left: 0.5em;
+    padding-right:0.5em;
+    margin: auto 0;
+    background-color: seagreen;
+    font-size:0.8em;
 }
 
 #logo {
-margin: auto 0;
-background-color: seashell;
+    margin: auto 0;
+    background: url("./logo_default.png") center no-repeat;
+    background-size: contain;
+    width: 8em;
+    height: 100%;
 }
 
-.toolbar{
-display: inline-block;
-position: absolute;
-top:1em;
-left: 1em;
-}
+
+
 .wrapper {
 position:absolute;
 }
@@ -74,12 +73,18 @@ position:absolute;
 */
 
 .main_toolbar {
-    background-color: blue;
     width:5em;
     height:15em;
     position:absolute;
-    
   }
+
+.toolbar{
+    background-color: blue;
+    display: inline-block;
+    position: absolute;
+    top:1em;
+    left: 1em;
+}
 
 .toolbar-handler{
     background-color: black;;
@@ -139,4 +144,25 @@ position:absolute;
     margin: auto 0;
     text-align: center;
     line-height: 2em;
+}
+
+/*
+    Components Window
+*/
+
+.table-container{
+    width: 10em;
+    overflow: hidden;
+    float: top;
+    height: auto !important;
+    background-color: yellow;
+    
+}
+
+.table-background{
+    overflow: hidden;
+    float: top;
+    background-color: white;
+    margin-top: 1em;
+    margin-bottom: 1em;
 }

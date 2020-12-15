@@ -57,7 +57,6 @@ export default{
 
     /*
       TODO : SET UP LAYERS, WILL ALSO HELP TO IMPLEMETNT DarkMODE!!
-
     */
 
     // Configure coordinates
@@ -80,13 +79,6 @@ export default{
     
     // Set up grid
     this.grid = new Grid(this.paperScope, this.canvasElement);
-
-  /*
-    this.point_cero = this.paperScope.Path.Circle({
-      center: new this.paperScope.Point(0,0),
-      radius: 0.1,
-      fillColor: "black"
-    });*/
 
     // Second Layer: Objects
     this.objectsLayer = new this.paperScope.Layer();
@@ -127,7 +119,6 @@ export default{
           break;
       }
     });
-
   },
   components : {
     MouseCoordinates

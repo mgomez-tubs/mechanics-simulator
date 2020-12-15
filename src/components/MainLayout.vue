@@ -3,7 +3,7 @@
   <!-- Drawing Canvas TO DO: Set up event bus-->
   <div id="container">
     <CanvasWrapper/>
-    <Toolbar :toolbarId="'mauri'">
+    <Toolbar :toolbarId="'tools'" :toolbarName = "'Tools'" :passedClass = "'main_toolbar'">
       <div class="toolgroup">
             <div id="select"            class="button"  @click='toolbarEvents.emit("userClickedOnTool", "select")'/> 
             <div id="drawFachwerk"      class="button"  @click='toolbarEvents.emit("userClickedOnTool", "stab")'/> 
@@ -11,8 +11,11 @@
             <div id="placeFestLager"    class="button"  @click='toolbarEvents.emit("userClickedOnTool", "festlager")'/>
             <div id="placeLosLager"     class="button"  @click='toolbarEvents.emit("userClickedOnTool", "loslager")'/>
             <div id="drawBoden"         class="button"  @click='toolbarEvents.emit("userClickedOnTool", "boden")'/>
-            <div id="removeAll"         @click='this.toolbarEvents.emit("userClickedOnTool", "remove-all")' > Remove all!    </div>
+            <div id="removeAll"         @click='toolbarEvents.emit("userClickedOnTool", "remove-all")' > Remove all!    </div>
         </div>
+    </Toolbar>
+    <Toolbar :toolbarId="'components'" :toolbarName = "'Components'" :passedClass = "'table-container'">
+      <ComponentTable/>
     </Toolbar>
   </div>
   
@@ -24,6 +27,7 @@
 
 <script>
 import CanvasWrapper from './CanvasWrapper.vue'
+import ComponentTable from './ComponentTable'
 import Toolbar from './Toolbar'
 import MenuBar from './MenuBar'
 export default {
@@ -54,7 +58,8 @@ export default {
   components: {
     CanvasWrapper,
     Toolbar,
-    MenuBar
+    MenuBar,
+    ComponentTable
   },
   mounted() {
     this.toolbarEvents.on("userClickedOnTool", id => {

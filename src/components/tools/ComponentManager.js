@@ -6,6 +6,14 @@ export default class ComponentManager {
       // empty constructor
       paper = paperInstance;
       console.log("this happeeds")
+
+      this.components = {
+        fachwerke:  this._fachwerke_arr,
+        festlager:  this._festlager_arr,
+        loslager:   this._loslager_arr
+
+      }
+
       this._fachwerke_arr = [];
       this._festlager_arr = [];
       this._loslager_arr = [];

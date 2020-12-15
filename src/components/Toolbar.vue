@@ -1,6 +1,6 @@
 <template>
-    <div v-bind:id="toolbarId" class ="main_toolbar toolbar">
-        <div v-bind:id="toolbarId+'_handle'" class = "toolbar-handler">Tools</div>
+    <div v-bind:id="toolbarId" v-bind:class="passedClass" class="toolbar">
+        <div v-bind:id="toolbarId+'_handle'" class = "toolbar-handler">{{toolbarName}}</div>
         <slot>
         </slot>
     </div>
@@ -10,17 +10,21 @@ export default {
     methods : {
     },
     props : {
-        toolbarId: String
+        toolbarId: {
+            type: String,
+            required: true
+            },
+        toolbarName: String,
+        passedClass: String
     },
     mounted() {
-        /*
         var Draggable = require('draggable')
         var options = {
-            handle: document.getElementById("toolbarhandle"),
+            handle: document.getElementById(this.toolbarId+'_handle'),
             limit: document.getElementById("container")
         }
-        var element = document.getElementById("main_toolbar");
-        new Draggable(element, options)*/
+        var element = document.getElementById(this.toolbarId);
+        new Draggable(element, options)
     }
 }
 </script>
