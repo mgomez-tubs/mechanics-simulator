@@ -26,16 +26,20 @@ export default class ComponentManager {
     
     removeAllElements(){
       // First remove from canvas
-        this._fachwerke_arr.forEach(function(value, index, array){
-            value.remove();
-        })
-        this._festlager_arr.forEach(function(value, index, array){
-            value.remove();
-        })
-        this._loslager_arr.forEach(function(value, index, array){
-            value.remove();
-        })
-      // Then empty array
+        for(let i = this._fachwerke_arr.length; i>0; i--){
+          this._fachwerke_arr[i-1].remove();
+          this._fachwerke_arr.pop();
+        }
+
+        for(let i = this._festlager_arr.length; i>0; i--){
+          this._festlager_arr[i-1].remove();
+          this._festlager_arr.pop();
+        }
+
+        for(let i = this._loslager_arr.length; i>0; i--){
+          this._loslager_arr[i-1].remove();
+          this._loslager_arr.pop();
+        }
     }
   }
 
