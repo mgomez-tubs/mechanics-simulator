@@ -77,10 +77,21 @@ position:absolute;
     background-color: blue;
     width:5em;
     height:15em;
+    position:absolute;
     
   }
+
+#toolbarhandle{
+    background-color: black;;
+    height: 1.5em;
+    color: white;
+    line-height: 1.5em;
+    font-size: 0.8em;
+    padding-left: 0.5em;
+}
 .toolgroup {
-    margin-top: 2em;
+    
+    margin-top: 0.5em;
     height:70%;
     width:100%;
     background-color: darkmagenta;
