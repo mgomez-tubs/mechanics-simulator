@@ -8,9 +8,6 @@
 <script>
 export default {
     methods : {
-        userClickedOn(id){
-            this.toolbarEvents.emit("userClickedOnTool", id);
-        }
     },
     props : {
         toolbarId: String
