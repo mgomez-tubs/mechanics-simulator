@@ -73,7 +73,7 @@ position:absolute;
     Toolbar
 */
 
-#main_toolbar {
+.main_toolbar {
     background-color: blue;
     width:5em;
     height:15em;
@@ -81,7 +81,7 @@ position:absolute;
     
   }
 
-#toolbarhandle{
+.toolbar-handler{
     background-color: black;;
     height: 1.5em;
     color: white;
@@ -90,7 +90,6 @@ position:absolute;
     padding-left: 0.5em;
 }
 .toolgroup {
-    
     margin-top: 0.5em;
     height:70%;
     width:100%;

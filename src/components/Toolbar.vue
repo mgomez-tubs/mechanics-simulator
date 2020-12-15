@@ -1,15 +1,8 @@
 <template>
-    <div id="main_toolbar" class = "toolbar">
-        <div id="toolbarhandle">Tools</div>
-        <div class="toolgroup">
-            <div id="select"            class="button"  @click='this.toolbarEvents.emit("userClickedOnTool", "select")'/> 
-            <div id="drawFachwerk"      class="button"  @click='this.toolbarEvents.emit("userClickedOnTool", "stab")'/> 
-            <div id="drawFeder"         class="button"  @click='this.toolbarEvents.emit("userClickedOnTool", "feder")'/>
-            <div id="placeFestLager"    class="button"  @click='this.toolbarEvents.emit("userClickedOnTool", "festlager")'/>
-            <div id="placeLosLager"     class="button"  @click='this.toolbarEvents.emit("userClickedOnTool", "loslager")'/>
-            <div id="drawBoden"         class="button"  @click='this.toolbarEvents.emit("userClickedOnTool", "boden")'/>
-            <div id="removeAll"         @click='this.toolbarEvents.emit("userClickedOnTool", "remove-all")' > Remove all!    </div>
-        </div>
+    <div v-bind:id="toolbarId" class ="main_toolbar toolbar">
+        <div v-bind:id="toolbarId+'_handle'" class = "toolbar-handler">Tools</div>
+        <slot>
+        </slot>
     </div>
 </template>
 <script>
@@ -19,14 +12,18 @@ export default {
             this.toolbarEvents.emit("userClickedOnTool", id);
         }
     },
+    props : {
+        toolbarId: String
+    },
     mounted() {
+        /*
         var Draggable = require('draggable')
         var options = {
             handle: document.getElementById("toolbarhandle"),
             limit: document.getElementById("container")
         }
         var element = document.getElementById("main_toolbar");
-        new Draggable(element, options)
+        new Draggable(element, options)*/
     }
 }
 </script>
