@@ -24,7 +24,8 @@ export default{
       mouseMovedText: null,
       mouseCoordinates: [1,2],
       mouseCoordinateX: 1,
-      mouseCoordinateY: 2
+      mouseCoordinateY: 2,
+      components: null
     }
   },
   methods: {
@@ -86,6 +87,9 @@ export default{
     // Create new ComponentManager
     this.componentManager = new ComponentManager(this.paperScope);
 
+    // Init Components Object
+    this.components = this.componentManager.components
+
     // Create new ToolManager
     this.toolManager = new ToolManager(this.paperScope, this.componentManager);
 
@@ -122,6 +126,11 @@ export default{
   },
   components : {
     MouseCoordinates
+  },
+  watch : {
+    components(){
+
+    }
   }
 }
 </script>   

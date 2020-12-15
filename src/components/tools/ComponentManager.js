@@ -5,48 +5,49 @@ export default class ComponentManager {
     constructor(paperInstance){
       // empty constructor
       paper = paperInstance;
-      console.log("this happeeds")
 
-      this.components = {
-        fachwerke:  this._fachwerke_arr,
-        festlager:  this._festlager_arr,
-        loslager:   this._loslager_arr
-
-      }
-
-      this._fachwerke_arr = [];
-      this._festlager_arr = [];
-      this._loslager_arr = [];
+      this._components = {
+        fachwerke:  [],
+        festlager:  [],
+        loslager:   []
+      };
     }
-    // Static Fields 
+
+    set components(components){
+      components = this._components
+    }
+    
+    get components(){
+      return this._components
+    }
     
     // Static Methods
     
      addFachwerk(startPosition, endPosition){
-        this._fachwerke_arr.push(new Fachwerk(startPosition, endPosition))
+        this.components.fachwerke.push(new Fachwerk(startPosition, endPosition))
     }
      addFestlager(position, raster){
-        this._festlager_arr.push(new Festlager(position, raster))
+        this.components.festlager.push(new Festlager(position, raster))
     }
      addLoslager(position, raster){
-        this._loslager_arr.push(new LosLager(position, raster))
+        this.components.loslager.push(new LosLager(position, raster))
     }
     
     removeAllElements(){
       // First remove from canvas
-        for(let i = this._fachwerke_arr.length; i>0; i--){
-          this._fachwerke_arr[i-1].remove();
-          this._fachwerke_arr.pop();
+        for(let i = this.components.fachwerke.length; i>0; i--){
+          this.components.fachwerke[i-1].remove();
+          this.components.fachwerke.pop();
         }
 
-        for(let i = this._festlager_arr.length; i>0; i--){
-          this._festlager_arr[i-1].remove();
-          this._festlager_arr.pop();
+        for(let i = this.components.festlager.length; i>0; i--){
+          this.components.festlager[i-1].remove();
+          this.components.festlager.pop();
         }
 
-        for(let i = this._loslager_arr.length; i>0; i--){
-          this._loslager_arr[i-1].remove();
-          this._loslager_arr.pop();
+        for(let i = this.components.loslager.length; i>0; i--){
+          this.components.loslager[i-1].remove();
+          this.components.loslager.pop();
         }
     }
   }
