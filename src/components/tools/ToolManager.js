@@ -13,11 +13,11 @@ export default class ToolManager {
     Tool.gridMatrix = paperInstance.project.layers['Grid Layer'].matrix
 
     // Define tools
-    this._selectionTool = new SelectionTool;
     this._drawFachwerkTool  = new FachwerkCreateTool(this.componentManager);
     this._drawLosLagerTool  = new LosLagerCreateTool(this.componentManager);
     this._drawFestLagerTool = new FestLagerCreateTool(this.componentManager);
-
+    this._selectionTool = new SelectionTool;
+    
     // Define starting Tool skipping setter!
     this._currentActiveTool = this._selectionTool
   }
