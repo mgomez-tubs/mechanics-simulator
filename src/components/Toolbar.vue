@@ -1,8 +1,8 @@
 <template>
-    <div v-bind:id="toolbarId" v-bind:class="passedClass" class="toolbar">
-        <div v-bind:id="toolbarId+'_handle'" class = "toolbar-handler">{{toolbarName}}</div>
-        <slot>
-        </slot>
+    <div unselectable ="true" v-bind:id="toolbarId" v-bind:class="passedClass"  class="window-background">
+        <div unselectable ="true" v-bind:id="toolbarId+'_handle'"               class = "window-handler">{{toolbarName}}</div>
+            <slot>
+            </slot>
     </div>
 </template>
 <script>

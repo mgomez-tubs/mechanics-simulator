@@ -68,42 +68,6 @@ width: 100%;
 position:absolute;
 }
 
-/*
-    Toolbar
-*/
-
-.main_toolbar {
-    width:5em;
-    height:15em;
-    position:absolute;
-  }
-
-.toolbar{
-    background-color: blue;
-    display: inline-block;
-    position: absolute;
-    top:1em;
-    left: 1em;
-}
-
-.toolbar-handler{
-    background-color: black;;
-    height: 1.5em;
-    color: white;
-    line-height: 1.5em;
-    font-size: 0.8em;
-    padding-left: 0.5em;
-}
-.toolgroup {
-    margin-top: 0.5em;
-    height:70%;
-    width:100%;
-    background-color: darkmagenta;
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-evenly;
-    align-items: center;
-}
 
 .button {
     display: block;
@@ -147,6 +111,27 @@ position:absolute;
 }
 
 /*
+    Windows
+*/
+.window-background{
+    position: absolute; 
+    background-color: blue;
+    display: inline-block;
+    height: auto;
+}
+
+.window-handler{
+    background-color: black;
+    height: 1.5em;
+    color: white;
+    line-height: 1.5em;
+    font-size: 0.8em;
+    padding-left: 0.5em;
+    cursor: default;
+}
+
+
+/*
     Components Window
 */
 
@@ -156,13 +141,38 @@ position:absolute;
     float: top;
     height: auto !important;
     background-color: yellow;
-    
 }
 
 .table-background{
-    overflow: hidden;
-    float: top;
     background-color: white;
+    overflow: hidden;
     margin-top: 1em;
     margin-bottom: 1em;
+}
+
+
+/*
+    Toolbar
+*/
+
+.tools-container {
+    position: absolute;
+    width:5em;
+    height: auto !important;
+    background-color: darkmagenta;
+    top: 1em;
+    left: 1em;
+}
+
+.tool-background {
+    display: flex;
+    height: 10em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    background-color: tomato;
+
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-items: center;
+    align-content: space-around;
 }

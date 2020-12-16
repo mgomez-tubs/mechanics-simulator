@@ -3,17 +3,18 @@
   <!-- Drawing Canvas TO DO: Set up event bus-->
   <div id="container">
     <CanvasWrapper/>
-    <Toolbar :toolbarId="'tools'" :toolbarName = "'Tools'" :passedClass = "'main_toolbar'">
-      <div class="toolgroup">
+    <Toolbar :toolbarId="'tools'" :toolbarName = "'Tools'" :passedClass = "'tools-container'">
+      <div class="tool-background">
             <div id="select"            class="button"  @click='toolbarEvents.emit("userClickedOnTool", "select")'/> 
             <div id="drawFachwerk"      class="button"  @click='toolbarEvents.emit("userClickedOnTool", "stab")'/> 
             <div id="drawFeder"         class="button"  @click='toolbarEvents.emit("userClickedOnTool", "feder")'/>
             <div id="placeFestLager"    class="button"  @click='toolbarEvents.emit("userClickedOnTool", "festlager")'/>
             <div id="placeLosLager"     class="button"  @click='toolbarEvents.emit("userClickedOnTool", "loslager")'/>
             <div id="drawBoden"         class="button"  @click='toolbarEvents.emit("userClickedOnTool", "boden")'/>
-            <div id="removeAll"         @click='toolbarEvents.emit("userClickedOnTool", "remove-all")' > Remove all!    </div>
-        </div>
+            <div id="removeAll"         @click='toolbarEvents.emit("userClickedOnTool", "remove-all")' > Remove all! </div>
+      </div>
     </Toolbar>
+    
     <Toolbar :toolbarId="'components'" :toolbarName = "'Components'" :passedClass = "'table-container'">
       <ComponentTable/>
     </Toolbar>

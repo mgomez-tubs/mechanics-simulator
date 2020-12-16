@@ -40,13 +40,13 @@ export default {
                 console.log("Component added is " + id.constructor.name)
                 switch(id.constructor.name){
                     case "Fachwerk":
-                        this.rows[0].children.push('Fachwerk' + this.rows[0].children.length)
+                        this.rows[0].children.push('Fachwerk ' + this.rows[0].children.length)
                         break;
                     case "Festlager":
-                        this.rows[1].children.push('Festlager' + this.rows[1].children.length)
+                        this.rows[1].children.push('Festlager ' + this.rows[1].children.length)
                         break;
                     case "Loslager" :
-                        this.rows[2].children.push('Loslager' + this.rows[2].children.length)              
+                        this.rows[2].children.push('Loslager ' + this.rows[2].children.length)              
                         break;
                 }
             } catch (err) {     // Catch signal for object creation, which sends an undefined object 
