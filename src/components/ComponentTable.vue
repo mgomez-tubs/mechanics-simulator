@@ -17,6 +17,7 @@
 export default {
     data(){
         return {
+            componentManager: this.$reactiveGlobals.componentManager,
             opened: [1,2,3],
             rows: [
                 { id: 1, componentName: 'Fachwerke',  children: []},
@@ -33,10 +34,8 @@ export default {
             } else {
                 this.opened.push(id)
             }
-        }
-    },
-    mounted() {
-        this.toolbarEvents.on("componentWasAdded", id => {
+        },
+        componentWasAdded(id) {
             try {
                 console.log("Component added is " + id.constructor.name)
                 switch(id.constructor.name){
@@ -53,7 +52,17 @@ export default {
             } catch (err) {     // Catch signal for object creation, which sends an undefined object 
                 console.log("Component was just created!")
             }
-        })
+        }
+    },
+    computed : {
+        componentCounter : function(){
+            return this.$reactiveGlobals.componentManager.componentCount
+        }
+    },
+    watch : {
+        componentCounter(){
+            this.componentWasAdded(this.$reactiveGlobals.componentManager.components[this.$reactiveGlobals.componentManager.components.length-1])
+        }
     }
 }
 </script>

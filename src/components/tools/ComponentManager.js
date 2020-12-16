@@ -1,28 +1,39 @@
 export default class ComponentManager {
     constructor(){      
       this._components = []
-      this.componentCount = 0;
+      this._componentCount = 0;
     }
 
     set components(components){
-      components = this._components
+      this._components = components;
     }
     
     get components(){
       return this._components
     }
+
+    set componentCount(componentCount){
+      this._componentCount = componentCount;
+    }
+
+    get componentCount(){     // For vue to detect changes, make a getter functon!!!
+      return this.components.length
+    }
     
     // Static Methods
      addFachwerk(startPosition, endPosition){
         this.components.push(new Fachwerk(startPosition, endPosition))
-    }
+        //this.componentCount+=1
+      }
      addFestlager(position, raster){
         this.components.push(new Festlager(position, raster))
         console.log(this.components.length)
+        //this.componentCount+=1
     }
      addLoslager(position, raster){
         this.components.push(new Loslager(position, raster))
-    }
+        //this.componentCount+=1
+      }
     
     removeAllElements(){
         for(let i = this.components.length; i>0; i--){

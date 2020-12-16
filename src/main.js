@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { reactive } from 'vue'
 import App from './App.vue'
 import mitt from 'mitt'
 
@@ -15,10 +16,16 @@ let app = createApp(App)
 const toolbarEvents = mitt();                                   // Create an emitter object
 app.config.globalProperties.toolbarEvents = toolbarEvents;      // Set emitter object as global property
 
-// Make ComponentManager global
-const componentManager = new ComponentManager();
-app.config.globalProperties.COMPONENT_MANAGER = componentManager;
+// Make ComponentManager global and reactive
 
+var _componentManager = new ComponentManager();
+
+const $reactiveGlobals = reactive({
+    componentManager : _componentManager,
+    magico: 567
+})
+
+app.config.globalProperties.$reactiveGlobals = $reactiveGlobals
 app.mount('#app')
 
 

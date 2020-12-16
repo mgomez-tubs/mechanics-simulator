@@ -25,10 +25,7 @@ export default{
       mouseCoordinates: [1,2],
       mouseCoordinateX: 1,
       mouseCoordinateY: 1,
-      componentCount: 0,
-      componentManager: {
-        components : []
-      }
+      componentCount: 0
     }
   },
   methods: {
@@ -88,12 +85,8 @@ export default{
     // Second Layer: Objects
     this.objectsLayer = new this.paperScope.Layer();
 
-    // Create new ComponentManager
-    this.componentManager = this.COMPONENT_MANAGER
-    this.componentCount = this.COMPONENT_MANAGER.components.length
-
     // Create new ToolManager
-    this.toolManager = new ToolManager(this.paperScope, this.COMPONENT_MANAGER);
+    this.toolManager = new ToolManager(this.paperScope, this.$reactiveGlobals.componentManager);
 
     // Set up default tool
     this.toolManager.currentActiveTool = this.toolManager.selectionTool;
@@ -121,26 +114,13 @@ export default{
           break;
         case "remove-all":
           console.log("AYAYAY");
-          this.COMPONENT_MANAGER.removeAllElements();
+          this.$reactiveGlobals.componentManager.removeAllElements();
           break;
       }
     });
   },  
   components : {
     MouseCoordinates
-  },
-  computed: {   // CAREFUL, THIS RUNS BEFORE MOUNTED
-    componentCounter: function(){
-        console.log("changed")
-        return this.COMPONENT_MANAGER.components.length
-    }
-  },
-  watch : {
-    componentCount(){
-        this.toolbarEvents.emit("componentWasAdded", this.COMPONENT_MANAGER.components[this.COMPONENT_MANAGER.components.length-1])
-        console.log("hue")
-        //this.componentCounter.
-    }
   }
 }
 
