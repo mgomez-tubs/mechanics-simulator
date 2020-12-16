@@ -1,16 +1,7 @@
-// Make paper a global variable
-var paper = null;
-
 export default class ComponentManager {
-    constructor(paperInstance){
-      // empty constructor
-      paper = paperInstance;
-
-      this._components = {
-        fachwerke:  [],
-        festlager:  [],
-        loslager:   []
-      };
+    constructor(){      
+      this._components = []
+      this.componentCount = 0;
     }
 
     set components(components){
@@ -22,32 +13,22 @@ export default class ComponentManager {
     }
     
     // Static Methods
-    
      addFachwerk(startPosition, endPosition){
-        this.components.fachwerke.push(new Fachwerk(startPosition, endPosition))
+        this.components.push(new Fachwerk(startPosition, endPosition))
     }
      addFestlager(position, raster){
-        this.components.festlager.push(new Festlager(position, raster))
+        this.components.push(new Festlager(position, raster))
+        console.log(this.components.length)
     }
      addLoslager(position, raster){
-        this.components.loslager.push(new LosLager(position, raster))
+        this.components.push(new Loslager(position, raster))
     }
     
     removeAllElements(){
-      // First remove from canvas
-        for(let i = this.components.fachwerke.length; i>0; i--){
-          this.components.fachwerke[i-1].remove();
-          this.components.fachwerke.pop();
-        }
-
-        for(let i = this.components.festlager.length; i>0; i--){
-          this.components.festlager[i-1].remove();
-          this.components.festlager.pop();
-        }
-
-        for(let i = this.components.loslager.length; i>0; i--){
-          this.components.loslager[i-1].remove();
-          this.components.loslager.pop();
+        for(let i = this.components.length; i>0; i--){
+          this.components[i-1].remove();
+          this.components.pop();
+          console.log(this.components)  
         }
     }
   }
@@ -68,7 +49,7 @@ export default class ComponentManager {
     constructor(position, raster){
       this.position = position;
       this.raster = raster.clone();
-      console.log("LosLager created")
+      console.log("Loslager created")
     }
     remove(){
         // Remove Raster
@@ -77,11 +58,11 @@ export default class ComponentManager {
     }  
   }
 
-  class LosLager {
+  class Loslager {
     constructor(position, raster){
       this.position = position;
       this.raster = raster.clone();
-      console.log("LosLager created")
+      console.log("Loslager created")
     }
     remove(){
         // Remove Raster

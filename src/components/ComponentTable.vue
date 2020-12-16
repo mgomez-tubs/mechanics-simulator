@@ -17,11 +17,11 @@
 export default {
     data(){
         return {
-            opened: [],
+            opened: [1,2,3],
             rows: [
-                { id: 1, componentName: 'Fachwerke',  children: ['Fachwerk 1', 'Fachwerk 2']},
-                { id: 2, componentName: 'Festlager',  children: ['Feslager 1', 'Festlager 2']},
-                { id: 3, componentName: 'Loslager',   children: ['Loslager 1', 'Loslager 2']}
+                { id: 1, componentName: 'Fachwerke',  children: []},
+                { id: 2, componentName: 'Festlager',  children: []},
+                { id: 3, componentName: 'Loslager',   children: []}
             ]
         }
     },
@@ -34,6 +34,26 @@ export default {
                 this.opened.push(id)
             }
         }
+    },
+    mounted() {
+        this.toolbarEvents.on("componentWasAdded", id => {
+            try {
+                console.log("Component added is " + id.constructor.name)
+                switch(id.constructor.name){
+                    case "Fachwerk":
+                        this.rows[0].children.push('Fachwerk' + this.rows[0].children.length)
+                        break;
+                    case "Festlager":
+                        this.rows[1].children.push('Festlager' + this.rows[1].children.length)
+                        break;
+                    case "Loslager" :
+                        this.rows[2].children.push('Loslager' + this.rows[2].children.length)              
+                        break;
+                }
+            } catch (err) {     // Catch signal for object creation, which sends an undefined object 
+                console.log("Component was just created!")
+            }
+        })
     }
 }
 </script>

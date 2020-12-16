@@ -6,9 +6,9 @@
 
 <script>
 import ToolManager from './tools/ToolManager'
-import ComponentManager from './tools/ComponentManager'
 import MouseCoordinates from './MouseCoordinates.vue'
 import Grid from './grid'
+import ComponentManager from './tools/ComponentManager'
 
 /*
   Some PaperJS info
@@ -24,8 +24,11 @@ export default{
       mouseMovedText: null,
       mouseCoordinates: [1,2],
       mouseCoordinateX: 1,
-      mouseCoordinateY: 2,
-      components: null
+      mouseCoordinateY: 1,
+      componentCount: 0,
+      componentManager: {
+        components : []
+      }
     }
   },
   methods: {
@@ -36,6 +39,7 @@ export default{
       this.mouseCoordinates = [1 ,2];
     }
   },
+
   mounted() {
     // Set up PaperJS
     /***********************************************/
@@ -85,13 +89,11 @@ export default{
     this.objectsLayer = new this.paperScope.Layer();
 
     // Create new ComponentManager
-    this.componentManager = new ComponentManager(this.paperScope);
-
-    // Init Components Object
-    this.components = this.componentManager.components
+    this.componentManager = this.COMPONENT_MANAGER
+    this.componentCount = this.COMPONENT_MANAGER.components.length
 
     // Create new ToolManager
-    this.toolManager = new ToolManager(this.paperScope, this.componentManager);
+    this.toolManager = new ToolManager(this.paperScope, this.COMPONENT_MANAGER);
 
     // Set up default tool
     this.toolManager.currentActiveTool = this.toolManager.selectionTool;
@@ -119,20 +121,29 @@ export default{
           break;
         case "remove-all":
           console.log("AYAYAY");
-          this.componentManager.removeAllElements();
+          this.COMPONENT_MANAGER.removeAllElements();
           break;
       }
     });
-  },
+  },  
   components : {
     MouseCoordinates
   },
+  computed: {   // CAREFUL, THIS RUNS BEFORE MOUNTED
+    componentCounter: function(){
+        console.log("changed")
+        return this.COMPONENT_MANAGER.components.length
+    }
+  },
   watch : {
-    components(){
-
+    componentCount(){
+        this.toolbarEvents.emit("componentWasAdded", this.COMPONENT_MANAGER.components[this.COMPONENT_MANAGER.components.length-1])
+        console.log("hue")
+        //this.componentCounter.
     }
   }
 }
+
 </script>   
 <style scoped>
   #canvasId{

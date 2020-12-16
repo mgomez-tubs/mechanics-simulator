@@ -1,5 +1,4 @@
 import { Group } from "paper";
-import ComponentManager from "./ComponentManager";
 
 var paper = null;   // this is terrible and i admit it, but i want paper to be global
 
