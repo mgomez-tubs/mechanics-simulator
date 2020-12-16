@@ -40,17 +40,22 @@ export default {
                 console.log("Component added is " + id.constructor.name)
                 switch(id.constructor.name){
                     case "Fachwerk":
-                        this.rows[0].children.push('Fachwerk ' + this.rows[0].children.length)
+                        this.rows[0].children.push('Fachwerk '  +   this.rows[0].children.length)
                         break;
                     case "Festlager":
-                        this.rows[1].children.push('Festlager ' + this.rows[1].children.length)
+                        this.rows[1].children.push('Festlager ' +   this.rows[1].children.length)
                         break;
                     case "Loslager" :
-                        this.rows[2].children.push('Loslager ' + this.rows[2].children.length)              
+                        this.rows[2].children.push('Loslager '  +   this.rows[2].children.length)              
                         break;
                 }
             } catch (err) {     // Catch signal for object creation, which sends an undefined object 
                 console.log("Component was just created!")
+            }
+        },
+        allComponentsWereDeleted(){
+            for(let i = 0; i<3; i++){
+                this.rows[i].children = []
             }
         }
     },
@@ -60,8 +65,13 @@ export default {
         }
     },
     watch : {
-        componentCounter(){
-            this.componentWasAdded(this.$reactiveGlobals.componentManager.components[this.$reactiveGlobals.componentManager.components.length-1])
+        componentCounter(newValue, oldValue){
+            if(newValue==0){
+                this.allComponentsWereDeleted();
+            }
+            if(newValue>oldValue){
+                this.componentWasAdded(this.$reactiveGlobals.componentManager.components[this.$reactiveGlobals.componentManager.components.length-1])
+            }
         }
     }
 }

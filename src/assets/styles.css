@@ -113,21 +113,29 @@ position:absolute;
 /*
     Windows
 */
+
 .window-background{
     position: absolute; 
     background-color: blue;
     display: inline-block;
     height: auto;
+    
+    border-style : solid;
+    border-color: rgb(90, 45, 24);
+    border-radius: 5px;
 }
 
 .window-handler{
-    background-color: black;
+    background-color: rgb(22, 4, 2);
     height: 1.5em;
     color: white;
-    line-height: 1.5em;
-    font-size: 0.8em;
+    line-height: 1.8em;
     padding-left: 0.5em;
     cursor: default;
+
+    font-size: 0.8em;
+    font-weight: bold;
+
 }
 
 
@@ -141,6 +149,9 @@ position:absolute;
     float: top;
     height: auto !important;
     background-color: yellow;
+
+    top: 1em;
+    right: 1em;
 }
 
 .table-background{

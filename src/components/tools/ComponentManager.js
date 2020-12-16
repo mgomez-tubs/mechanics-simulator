@@ -23,16 +23,13 @@ export default class ComponentManager {
     // Static Methods
      addFachwerk(startPosition, endPosition){
         this.components.push(new Fachwerk(startPosition, endPosition))
-        //this.componentCount+=1
       }
      addFestlager(position, raster){
         this.components.push(new Festlager(position, raster))
         console.log(this.components.length)
-        //this.componentCount+=1
     }
      addLoslager(position, raster){
         this.components.push(new Loslager(position, raster))
-        //this.componentCount+=1
       }
     
     removeAllElements(){

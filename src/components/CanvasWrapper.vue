@@ -8,7 +8,6 @@
 import ToolManager from './tools/ToolManager'
 import MouseCoordinates from './MouseCoordinates.vue'
 import Grid from './grid'
-import ComponentManager from './tools/ComponentManager'
 
 /*
   Some PaperJS info
@@ -64,21 +63,13 @@ export default{
     // Configure coordinates
     // Set center of the canvas to coordinate point (0,0)
     this.paperScope.view.center = [0, 0];
-    this.paperScope.view.zoom = 50;
-    this.paperScope.view.applyMatrix = false;
     this.paperScope.view.scale(1,-1)
-    this.paperScope.view.matrix.tx = 0;
-    this.paperScope.view.matrix.ty *=2; // nobody needs to see this
+    //this.paperScope.view.applyMatrix = false;
 
     // Now that everything is positionated, lets shift 
-    this.paperScope.view.matrix.tx += 50;
-    this.paperScope.view.matrix.ty -= 50;
+    this.paperScope.view.matrix.tx += 0.5;
+    //this.paperScope.view.matrix.ty -= 0.5;
 
-    //this.paperScope.view.matrix.ty = this.paperScope.project.;
-    //this.paperScope.view.transform(new this.paperScope.Matrix(1,0,0,1,0,0))
-
-    // First Layer: Grid
-    
     // Set up grid
     this.grid = new Grid(this.paperScope, this.canvasElement);
 
@@ -123,8 +114,8 @@ export default{
     MouseCoordinates
   }
 }
+</script>
 
-</script>   
 <style scoped>
   #canvasId{
   background-color:#f5edb1;
