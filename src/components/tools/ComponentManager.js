@@ -41,8 +41,21 @@ export default class ComponentManager {
     }
   }
 
-  class Fachwerk{
+  class MechanicComponent {
+    constructor(name){
+      this._name = name;
+    }
+    get name(){
+      return this._name;
+    }
+    set name(name){
+      this._name = name;
+    }
+  }
+
+  class Fachwerk extends MechanicComponent{
     constructor(vectorGroup){
+      super("Fachwerk");
       // Receive Values
       this.vectorGroup = vectorGroup;
     }
@@ -53,8 +66,9 @@ export default class ComponentManager {
     }   
   }
 
-  class Festlager {                             // Raster group + vector group?
+  class Festlager extends MechanicComponent {                             // Raster group + vector group?
     constructor(position, raster){
+      super("Festlager");
       this.position = position;
       this.raster = raster.clone();
       console.log("Loslager created")
@@ -66,8 +80,9 @@ export default class ComponentManager {
     }  
   }
 
-  class Loslager {
+  class Loslager extends MechanicComponent{
     constructor(position, raster){
+      super("Loslager");
       this.position = position;
       this.raster = raster.clone();
       console.log("Loslager created")

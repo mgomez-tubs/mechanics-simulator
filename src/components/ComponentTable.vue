@@ -37,8 +37,8 @@ export default {
         },
         componentWasAdded(id) {
             try {
-                console.log("Component added is " + id.constructor.name)
-                switch(id.constructor.name){
+                console.log("Component added is " + id.name)
+                switch(id.name){
                     case "Fachwerk":
                         this.rows[0].children.push('Fachwerk '  +   this.rows[0].children.length)
                         break;
