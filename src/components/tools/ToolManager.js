@@ -10,7 +10,7 @@ export default class ToolManager {
 
     // Before creating anything, set up Tool static variables
     Tool.scope = paperInstance;
-    Tool.gridMatrix = paperInstance.project.layers['Grid Layer'].matrix
+    Tool.gridMatrix = paperInstance.project.layers['grid-layer'].matrix
 
     // Define tools
     this._drawFachwerkTool  = new FachwerkCreateTool(this.componentManager);
@@ -20,6 +20,11 @@ export default class ToolManager {
     
     // Define starting Tool skipping setter!
     this._currentActiveTool = this._selectionTool
+
+    // Create a group, where all the user content will be placed
+    this.userContentGroup = new paper.Group({
+      name: "user-content-group"
+    });
   }
 
   set currentActiveTool(tool){
@@ -473,6 +478,8 @@ class FestLagerCreateTool extends Tool{
       this.festLagerGroup_raster.position = point;
     }
     this.tool.onMouseDown = (event) => {
+        // Create a new object and place in user content group
+        this.userContentGroup.addChild(this.festLagerGroup_raster.clone())
         this.componentManager.addFestlager(event, this.festLagerGroup_raster)
     }
   }

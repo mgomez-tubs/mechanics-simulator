@@ -6,7 +6,7 @@ export default class Grid {
         
         // Set up layer
         this.gridLayer = new this.paper.Layer();
-        this.gridLayer.name = "Grid Layer"
+        this.gridLayer.name = "grid-layer"
         this.gridLayer.applyMatrix = false;
         this.gridLayer.matrix = new this.paper.Matrix(1,0,0,-1,0,0);
         this.gridLayer.center = [0,0]
