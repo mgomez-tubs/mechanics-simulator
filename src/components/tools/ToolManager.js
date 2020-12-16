@@ -12,17 +12,20 @@ export default class ToolManager {
     Tool.scope = paperInstance;
     Tool.gridMatrix = paperInstance.project.layers['Grid Layer'].matrix
 
-    // Define Tools
+    // Define tools
     this._selectionTool = new SelectionTool;
     this._drawFachwerkTool  = new FachwerkCreateTool(this.componentManager);
     this._drawLosLagerTool  = new LosLagerCreateTool(this.componentManager);
     this._drawFestLagerTool = new FestLagerCreateTool(this.componentManager);
+
+    // Define starting Tool skipping setter!
+    this._currentActiveTool = this._selectionTool
   }
 
   set currentActiveTool(tool){
+    this._currentActiveTool.disable()
     this._currentActiveTool = tool
     this._currentActiveTool.enable()
-    //this._currentActiveTool.report();
   }
 
   // Tool getters
@@ -78,6 +81,10 @@ class Tool {   // scope and tool can be in the constrcutor. consider adding
     var translated_point = Tool.gridMatrix.inverseTransform(point)
     var new_point = translated_point.round()
     return Tool.gridMatrix.transform(new_point)
+  }
+
+  disable(){
+    console.log("Nothing to do for this tool.")
   }
 
 /*
@@ -150,7 +157,6 @@ class SelectionTool extends Tool{
 class FachwerkCreateTool extends Tool{
   constructor(componentManager){
     super();
-    this.cursor = null;
     this.componentManager = componentManager;
     this.fachwerkStart_preview  = null;
     this.fachwerkEnd_preview    = null;
@@ -288,7 +294,6 @@ class LosLagerCreateTool extends Tool{
     super();
     this.componentManager = componentManager;
     this.tool = new paper.Tool();
-    this.cursor = null;
 
     // Create group
     this.losLagerGroup = new paper.Group();
@@ -348,6 +353,8 @@ class LosLagerCreateTool extends Tool{
     )
     
     this.losLagerGroup_raster =  this.losLagerGroup.rasterize(95);
+    // Hide raster until tool is enabled
+    this.losLagerGroup_raster.visible = false;
     this.losLagerGroup.remove();
 
     this.configurePaperJSToolMouseEvents();
@@ -355,7 +362,14 @@ class LosLagerCreateTool extends Tool{
 
   enable(){
     console.log("LoslagerCreateTool : enable() called")
+    // Display raster
+    this.losLagerGroup_raster.visible = true
     this.tool.activate();
+  }
+
+  disable(){
+    // Hide raster
+    this.losLagerGroup_raster.visible = false
   }
 
   configurePaperJSToolMouseEvents(){
@@ -367,6 +381,10 @@ class LosLagerCreateTool extends Tool{
         this.componentManager.addLoslager(event, this.losLagerGroup_raster)
     }
   }
+
+  get cursor(){
+    return this.losLagerGroup_raster
+  }
 }
 
 // Festlager creation Tool
@@ -375,7 +393,6 @@ class FestLagerCreateTool extends Tool{
     super();
     this.componentManager = componentManager
     this.tool = new paper.Tool();
-    this.cursor = null;
 
     // Create group
     this.festLagerGroup = new paper.Group();
@@ -427,14 +444,27 @@ class FestLagerCreateTool extends Tool{
     )
 
     this.festLagerGroup_raster =  this.festLagerGroup.rasterize(95);   
+    // Hide raster until tool is enabled
+    this.festLagerGroup_raster.visible = false;
     this.festLagerGroup.remove();
     
     this.configurePaperJSToolMouseEvents();
   }
 
+  get cursor(){
+    return this.festLagerGroup_raster
+  }
+
   enable(){
     console.log("FestlagerCreateTool : enable() called")
+    // Display raster
+    this.festLagerGroup_raster.visible = true
     this.tool.activate();
+  }
+
+  disable(){
+    // Hide raster
+    this.festLagerGroup_raster.visible = false
   }
 
   configurePaperJSToolMouseEvents(){
