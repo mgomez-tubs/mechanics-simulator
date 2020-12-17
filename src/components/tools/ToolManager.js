@@ -22,7 +22,7 @@ export default class ToolManager {
     this.toolsLayer = new paper.Layer({
       name: "tools-layer"
     });
-    
+
     // Activate toolsLayer
     this.toolsLayer.activate();
 
@@ -133,6 +133,8 @@ class SelectionTool extends Tool{
     this.selectSquare = null
     this.setUpPaperJSObjects();
     this.configurePaperJSToolMouseEvents();
+
+    this.singleClickSelection = true;
   }
   report(){
     console.log("selectionTool: report() called")
@@ -153,6 +155,7 @@ class SelectionTool extends Tool{
   }
   configurePaperJSToolMouseEvents(){  
     this.tool.onMouseDown = (event) => { 
+      this.singleClickSelection = true;
       this.selectSquare.segments[0].point = event.point 
       this.selectSquare.segments[1].point = event.point 
       this.selectSquare.segments[2].point = event.point 
@@ -163,6 +166,9 @@ class SelectionTool extends Tool{
 
     // Point 3
     this.tool.onMouseDrag = (event) => {
+      // Since we are dragging, it isnt a single click selection anymore
+      this.singleClickSelection = false
+
       // Relcalculate Path
       // Point 2 (abajo derecha)
       this.selectSquare.segments[2].point = event.point
@@ -174,6 +180,9 @@ class SelectionTool extends Tool{
       this.selectSquare.segments[3].point.y = this.selectSquare.segments[0].point.y
     }
     this.tool.onMouseUp = () => {
+      if(this.singleClickSelection){
+        console.log("Single click")
+      }
       this.selectSquare.visible = false
     } 
   }
