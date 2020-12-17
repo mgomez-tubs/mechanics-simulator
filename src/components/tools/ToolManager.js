@@ -415,7 +415,7 @@ class FachwerkCreateTool extends Tool{
             }),
           ])
           
-          this.componentManager.addFachwerk(group)
+          this.componentManager.addFachwerk(Tool.userContentLayer.addChild(group))
           this.resetTool();
         }
       };
@@ -619,7 +619,6 @@ class FestLagerCreateTool extends Tool{
     this.tool.onMouseDown = (event) => {
         // Create a new object and place in user content group
         //this.userContentGroup.addChild(this.festLagerGroup_raster.clone())
-        
         this.componentManager.addFestlager(Tool.userContentLayer.addChild(this.festLagerGroup_raster.clone()))
     }
   }

@@ -24,8 +24,7 @@ export default{
       mouseCoordinates: [1,2],
       mouseCoordinateX: 1,
       mouseCoordinateY: 1,
-      componentCount: 0,
-      paperScope: null
+      componentCount: 0
     }
   },
   methods: {

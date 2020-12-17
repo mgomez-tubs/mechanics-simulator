@@ -26,7 +26,6 @@ export default class ComponentManager {
     }
     addFestlager(position, raster){
       this.components.push(new Festlager(position, raster))
-      console.log(this.components.length)
     }
     addLoslager(position, raster){
       this.components.push(new Loslager(position, raster))
@@ -58,10 +57,10 @@ export default class ComponentManager {
       super("Fachwerk");
       // Receive Values
       this.vectorGroup = vectorGroup;
+      this.vectorGroup.data.parentComponent = this;
     }
-
     remove(){
-        console.log("Remove Fachwerk")
+        console.log("Removed raster of Fachwerk")
         this.vectorGroup.remove();
     }   
   }
@@ -72,11 +71,11 @@ export default class ComponentManager {
       this.position = raster.position;
       this.raster = raster;
       this.raster.data.parentComponent = this;
-      console.log("Loslager created")
+      console.log("Festlager created")
     }
     remove(){
         // Remove Raster
-        console.log("Remove Raster of Festlager")
+        console.log("Removed raster of Festlager")
         this.raster.remove();
     }  
   }
