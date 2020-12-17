@@ -102,7 +102,6 @@ export default{
           this.toolManager.currentActiveTool = this.toolManager.selectionTool;
           break;
         case "remove-all":
-          console.log("AYAYAY");
           this.$reactiveGlobals.componentManager.removeAllElements();
           break;
       }

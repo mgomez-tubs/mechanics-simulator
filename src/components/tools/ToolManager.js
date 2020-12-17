@@ -7,12 +7,11 @@ export default class ToolManager {
     paper = paperInstance;
     this._currentActiveTool = null;
     this.componentManager = componentManager;
-
-    
     
     // Before creating anything, set up Tool static variables
     Tool.scope = paperInstance;
     Tool.gridMatrix = paperInstance.project.layers['grid-layer'].matrix
+    //Tool.componentManager = componentManager
     // Create a Layer for the user content and deactivate it
     Tool.userContentLayer = new paper.Layer({
       name: "user-content-layer"
@@ -30,7 +29,7 @@ export default class ToolManager {
     this._drawFachwerkTool  = new FachwerkCreateTool(this.componentManager);
     this._drawLosLagerTool  = new LosLagerCreateTool(this.componentManager);
     this._drawFestLagerTool = new FestLagerCreateTool(this.componentManager);
-    this._selectionTool = new SelectionTool;
+    this._selectionTool = new SelectionTool(this.componentManager);
     
     // Define starting Tool skipping setter!
     this._currentActiveTool = this._selectionTool
@@ -105,7 +104,12 @@ class Tool {   // scope and tool can be in the constrcutor. consider adding
 
   snapToGrid(point) {
     var translated_point = Tool.gridMatrix.inverseTransform(point)
-    var new_point = translated_point.round()
+    // Upscale
+    var new_point = translated_point.multiply(this.gridSize)
+    // Round
+    new_point = new_point.round()
+    // Downscale
+    new_point = new_point.divide(this.gridSize)
     return Tool.gridMatrix.transform(new_point)
   }
 
@@ -126,15 +130,19 @@ class Tool {   // scope and tool can be in the constrcutor. consider adding
 
 // Selection Tool
 class SelectionTool extends Tool{
-  constructor(){
+  constructor(componentManager){
     super();
     this.tool = new paper.Tool();
+    this.componentManager = componentManager
     //this.selectSquare = null;
     this.selectSquare = null
     this.setUpPaperJSObjects();
     this.configurePaperJSToolMouseEvents();
 
     this.singleClickSelection = true;
+
+    this.selectedObjects = [];
+    this.selectPointsArray = [];
   }
   report(){
     console.log("selectionTool: report() called")
@@ -154,13 +162,18 @@ class SelectionTool extends Tool{
   })
   }
   configurePaperJSToolMouseEvents(){  
-    this.tool.onMouseDown = (event) => { 
-      this.singleClickSelection = true;
-      this.selectSquare.segments[0].point = event.point 
-      this.selectSquare.segments[1].point = event.point 
-      this.selectSquare.segments[2].point = event.point 
-      this.selectSquare.segments[3].point = event.point;
-      this.selectSquare.visible = true;
+    this.tool.onMouseDown = (event) => {
+      if(this.selectedObjects.length==0){
+        this.singleClickSelection = true;
+        this.selectSquare.segments[0].point = event.point       // Top Left
+        this.selectSquare.segments[1].point = event.point       // Bottom Left
+        this.selectSquare.segments[2].point = event.point       // Bottom Right
+        this.selectSquare.segments[3].point = event.point;      // Top Right
+        this.selectSquare.visible = true;
+      } else {
+        console.log("some element is selected")
+      }
+        
     } 
       // Point 0 (arriba izquierda)
 
@@ -169,22 +182,106 @@ class SelectionTool extends Tool{
       // Since we are dragging, it isnt a single click selection anymore
       this.singleClickSelection = false
 
-      // Relcalculate Path
-      // Point 2 (abajo derecha)
-      this.selectSquare.segments[2].point = event.point
-      // Point 1
-      this.selectSquare.segments[1].point.x = this.selectSquare.segments[0].point.x
-      this.selectSquare.segments[1].point.y = this.selectSquare.segments[2].point.y
-      // Point 3
-      this.selectSquare.segments[3].point.x = this.selectSquare.segments[2].point.x
-      this.selectSquare.segments[3].point.y = this.selectSquare.segments[0].point.y
-    }
-    this.tool.onMouseUp = () => {
-      if(this.singleClickSelection){
-        console.log("Single click")
+      if(this.selectedObjects.length==0){
+        // Relcalculate Path of the selection rectangle
+        // Point 2
+        this.selectSquare.segments[2].point = event.point
+        // Point 1
+        this.selectSquare.segments[1].point.x = this.selectSquare.segments[0].point.x
+        this.selectSquare.segments[1].point.y = this.selectSquare.segments[2].point.y
+        // Point 3
+        this.selectSquare.segments[3].point.x = this.selectSquare.segments[2].point.x
+        this.selectSquare.segments[3].point.y = this.selectSquare.segments[0].point.y
       }
+
+      /*
+          Double click selection: Retrieve points
+      */
+
+      /*
+      // Sides to test will be Bottom and Right      
+      // Get array of points
+
+      // Calculate change in direction
+
+      var transformed_point_bottomleft  = super.snapToGrid(this.selectSquare.segments[1].point)
+      var transformed_point_bottomright = super.snapToGrid(this.selectSquare.segments[2].point)
+      var transformed_point_topright    = super.snapToGrid(this.selectSquare.segments[3].point)
+      
+
+      var arraytoprove = {
+        x: [],
+        y: []
+      }     
+
+      if(transformed_point_bottomright.x - transformed_point_bottomleft.x >0){
+        let l = transformed_point_bottomleft.x;
+        do{
+          arraytoprove.x.push(l)
+          arraytoprove.y.push(transformed_point_bottomright.y)
+          l+=40
+        }while(l<=transformed_point_bottomright.x)
+      } else {
+        let l = transformed_point_bottomright.x;
+        do{
+          arraytoprove.x.push(l)
+          arraytoprove.y.push(transformed_point_bottomright.y)
+          l+=40
+        }while(l<=transformed_point_bottomleft.x)
+      }
+
+      if(transformed_point_topright.y - transformed_point_bottomright.y >0){
+        let l = transformed_point_bottomright.y;
+        do{
+          arraytoprove.x.push(transformed_point_topright.x)
+          arraytoprove.y.push(l)
+          l+=40
+        }while(l<=transformed_point_topright.y)
+      } else {
+        let l = transformed_point_topright.y;
+        do{
+          arraytoprove.x.push(transformed_point_topright.x)
+          arraytoprove.y.push(l)
+          l+=40
+        }while(l<=transformed_point_bottomright.y)
+      }
+
+      console.log(arraytoprove)
+      */
+
+
+    }
+    this.tool.onMouseUp = (event) => {
+      /*
+          Single click selection
+      */
+      if(this.singleClickSelection){
+        //console.log("Single click")
+        // Deselect everything
+        this.deselectEverything();
+        let hitResult = Tool.userContentLayer.hitTest(event.point);
+        if(hitResult !== null){
+          //console.log("Hit result not null!")
+          this.selectedObjects.push(hitResult)
+          hitResult.item.selected = true;
+        }
+      } 
+      /*
+          Double click selection: Handle selected points
+      */
+      else {
+        this.deselectEverything();
+      }
+      console.log(this.selectedObjects)
       this.selectSquare.visible = false
     } 
+  }
+
+  deselectEverything(){
+    this.selectedObjects.forEach(hitResult => {
+      hitResult.item.selected = false;
+      this.selectedObjects = []
+    })
   }
 }
 
@@ -382,8 +479,8 @@ class LosLagerCreateTool extends Tool{
     // Place a transparent rectangle in the group, so the middle is aliged
     this.losLagerGroup.addChild(
       new paper.Path.Rectangle({
-        from: [-30,-30],
-        to:   [ 30, 30]
+        from: [-25,-25],
+        to:   [ 25, 25]
       })
     )
     
@@ -476,8 +573,8 @@ class FestLagerCreateTool extends Tool{
     // Place a transparent rectangle in the group, so the middle is aliged
     this.festLagerGroup.addChild(
       new paper.Path.Rectangle({
-        from: [-30,-30],
-        to:   [ 30, 30]
+        from: [-25,-25],
+        to:   [ 25, 25]
       })
     )
 
@@ -514,7 +611,7 @@ class FestLagerCreateTool extends Tool{
         // Create a new object and place in user content group
         //this.userContentGroup.addChild(this.festLagerGroup_raster.clone())
         
-        this.componentManager.addFestlager(event, Tool.userContentLayer.addChild(this.festLagerGroup_raster.clone()))
+        this.componentManager.addFestlager(Tool.userContentLayer.addChild(this.festLagerGroup_raster.clone()))
     }
   }
 }

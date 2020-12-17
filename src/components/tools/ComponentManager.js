@@ -21,23 +21,23 @@ export default class ComponentManager {
     }
     
     // Static Methods
-     addFachwerk(startPosition, endPosition){
-        this.components.push(new Fachwerk(startPosition, endPosition))
-      }
-     addFestlager(position, raster){
-        this.components.push(new Festlager(position, raster))
-        console.log(this.components.length)
+    addFachwerk(startPosition, endPosition){
+      this.components.push(new Fachwerk(startPosition, endPosition))
     }
-     addLoslager(position, raster){
-        this.components.push(new Loslager(position, raster))
-      }
+    addFestlager(position, raster){
+      this.components.push(new Festlager(position, raster))
+      console.log(this.components.length)
+    }
+    addLoslager(position, raster){
+      this.components.push(new Loslager(position, raster))
+    }
     
     removeAllElements(){
-        for(let i = this.components.length; i>0; i--){
-          this.components[i-1].remove();
-          this.components.pop();
-          console.log(this.components)  
-        }
+      for(let i = this.components.length; i>0; i--){
+        this.components[i-1].remove();
+        this.components.pop();
+        console.log(this.components)  
+      }
     }
   }
 
@@ -67,10 +67,11 @@ export default class ComponentManager {
   }
 
   class Festlager extends MechanicComponent {                             // Raster group + vector group?
-    constructor(position, raster){
+    constructor(raster){
       super("Festlager");
-      this.position = position;
+      this.position = raster.position;
       this.raster = raster;
+      this.raster.data.parentComponent = this;
       console.log("Loslager created")
     }
     remove(){
@@ -81,10 +82,11 @@ export default class ComponentManager {
   }
 
   class Loslager extends MechanicComponent{
-    constructor(position, raster){
+    constructor(raster){
       super("Loslager");
-      this.position = position;
+      this.position = raster.position;
       this.raster = raster;
+      raster.data.parentComponent = this;
       console.log("Loslager created")
     }
     remove(){
