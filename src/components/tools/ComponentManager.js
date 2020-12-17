@@ -70,7 +70,7 @@ export default class ComponentManager {
     constructor(position, raster){
       super("Festlager");
       this.position = position;
-      this.raster = raster.clone();
+      this.raster = raster;
       console.log("Loslager created")
     }
     remove(){
@@ -84,7 +84,7 @@ export default class ComponentManager {
     constructor(position, raster){
       super("Loslager");
       this.position = position;
-      this.raster = raster.clone();
+      this.raster = raster;
       console.log("Loslager created")
     }
     remove(){

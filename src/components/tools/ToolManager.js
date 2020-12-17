@@ -6,11 +6,25 @@ export default class ToolManager {
   constructor(paperInstance, componentManager){
     paper = paperInstance;
     this._currentActiveTool = null;
-    this.componentManager = componentManager; 
+    this.componentManager = componentManager;
 
+    
+    
     // Before creating anything, set up Tool static variables
     Tool.scope = paperInstance;
     Tool.gridMatrix = paperInstance.project.layers['grid-layer'].matrix
+    // Create a Layer for the user content and deactivate it
+    Tool.userContentLayer = new paper.Layer({
+      name: "user-content-layer"
+    });
+    
+    // Create a Layer for the Tools
+    this.toolsLayer = new paper.Layer({
+      name: "tools-layer"
+    });
+    
+    // Activate toolsLayer
+    this.toolsLayer.activate();
 
     // Define tools
     this._drawFachwerkTool  = new FachwerkCreateTool(this.componentManager);
@@ -61,7 +75,6 @@ class Tool {   // scope and tool can be in the constrcutor. consider adding
   static set scope(scope){
     this._scope = scope;
   }
-
   static get scope(){
     return this._scope;
   }
@@ -80,6 +93,14 @@ class Tool {   // scope and tool can be in the constrcutor. consider adding
   }
   static get componentManager(){
     return this._componentManager;
+  }
+
+  static _userContentLayer = null;
+  static set userContentLayer(userContentLayer){
+    this._userContentLayer = userContentLayer;
+  }
+  static get userContentLayer(){
+    return this._userContentLayer;
   }
 
   snapToGrid(point) {
@@ -383,7 +404,10 @@ class LosLagerCreateTool extends Tool{
         this.losLagerGroup_raster.position = point;
     }
     this.tool.onMouseDown = (event) => {
-        this.componentManager.addLoslager(event, this.losLagerGroup_raster)
+      
+      this.componentManager.addLoslager(event, 
+        Tool.userContentLayer.addChild(this.losLagerGroup_raster.clone())
+        )
     }
   }
 
@@ -479,8 +503,9 @@ class FestLagerCreateTool extends Tool{
     }
     this.tool.onMouseDown = (event) => {
         // Create a new object and place in user content group
-        this.userContentGroup.addChild(this.festLagerGroup_raster.clone())
-        this.componentManager.addFestlager(event, this.festLagerGroup_raster)
+        //this.userContentGroup.addChild(this.festLagerGroup_raster.clone())
+        
+        this.componentManager.addFestlager(event, Tool.userContentLayer.addChild(this.festLagerGroup_raster.clone()))
     }
   }
 }

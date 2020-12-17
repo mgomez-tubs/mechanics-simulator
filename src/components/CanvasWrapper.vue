@@ -74,9 +74,6 @@ export default{
     // Set up grid
     this.grid = new Grid(this.paperScope, this.canvasElement);
 
-    // Second Layer: Objects
-    this.objectsLayer = new this.paperScope.Layer();
-
     // Create new ToolManager
     this.toolManager = new ToolManager(this.paperScope, this.$reactiveGlobals.componentManager);
 
