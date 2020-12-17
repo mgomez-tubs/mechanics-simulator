@@ -143,6 +143,7 @@ class SelectionTool extends Tool{
 
     this.selectedObjects = [];
     this.selectPointsArray = [];
+    this.dragging = false;
   }
   report(){
     console.log("selectionTool: report() called")
@@ -150,6 +151,10 @@ class SelectionTool extends Tool{
   enable(){
     console.log("selectionTool: enable() called");
     this.tool.activate();
+  }
+
+  disable(){
+    this.deselectEverything();
   }
   setUpPaperJSObjects(){
     // Selection Square
@@ -163,26 +168,31 @@ class SelectionTool extends Tool{
   }
   configurePaperJSToolMouseEvents(){  
     this.tool.onMouseDown = (event) => {
-      if(this.selectedObjects.length==0){
-        this.singleClickSelection = true;
-        this.selectSquare.segments[0].point = event.point       // Top Left
-        this.selectSquare.segments[1].point = event.point       // Bottom Left
-        this.selectSquare.segments[2].point = event.point       // Bottom Right
-        this.selectSquare.segments[3].point = event.point;      // Top Right
-        this.selectSquare.visible = true;
-      } else {
-        console.log("some element is selected")
-      }
-        
+      // Test if something is below
+        this.deselectEverything();
+        let hitResult = Tool.userContentLayer.hitTest(event.point);
+        if(hitResult !== null){
+          //console.log("Hit result not null!")
+          this.dragging = true;
+          this.selectedObjects.push(hitResult)
+          hitResult.item.selected = true;
+        } else {        
+          this.singleClickSelection = true;
+          this.selectSquare.segments[0].point = event.point       // Top Left
+          this.selectSquare.segments[1].point = event.point       // Bottom Left
+          this.selectSquare.segments[2].point = event.point       // Bottom Right
+          this.selectSquare.segments[3].point = event.point;      // Top Right
+          this.selectSquare.visible = true;
+      }   
     } 
-      // Point 0 (arriba izquierda)
 
-    // Point 3
     this.tool.onMouseDrag = (event) => {
       // Since we are dragging, it isnt a single click selection anymore
       this.singleClickSelection = false
 
-      if(this.selectedObjects.length==0){
+      if(this.dragging){
+        this.selectedObjects[0].item.position = super.snapToGrid(event.point);
+      } else {
         // Relcalculate Path of the selection rectangle
         // Point 2
         this.selectSquare.segments[2].point = event.point
@@ -255,10 +265,11 @@ class SelectionTool extends Tool{
       /*
           Single click selection
       */
+     this.dragging = false
       if(this.singleClickSelection){
         //console.log("Single click")
         // Deselect everything
-        this.deselectEverything();
+          //this.deselectEverything();
         let hitResult = Tool.userContentLayer.hitTest(event.point);
         if(hitResult !== null){
           //console.log("Hit result not null!")
@@ -270,7 +281,7 @@ class SelectionTool extends Tool{
           Double click selection: Handle selected points
       */
       else {
-        this.deselectEverything();
+        //this.deselectEverything();
       }
       console.log(this.selectedObjects)
       this.selectSquare.visible = false
@@ -511,9 +522,7 @@ class LosLagerCreateTool extends Tool{
     }
     this.tool.onMouseDown = (event) => {
       
-      this.componentManager.addLoslager(event, 
-        Tool.userContentLayer.addChild(this.losLagerGroup_raster.clone())
-        )
+      this.componentManager.addLoslager(Tool.userContentLayer.addChild(this.losLagerGroup_raster.clone()))
     }
   }
 
