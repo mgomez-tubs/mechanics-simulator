@@ -149,7 +149,7 @@ class SelectionTool extends Tool{
     this.options = {
       class: paper.Group,
       position: true,
-      tolerance: 20
+      tolerance: 10
     }
   }
 
@@ -172,7 +172,7 @@ class SelectionTool extends Tool{
       visible: false
     })
   }
-  
+
   configurePaperJSToolMouseEvents(){  
     this.tool.onMouseDown = (event) => {
       // Test if something is below
@@ -284,6 +284,7 @@ class SelectionTool extends Tool{
         //this.deselectEverything();
       }
       console.log("Selected objects after mouse up: " + this.selectedObjects.length)
+      console.log(this.selectedObjects)
 
       // Hide the selection square
       this.selectSquare.visible = false
@@ -394,27 +395,31 @@ class FachwerkCreateTool extends Tool{
           console.log("Created a new fachwerk object")
 
           // Create a PaperJS group
-          var group = new Group([
+          var group = new paper.Group([
             new paper.Path.Line({
               from: this.fachwerkStart_preview.position,
-              to: this.fachwerkEnd_preview.position,
+              to:   this.fachwerkEnd_preview.position,
               strokeColor: 'black',
               strokeWidth: 3.5
             }),
-            new paper.Path.Circle({
-              strokeColor: 'black',
-              center:this.fachwerkStart_preview.position,
-              radius: 5,
-              strokeWidth: 1.5,
-              fillColor: "white"
-            }),
-            new paper.Path.Circle({
-              strokeColor: 'black',
-              center:this.fachwerkEnd_preview.position,
-              radius: 5,
-              strokeWidth: 1.5,
-              fillColor: "white"
-            }),
+            new paper.Group(
+              new paper.Path.Circle({
+                strokeColor: 'black',
+                center:this.fachwerkStart_preview.position,
+                radius: 5,
+                fillColor: "white",
+                strokeWidth: 1.5
+              }),
+            ),
+            new paper.Group(
+              new paper.Path.Circle({
+                strokeColor: 'black',
+                center:this.fachwerkEnd_preview.position,
+                radius: 5,
+                fillColor: "white",
+                strokeWidth: 1.5
+              }),
+            )
           ])
           
           this.componentManager.addFachwerk(Tool.userContentLayer.addChild(group))
