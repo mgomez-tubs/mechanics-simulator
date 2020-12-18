@@ -53,7 +53,6 @@ export default{
                                                         // Remember: the paperScope is a reference to the paperJS Object
     this.paperScope.activate();
     /***********************************************/
-
     this.paperScope.project.currentStyle.strokeScaling = false;   // Disable scaling of strokes 
 
     /*
@@ -64,9 +63,8 @@ export default{
     // Set center of the canvas to coordinate point (0,0)
     this.paperScope.view.center = [0, 0];
     this.paperScope.view.scale(1,-1)
-    //this.paperScope.view.applyMatrix = false;
 
-    // Now that everything is positionated, lets shift 
+    // Now that everything is positionated, lets shift a bit to the left
     this.paperScope.view.matrix.tx += 0.5;
     //this.paperScope.view.matrix.ty -= 0.5;
 
