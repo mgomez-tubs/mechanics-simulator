@@ -65,27 +65,14 @@ export default class ComponentManager {
     }   
   }
 
-  class Festlager extends MechanicComponent {                             // Raster group + vector group?
-    constructor(raster){
-      super("Festlager");
-      this.position = raster.position;
-      this.raster = raster;
-      this.raster.data.parentComponent = this;
-      console.log("Festlager created")
-    }
-    remove(){
-        // Remove Raster
-        console.log("Removed raster of Festlager")
-        this.raster.remove();
-    }  
-  }
-
   class Loslager extends MechanicComponent{
-    constructor(raster){
+    constructor(vectorGroup){
       super("Loslager");
-      this.position = raster.position;
-      this.raster = raster;
-      raster.data.parentComponent = this;
+      this.vectorGroup = vectorGroup
+      this.vectorGroup.data.parentComponent = this;
+      this.position = this.vectorGroup.position;
+      this.raster = this.vectorGroup.rasterize();
+      this.raster.visible = false
       console.log("Loslager created")
     }
     remove(){
@@ -93,4 +80,21 @@ export default class ComponentManager {
         console.log("Remove Raster of Loslager")
         this.raster.remove();
     } 
+  }
+
+  class Festlager extends MechanicComponent {                             // Raster group + vector group?
+    constructor(vectorGroup){
+      super("Festlager");
+      this.vectorGroup = vectorGroup
+      this.vectorGroup.data.parentComponent = this;
+      this.position = this.vectorGroup.position;
+      this.raster = this.vectorGroup.rasterize();
+      this.raster.visible = false   // Lets work with the vectors only, for now!
+      console.log("Festlager created")
+    }
+    remove(){
+        // Remove Raster
+        console.log("Removed raster of Festlager")
+        this.raster.remove();
+    }  
   }

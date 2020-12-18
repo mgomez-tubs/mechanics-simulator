@@ -29,7 +29,7 @@ export default class ToolManager {
     this._drawFachwerkTool  = new FachwerkCreateTool(this.componentManager);
     this._drawLosLagerTool  = new LosLagerCreateTool(this.componentManager);
     this._drawFestLagerTool = new FestLagerCreateTool(this.componentManager);
-    this._selectionTool = new SelectionTool(this.componentManager);
+    this._selectionTool     = new SelectionTool(this.componentManager);
     
     // Define starting Tool skipping setter!
     this._currentActiveTool = this._selectionTool
@@ -144,10 +144,15 @@ class SelectionTool extends Tool{
     this.selectedObjects = [];
     this.selectPointsArray = [];
     this.dragging = false;
+
+    // Dont touch this
+    this.options = {
+      class: paper.Group,
+      position: true,
+      tolerance: 20
+    }
   }
-  report(){
-    console.log("selectionTool: report() called")
-  }
+
   enable(){
     console.log("selectionTool: enable() called");
     this.tool.activate();
@@ -156,6 +161,7 @@ class SelectionTool extends Tool{
   disable(){
     this.deselectEverything();
   }
+
   setUpPaperJSObjects(){
     // Selection Square
     this.selectSquare = new paper.Path.Rectangle({
@@ -164,13 +170,15 @@ class SelectionTool extends Tool{
       strokeColor: "#1a42cc",
       fillColor: new paper.Color(0.4,0.8,1,0.8),
       visible: false
-  })
+    })
   }
+  
   configurePaperJSToolMouseEvents(){  
     this.tool.onMouseDown = (event) => {
       // Test if something is below
         this.deselectEverything();
-        let hitResult = Tool.userContentLayer.hitTest(event.point);
+        
+        let hitResult = Tool.userContentLayer.hitTest(event.point, this.options);
         if(hitResult !== null){
           //console.log("Hit result not null!")
           this.dragging = true;
@@ -263,27 +271,21 @@ class SelectionTool extends Tool{
     }
     this.tool.onMouseUp = (event) => {
       /*
-          Single click selection
+          Single click selection:   mouse up
       */
      this.dragging = false
       if(this.singleClickSelection){
-        //console.log("Single click")
-        // Deselect everything
-          //this.deselectEverything();
-        let hitResult = Tool.userContentLayer.hitTest(event.point);
-        if(hitResult !== null){
-          //console.log("Hit result not null!")
-          this.selectedObjects.push(hitResult)
-          hitResult.item.selected = true;
-        }
+        // Don't do anything at mouseup
       } 
       /*
-          Double click selection: Handle selected points
+          Double click selection:   mouse up
       */
       else {
         //this.deselectEverything();
       }
-      console.log(this.selectedObjects)
+      console.log("Selected objects after mouse up: " + this.selectedObjects.length)
+
+      // Hide the selection square
       this.selectSquare.visible = false
     } 
   }
@@ -437,10 +439,13 @@ class LosLagerCreateTool extends Tool{
     super();
     this.componentManager = componentManager;
     this.tool = new paper.Tool();
+    this.color = "blue"
+    this.cursor = null
 
-    // Create group
+    // Create a group with the vectorized Festlager
     this.losLagerGroup = new paper.Group();
 
+    // Middle Triangle
     this.midtriangle = new paper.Path.RegularPolygon({
       center: [0,-2.5],
       radius: 10,
@@ -452,6 +457,7 @@ class LosLagerCreateTool extends Tool{
     })
     this.losLagerGroup.addChild(this.midtriangle);
 
+    // Upper Circle
     this.uppercircle = new paper.Path.Circle({
       center: [0,0],
       radius : 5,
@@ -461,6 +467,7 @@ class LosLagerCreateTool extends Tool{
     })
     this.losLagerGroup.addChild(this.uppercircle);
 
+    // Lower line
     this.lowerline = new paper.Path.Line({
       from:[-10, -17.5],
       to: [10, -17.5],
@@ -469,6 +476,7 @@ class LosLagerCreateTool extends Tool{
     })
     this.losLagerGroup.addChild(this.lowerline);
 
+    //Lower Diagonal Line
     this.lowerline_diag = new paper.Path.Line({
       from:[-8.5, -22.5],
       to: [-5, -18.5],
@@ -484,7 +492,7 @@ class LosLagerCreateTool extends Tool{
     }
 
     this.losLagerGroup.style = { // dark mode is in mind
-      strokeColor : "black"
+      strokeColor : this.color
     };
 
     // Place a transparent rectangle in the group, so the middle is aliged
@@ -495,39 +503,40 @@ class LosLagerCreateTool extends Tool{
       })
     )
     
-    this.losLagerGroup_raster =  this.losLagerGroup.rasterize(95);
+    // Build the cursor from the vectorGroup
+    this.cursor =  this.losLagerGroup.rasterize(95);
+
     // Hide raster until tool is enabled
-    this.losLagerGroup_raster.visible = false;
+    this.cursor.visible = false;
+    // Remove the festLagerGroup from the project
     this.losLagerGroup.remove();
 
+    // Configure Events
     this.configurePaperJSToolMouseEvents();
   }
 
   enable(){
     console.log("LoslagerCreateTool : enable() called")
     // Display raster
-    this.losLagerGroup_raster.visible = true
+    this.cursor.visible = true
     this.tool.activate();
   }
 
   disable(){
     // Hide raster
-    this.losLagerGroup_raster.visible = false
+    this.cursor.visible = false
   }
 
   configurePaperJSToolMouseEvents(){
     this.tool.onMouseMove = (event) => {
         var point = super.snapToGrid(event.point)
-        this.losLagerGroup_raster.position = point;
+        this.cursor.position = point;
     }
     this.tool.onMouseDown = (event) => {
-      
-      this.componentManager.addLoslager(Tool.userContentLayer.addChild(this.losLagerGroup_raster.clone()))
+      var groupToExport = this.losLagerGroup.clone()
+      groupToExport.position = super.snapToGrid(event.point)
+      this.componentManager.addLoslager(Tool.userContentLayer.addChild(groupToExport))
     }
-  }
-
-  get cursor(){
-    return this.losLagerGroup_raster
   }
 }
 
@@ -536,11 +545,14 @@ class FestLagerCreateTool extends Tool{
   constructor(componentManager){
     super();
     this.componentManager = componentManager
-    this.tool = new paper.Tool();
+    this.tool   = new paper.Tool();
+    this.color  = "black"
+    this.cursor = null
 
-    // Create group
+    // Create a group with the vectorized Festlager
     this.festLagerGroup = new paper.Group();
 
+    // Middle Triangle
     this.midtriangle = new paper.Path.RegularPolygon({
       center: [0,-2.5],
       radius: 10,
@@ -552,6 +564,7 @@ class FestLagerCreateTool extends Tool{
     })
     this.festLagerGroup.addChild(this.midtriangle);
 
+    // Upper Circle
     this.uppercircle = new paper.Path.Circle({
       center: [0,0],
       radius : 5,
@@ -561,6 +574,7 @@ class FestLagerCreateTool extends Tool{
     })
     this.festLagerGroup.addChild(this.uppercircle);
 
+    // Lower Diagonal Line
     this.lowerline_diag = new paper.Path.Line({
       from:[-8.5, -17,5],
       to: [-5, -12.5],
@@ -569,6 +583,7 @@ class FestLagerCreateTool extends Tool{
     })
     this.festLagerGroup.addChild(this.lowerline_diag);
 
+    // A Loop for the rest of the Lines
     for(let i = 0; i < 5 ; i ++){
       let lowerline_copy = this.lowerline_diag.clone();
       lowerline_copy.position.x+=3.4*i
@@ -576,7 +591,7 @@ class FestLagerCreateTool extends Tool{
     }
 
     this.festLagerGroup.style = { // dark mode is in mind
-      strokeColor : "black"
+      strokeColor : this.color
     };
 
     // Place a transparent rectangle in the group, so the middle is aliged
@@ -586,40 +601,42 @@ class FestLagerCreateTool extends Tool{
         to:   [ 25, 25]
       })
     )
-
-    this.festLagerGroup_raster =  this.festLagerGroup.rasterize(95);   
-    // Hide raster until tool is enabled
-    this.festLagerGroup_raster.visible = false;
-    this.festLagerGroup.remove();
     
-    this.configurePaperJSToolMouseEvents();
-  }
+    // Build the cursor from the vectorGroup
+    this.cursor =  this.festLagerGroup.rasterize(95);
 
-  get cursor(){
-    return this.festLagerGroup_raster
+    // Hide cursor until tool is enabled
+    this.cursor.visible = false;
+    // Remove the festLagerGroup from the project
+    this.festLagerGroup.remove();   // This does only remove it from the project, but we can reuse it if we clone it!
+    
+    // Configure Events
+    this.configurePaperJSToolMouseEvents();
   }
 
   enable(){
     console.log("FestlagerCreateTool : enable() called")
     // Display raster
-    this.festLagerGroup_raster.visible = true
+    this.cursor.visible = true
     this.tool.activate();
   }
 
   disable(){
     // Hide raster
-    this.festLagerGroup_raster.visible = false
+    this.cursor.visible = false
   }
 
   configurePaperJSToolMouseEvents(){
     this.tool.onMouseMove = (event) => {
       var point = super.snapToGrid(event.point)
-      this.festLagerGroup_raster.position = point;
+      this.cursor.position = point;
     }
     this.tool.onMouseDown = (event) => {
-        // Create a new object and place in user content group
-        //this.userContentGroup.addChild(this.festLagerGroup_raster.clone())
-        this.componentManager.addFestlager(Tool.userContentLayer.addChild(this.festLagerGroup_raster.clone()))
+      // Clone the template group, place it on the current mouse position and
+      // send it to the component
+      var groupToExport = this.festLagerGroup.clone()
+      groupToExport.position = super.snapToGrid(event.point)
+      this.componentManager.addFestlager(Tool.userContentLayer.addChild(groupToExport))
     }
   }
 }
