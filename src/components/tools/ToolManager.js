@@ -113,6 +113,8 @@ class Tool {   // scope and tool can be in the constrcutor. consider adding
     return Tool.gridMatrix.transform(new_point)
   }
 
+  
+
   disable(){
     console.log("Nothing to do for this tool.")
   }
@@ -177,13 +179,16 @@ class SelectionTool extends Tool{
     this.tool.onMouseDown = (event) => {
       // Test if something is below
         this.deselectEverything();
-        
         let hitResult = Tool.userContentLayer.hitTest(event.point, this.options);
         if(hitResult !== null){
           //console.log("Hit result not null!")
           this.dragging = true;
           this.selectedObjects.push(hitResult)
           hitResult.item.selected = true;
+          if(hitResult.item.name == 'handle0' || hitResult.item.name == 'handle1'){
+            hitResult.item.data.parentComponent.reposition = hitResult.item.name
+            console.log("Handles are being moved!")
+          }
         } else {        
           this.singleClickSelection = true;
           this.selectSquare.segments[0].point = event.point       // Top Left
@@ -199,11 +204,11 @@ class SelectionTool extends Tool{
       this.singleClickSelection = false
 
       if(this.dragging){
-        this.selectedObjects[0].item.position = super.snapToGrid(event.point);
+        this.selectedObjects[0].item.data.parentComponent.reposition(super.snapToGrid(event.point));
       } else {
         // Relcalculate Path of the selection rectangle
         // Point 2
-        this.selectSquare.segments[2].point = event.point
+        this.selectSquare.segments[2].point   = event.point
         // Point 1
         this.selectSquare.segments[1].point.x = this.selectSquare.segments[0].point.x
         this.selectSquare.segments[1].point.y = this.selectSquare.segments[2].point.y
@@ -395,31 +400,40 @@ class FachwerkCreateTool extends Tool{
           console.log("Created a new fachwerk object")
 
           // Create a PaperJS group
+
+          // First create groups for the handles
+          var handle0 = new paper.Group(
+            new paper.Path.Circle({
+              strokeColor: 'black',
+              center:this.fachwerkStart_preview.position,
+              radius: 5,
+              fillColor: "white",
+              strokeWidth: 1.5
+            }),
+          )
+          handle0.name = 'handle0'
+
+          var handle1 = new paper.Group(
+            new paper.Path.Circle({
+              strokeColor: 'black',
+              center:this.fachwerkEnd_preview.position,
+              radius: 5,
+              fillColor: "white",
+              strokeWidth: 1.5
+            }),
+          )
+          handle1.name = 'handle1'
+
           var group = new paper.Group([
             new paper.Path.Line({
+              name: "line",
               from: this.fachwerkStart_preview.position,
               to:   this.fachwerkEnd_preview.position,
               strokeColor: 'black',
               strokeWidth: 3.5
             }),
-            new paper.Group(
-              new paper.Path.Circle({
-                strokeColor: 'black',
-                center:this.fachwerkStart_preview.position,
-                radius: 5,
-                fillColor: "white",
-                strokeWidth: 1.5
-              }),
-            ),
-            new paper.Group(
-              new paper.Path.Circle({
-                strokeColor: 'black',
-                center:this.fachwerkEnd_preview.position,
-                radius: 5,
-                fillColor: "white",
-                strokeWidth: 1.5
-              }),
-            )
+            handle0,
+            handle1
           ])
           
           this.componentManager.addFachwerk(Tool.userContentLayer.addChild(group))

@@ -41,8 +41,9 @@ export default class ComponentManager {
   }
 
   class MechanicComponent {
-    constructor(name){
+    constructor(name, vectorGroup){
       this._name = name;
+      this.vectorGroup = vectorGroup
     }
     get name(){
       return this._name;
@@ -50,15 +51,54 @@ export default class ComponentManager {
     set name(name){
       this._name = name;
     }
+
+    reposition(point){
+      this.vectorGroup.position = point
+    }
   }
 
   class Fachwerk extends MechanicComponent{
     constructor(vectorGroup){
-      super("Fachwerk");
+      super("Fachwerk", vectorGroup);
       // Receive Values
       this.vectorGroup = vectorGroup;
+      console.log(this.vectorGroup.children['handle0'])
+      this.vectorGroup.children['handle1'].data.parentComponent = this
+      this.vectorGroup.children['handle0'].data.parentComponent = this
       this.vectorGroup.data.parentComponent = this;
+      this._reposition = this.repositionComponent
     }
+
+    set reposition(pivot){
+      if(pivot == "handle0"){
+        console.log("Reposition handle 0")
+        this._reposition = this.repositionHandle0
+      } else if(pivot == "handle1"){
+        console.log("Reposition handle 1")
+        this._reposition = this.repositionHandle1
+      } else {
+        console.log("This message should not appear!")
+        this._reposition = this.repositionComponent
+      }
+    }
+    get reposition(){
+      return this._reposition
+    }
+
+    repositionComponent(point){
+      //console.log("Helow loe low")
+    }
+    
+    repositionHandle0(point){
+      this.vectorGroup.children['handle0'].position = point
+      this.vectorGroup.children['line'].segments[0].point = point
+    }
+
+    repositionHandle1(point){
+      this.vectorGroup.children['handle1'].position = point
+      this.vectorGroup.children['line'].segments[1].point = point
+    }
+
     remove(){
         console.log("Removed raster of Fachwerk")
         this.vectorGroup.remove();
@@ -67,7 +107,7 @@ export default class ComponentManager {
 
   class Loslager extends MechanicComponent{
     constructor(vectorGroup){
-      super("Loslager");
+      super("Loslager", vectorGroup);
       this.vectorGroup = vectorGroup
       this.vectorGroup.data.parentComponent = this;
       this.position = this.vectorGroup.position;
@@ -84,7 +124,7 @@ export default class ComponentManager {
 
   class Festlager extends MechanicComponent {                             // Raster group + vector group?
     constructor(vectorGroup){
-      super("Festlager");
+      super("Festlager", vectorGroup);
       this.vectorGroup = vectorGroup
       this.vectorGroup.data.parentComponent = this;
       this.position = this.vectorGroup.position;
