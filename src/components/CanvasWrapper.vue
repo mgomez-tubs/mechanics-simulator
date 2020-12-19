@@ -43,7 +43,7 @@ export default{
     this.canvasElement = document.getElementById("canvasId")
 
     // Create a new paperScope
-    this.paperScope = require('paper/dist/paper-core')
+    this.paperScope = require('paper/dist/paper-core.min')
                                                         // Since we are working with JavaScript, the PaperScope needs to be manually created
                                                         // Paper classes can only be accessed through PaperScope Objects
                                                         // It is possible to access the global paper variable, but im not sure if it works with vue.
