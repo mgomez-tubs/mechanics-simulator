@@ -1,5 +1,3 @@
-import { Group } from "paper";
-
 var paper = null;   // this is terrible and i admit it, but i want paper to be global
 
 export default class ToolManager {

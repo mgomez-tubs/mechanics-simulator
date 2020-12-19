@@ -6,12 +6,16 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --no-clean",
     "lint": "vue-cli-service lint",
-    "deploy": "git subtree push --prefix dist heroku master"
+    "deploy": "git subtree push --prefix dist heroku master",
+    "build-report" : "vue-cli-service build --report --no-clean"
   },
   "dependencies": {
     "draggable": "^4.2.0",
     "mitt": "^2.1.0",
-    "paper": "^0.12.11",
+    "paper": {
+      "version": "^0.12.11",
+      "no-optional": "true"
+    },
     "vue": "^3.0.4"
   },
   "devDependencies": {
