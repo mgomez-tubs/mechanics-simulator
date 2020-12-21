@@ -20,7 +20,6 @@ export default class ComponentManager {
       return this.components.length
     }
     
-    // Static Methods
     addFachwerk(startPosition, endPosition){
       this.components.push(new Fachwerk(startPosition, endPosition))
     }
@@ -117,8 +116,8 @@ export default class ComponentManager {
     }
     remove(){
         // Remove Raster
-        console.log("Remove Raster of Loslager")
-        this.raster.remove();
+        console.log("Removed Loslager")
+        this.vectorGroup.remove();
     } 
   }
 
@@ -134,7 +133,7 @@ export default class ComponentManager {
     }
     remove(){
         // Remove Raster
-        console.log("Removed raster of Festlager")
-        this.raster.remove();
+        console.log("Removed Festlager")
+        this.vectorGroup.remove();
     }  
   }

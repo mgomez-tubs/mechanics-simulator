@@ -29,13 +29,8 @@ export default class ToolManager {
     this._drawFestLagerTool = new FestLagerCreateTool(this.componentManager);
     this._selectionTool     = new SelectionTool(this.componentManager);
     
-    // Define starting Tool skipping setter!
+    // Define starting Tool (skipping setter)
     this._currentActiveTool = this._selectionTool
-
-    // Create a group, where all the user content will be placed
-    this.userContentGroup = new paper.Group({
-      name: "user-content-group"
-    });
   }
 
   set currentActiveTool(tool){
@@ -134,7 +129,6 @@ class SelectionTool extends Tool{
     super();
     this.tool = new paper.Tool();
     this.componentManager = componentManager
-    //this.selectSquare = null;
     this.selectSquare = null
     this.setUpPaperJSObjects();
     this.configurePaperJSToolMouseEvents();
@@ -143,7 +137,7 @@ class SelectionTool extends Tool{
 
     this.selectedObjects = [];
     this.selectPointsArray = [];
-    this.dragging = false;
+    this.singleComponentHeldOnMousedown = false;
 
     // Dont touch this
     this.options = {
@@ -175,17 +169,18 @@ class SelectionTool extends Tool{
 
   configurePaperJSToolMouseEvents(){  
     this.tool.onMouseDown = (event) => {
-      // Test if something is below
-        this.deselectEverything();
+      // Deselect everything
+      this.deselectEverything();
+      // Test if a hitbox is found
         let hitResult = Tool.userContentLayer.hitTest(event.point, this.options);
+        // If something is found --> Drag
         if(hitResult !== null){
-          //console.log("Hit result not null!")
-          this.dragging = true;
+          this.singleComponentHeldOnMousedown = true;
           this.selectedObjects.push(hitResult)
           hitResult.item.selected = true;
           if(hitResult.item.name == 'handle0' || hitResult.item.name == 'handle1'){
+            // If a In- or Out Handle are found, set up mechanic component accordingly
             hitResult.item.data.parentComponent.reposition = hitResult.item.name
-            console.log("Handles are being moved!")
           }
         } else {        
           this.singleClickSelection = true;
@@ -198,12 +193,13 @@ class SelectionTool extends Tool{
     } 
 
     this.tool.onMouseDrag = (event) => {
-      // Since we are dragging, it isnt a single click selection anymore
+      // Since we are dragging, this isnt a single click selection anymore
       this.singleClickSelection = false
 
-      if(this.dragging){
+      if(this.singleComponentHeldOnMousedown){      // Component was held on mousedown
+        // Reposition the component or handle
         this.selectedObjects[0].item.data.parentComponent.reposition(super.snapToGrid(event.point));
-      } else {
+      } else {                                      // No Component held on mousedown           
         // Relcalculate Path of the selection rectangle
         // Point 2
         this.selectSquare.segments[2].point   = event.point
@@ -276,7 +272,7 @@ class SelectionTool extends Tool{
       /*
           Single click selection:   mouse up
       */
-     this.dragging = false
+     this.singleComponentHeldOnMousedown = false
       if(this.singleClickSelection){
         // Don't do anything at mouseup
       } 
@@ -329,6 +325,7 @@ class FachwerkCreateTool extends Tool{
       this.fachwerkEnd_preview.dashArray = [5,5]; 
 
       // Hide previews
+      this.cursor.visible = false;
       this.fachwerkStart_preview.visible = false;
       this.fachwerkEnd_preview.visible = false;
       this.line_preview.visible = false;
@@ -365,11 +362,10 @@ class FachwerkCreateTool extends Tool{
       };
 
       this.tool.onMouseDrag = (event) => {              // On mouse dragged
-
         var point = super.snapToGrid(event.point)
         this.mouseWasDragged = true;
         // While the mouse is dragging, hide the cursor
-        //this.cursor.visible = false
+        this.cursor.visible = false
 
         // Only show previews, while the mouse is down
         this.fachwerkStart_preview.visible = true;
@@ -386,7 +382,7 @@ class FachwerkCreateTool extends Tool{
         //this.cursor.position = event.point;
 
         // Show the cursor again
-        //this.cursor.visible = true;
+        this.cursor.visible = true;
 
         // Hide the previews
         this.fachwerkStart_preview.visible = false;
@@ -398,7 +394,6 @@ class FachwerkCreateTool extends Tool{
           console.log("Created a new fachwerk object")
 
           // Create a PaperJS group
-
           // First create groups for the handles
           var handle0 = new paper.Group(
             new paper.Path.Circle({
@@ -446,7 +441,11 @@ class FachwerkCreateTool extends Tool{
   }
   enable(){
     console.log("FachwerkTool: enable() called")
+    this.cursor.visible = true;
     this.tool.activate();
+  }
+  disable(){
+    this.cursor.visible = false
   }
 }
 
@@ -531,19 +530,14 @@ class LosLagerCreateTool extends Tool{
     // Configure Events
     this.configurePaperJSToolMouseEvents();
   }
-
   enable(){
     console.log("LoslagerCreateTool : enable() called")
-    // Display raster
     this.cursor.visible = true
     this.tool.activate();
   }
-
   disable(){
-    // Hide raster
     this.cursor.visible = false
   }
-
   configurePaperJSToolMouseEvents(){
     this.tool.onMouseMove = (event) => {
         var point = super.snapToGrid(event.point)

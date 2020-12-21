@@ -19,7 +19,6 @@ export default{
   name: "Canvas",
   data() {
     return{
-      //paperScope: null,
       mouseMovedText: null,
       mouseCoordinates: [1,2],
       mouseCoordinateX: 1,
@@ -35,7 +34,6 @@ export default{
       this.mouseCoordinates = [1 ,2];
     }
   },
-
   mounted() {
     // Set up PaperJS
     /***********************************************/
@@ -43,24 +41,22 @@ export default{
     this.canvasElement = document.getElementById("canvasId")
 
     // Create a new paperScope
-    this.paperScope = require('paper/dist/paper-core.min')
+    this.paperScope = require('paper/dist/paper-core')
                                                         // Since we are working with JavaScript, the PaperScope needs to be manually created
                                                         // Paper classes can only be accessed through PaperScope Objects
                                                         // It is possible to access the global paper variable, but im not sure if it works with vue.
     
     // Setup paperScope
+    /***********************************************/
     this.paperScope.setup(this.canvasElement);          // Sets up a empty project. A canvas ID can be passed, in this case, a View is created for it
                                                         // Remember: the paperScope is a reference to the paperJS Object
     this.paperScope.activate();
     /***********************************************/
-    this.paperScope.project.currentStyle.strokeScaling = false;   // Disable scaling of strokes 
+    
+    // Disable scaling of strokes 
+    this.paperScope.project.currentStyle.strokeScaling = false;
 
-    /*
-      TODO : SET UP LAYERS, WILL ALSO HELP TO IMPLEMETNT DarkMODE!!
-    */
-
-    // Configure coordinates
-    // Set center of the canvas to coordinate point (0,0)
+    // Configure project coordinates
     this.paperScope.view.center = [0, 0];
     this.paperScope.view.scale(1,-1)
 
@@ -69,7 +65,7 @@ export default{
     //this.paperScope.view.matrix.ty -= 0.5;
 
     // Set up grid
-    this.grid = new Grid(this.paperScope, this.canvasElement);
+    this.grid = new Grid(this.paperScope);
 
     // Create new ToolManager
     this.toolManager = new ToolManager(this.paperScope, this.$reactiveGlobals.componentManager);

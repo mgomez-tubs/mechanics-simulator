@@ -1,6 +1,5 @@
 <template>
   <MenuBar/>
-  <!-- Drawing Canvas TO DO: Set up event bus-->
   <div id="container">
     <CanvasWrapper/>
     <Toolbar :toolbarId="'tools'" :toolbarName = "'Tools'" :passedClass = "'tools-container'">
@@ -20,7 +19,7 @@
     </Toolbar>
   </div>
   
-  <!-- Bottom Left Notifications, TO DO : find a better way of doing this-->
+  <!-- Bottom Left Notifications-->
   <transition name="fade">
     <div v-if="showBottomLeftPopUp" class="bottompopup"> {{bottomLeftPopUpText}}</div>
   </transition>
@@ -89,7 +88,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .fade-enter-active,
 .fade-leave-active {

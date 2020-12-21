@@ -7,8 +7,6 @@
 </template>
 <script>
 export default {
-    methods : {
-    },
     props : {
         toolbarId: {
             type: String,

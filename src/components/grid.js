@@ -1,8 +1,6 @@
 export default class Grid {
-    constructor(paperInstance, canvas){
+    constructor(paperInstance){
         this.paper = paperInstance
-        this.canvas = canvas;
-        this.bounds = this.paper.view.bounds
         
         // Set up layer
         this.gridLayer = new this.paper.Layer();
@@ -18,16 +16,18 @@ export default class Grid {
             thick: 2,
             verythick: 3
         }
-
         this.colors = {
             lines : '#248fe8',
             stepIndicators: "black"
         }
 
+        // Page Padding
+        this.padding =1.5
+
         // Coordinates limits
         this.xmin = -10;
         this.xmax = 10;
-        this.ymin = -5;      // care: the foor loop is inverted   
+        this.ymin = -5;      
         this.ymax = 5;       
 
         // Step configs ( same in x and y direction!!! )
@@ -46,10 +46,9 @@ export default class Grid {
 
     draw(){
         // White Background
-        var padding = 1.5
         this.background = new this.paper.Path.Rectangle({
-            from:   [this.xmin -padding,    this.ymin-padding],
-            to:     [this.xmax+padding,     this.ymax+padding],
+            from:   [this.xmin -this.padding,    this.ymin-this.padding],
+            to:     [this.xmax +this.padding,    this.ymax+this.padding],
             fillColor  : "white",
             shadowBlur : 0.2,
             shadowColor: new this.paper.Color(0, 0, 0),
@@ -57,7 +56,6 @@ export default class Grid {
             strokeColor: "black",
             strokeWidth: this.lineWidths.verythick
         })
-
         // Template vertical line
         this.vgridline = new this.paper.Path.Line({
             from:           [0, this.ymax],
@@ -65,7 +63,6 @@ export default class Grid {
             strokeColor:    this.colors.lines,
             strokeWidth:    this.lineWidths.thin
         })
-
         // Template horizontal line
         this.hgridline = new this.paper.Path.Line({
             from:           [this.xmin, 0],
@@ -73,18 +70,18 @@ export default class Grid {
             strokeColor:    this.colors.lines,
             strokeWidth:    this.lineWidths.thin
         })
-        
-        // Draw vertical lines (see inside for step indicators)
+        // Draw vertical lines
         for(let i = this.xmin; i <= this.xmax; i+= this.step){
-            // Create a clone of the line blueprint
             let clonedLine = this.vgridline.clone()
             clonedLine.position.x = i;
         }
         
-        // Draw horizontal lines (see inside for set indicators)
+        // Draw horizontal lines
         for(let i = this.ymin; i <=this.ymax; i+=this.step){
             let clonedLine = this.hgridline.clone()
             clonedLine.position.y = -i;
         }
+        this.vgridline.remove();
+        this.hgridline.remove();
     }
 }
