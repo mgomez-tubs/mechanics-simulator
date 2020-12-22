@@ -24,11 +24,13 @@ export default class ToolManager {
     this.toolsLayer.activate();
 
     // Define tools
+    this._kraftTool         = new KraftTool(this.componentManager)
     this._drawFachwerkTool  = new FachwerkCreateTool(this.componentManager);
     this._drawLosLagerTool  = new LosLagerCreateTool(this.componentManager);
     this._drawFestLagerTool = new FestLagerCreateTool(this.componentManager);
     this._selectionTool     = new SelectionTool(this.componentManager);
     
+
     // Define starting Tool (skipping setter)
     this._currentActiveTool = this._selectionTool
   }
@@ -54,6 +56,9 @@ export default class ToolManager {
   }
   get drawFestLagerTool(){
     return this._drawFestLagerTool;
+  }
+  get kraftTool(){
+    return this._kraftTool;
   }
 }
 
@@ -104,9 +109,7 @@ class Tool {   // scope and tool can be in the constrcutor. consider adding
     // Downscale
     new_point = new_point.divide(this.gridSize)
     return Tool.gridMatrix.transform(new_point)
-  }
-
-  
+  }  
 
   disable(){
     console.log("Nothing to do for this tool.")
@@ -198,7 +201,11 @@ class SelectionTool extends Tool{
 
       if(this.singleComponentHeldOnMousedown){      // Component was held on mousedown
         // Reposition the component or handle
-        this.selectedObjects[0].item.data.parentComponent.reposition(super.snapToGrid(event.point));
+        if(this.selectedObjects[0].item.data.parentComponent!==undefined){
+          this.selectedObjects[0].item.data.parentComponent.reposition(super.snapToGrid(event.point))
+        } else {
+          console.log("The correspoding Mechanic Component of this group couldn't be found!")
+        }
       } else {                                      // No Component held on mousedown           
         // Relcalculate Path of the selection rectangle
         // Point 2
@@ -536,7 +543,7 @@ class LosLagerCreateTool extends Tool{
     this.tool.activate();
   }
   disable(){
-    this.cursor.visible = false
+    this.tool.visible = false
   }
   configurePaperJSToolMouseEvents(){
     this.tool.onMouseMove = (event) => {
@@ -648,6 +655,68 @@ class FestLagerCreateTool extends Tool{
       var groupToExport = this.festLagerGroup.clone()
       groupToExport.position = super.snapToGrid(event.point)
       this.componentManager.addFestlager(Tool.userContentLayer.addChild(groupToExport))
+    }
+  }
+}
+
+class KraftTool extends Tool{
+  constructor(componentManager){
+    super();
+    this.componentManager = componentManager
+    this.tool = new paper.Tool();
+    this.color = "black"
+    this.cursor = null
+
+    this.kraftGroup = new paper.Group(
+      new paper.PointText({
+        point: [10, 10],
+        content: 'F',
+        fillColor: this.color,
+        fontFamily: 'Courier New',
+        fontWeight: 'bold',
+        fontSize: 25
+      })      
+    )
+      this.kraftGroup.scale(1,-1)
+      this.kraftGroup.scale(2)
+
+    this.kraftGroup.addChild(
+      new paper.Path.Rectangle({
+        from: [-25,-25],
+        to:   [ 25, 25]
+      })
+    )
+
+    // Build the cursor
+    this.cursor = this.kraftGroup.rasterize(90)
+
+    // Remove the group
+    this.kraftGroup.remove();
+
+    this.configurePaperJSToolMouseEvents();
+  }
+
+  enable(){
+    console.log("KraftTool enabled")
+    this.cursor.visible = true
+    this.tool.activate();
+  }
+
+  disable(){
+    this.cursor.visible = false
+  }
+
+  configurePaperJSToolMouseEvents(){
+    this.tool.onMouseMove = (event) =>{
+      var point = super.snapToGrid(event.point)
+      this.cursor.position = point;
+    }
+
+    this.tool.onMouseDown = (event) => {
+      console.log("pressed")
+      var groupToExport = this.kraftGroup.clone()
+      groupToExport.position = super.snapToGrid(event.point);
+      Tool.userContentLayer.addChild(groupToExport)
     }
   }
 }

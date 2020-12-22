@@ -6,11 +6,12 @@
       <div class="tool-background">
             <div id="select"            class="button"  @click='toolbarEvents.emit("userClickedOnTool", "select")'/> 
             <div id="drawFachwerk"      class="button"  @click='toolbarEvents.emit("userClickedOnTool", "stab")'/> 
-            <div id="drawFeder"         class="button"  @click='toolbarEvents.emit("userClickedOnTool", "feder")'/>
+            <div id="placeKraft"        class="button"  @click='toolbarEvents.emit("userClickedOnTool", "kraft")'/>
             <div id="placeFestLager"    class="button"  @click='toolbarEvents.emit("userClickedOnTool", "festlager")'/>
             <div id="placeLosLager"     class="button"  @click='toolbarEvents.emit("userClickedOnTool", "loslager")'/>
             <div id="drawBoden"         class="button"  @click='toolbarEvents.emit("userClickedOnTool", "boden")'/>
             <div id="removeAll"         @click='toolbarEvents.emit("userClickedOnTool", "remove-all")' > Remove all! </div>
+            <div id="svgDownload"   class="button">Download SVG</div>
       </div>
     </Toolbar>
     

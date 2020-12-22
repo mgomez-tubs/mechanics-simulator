@@ -88,8 +88,8 @@ export default{
         case "festlager":
           this.toolManager.currentActiveTool = this.toolManager.drawFestLagerTool;
           break;
-        case "feder":
-          this.toolManager.currentActiveTool = this.toolManager.selectionTool;
+        case "kraft":
+          this.toolManager.currentActiveTool = this.toolManager.kraftTool;
           break;
         case "boden":
           this.toolManager.currentActiveTool = this.toolManager.selectionTool;
@@ -97,8 +97,16 @@ export default{
         case "remove-all":
           this.$reactiveGlobals.componentManager.removeAllElements();
           break;
+        default:
+          console.log("[Warning] No event listener has been set yet for this tool! (add in CanvasWrapper.vue)")
+          break;
       }
     });
+
+    
+     //textGroup.scale(1,-1)
+     //textGroup.scale(2)
+     //this.paperScope.project.layers["user-content-layer"].addChild(textGroup)
   },  
   components : {
     MouseCoordinates

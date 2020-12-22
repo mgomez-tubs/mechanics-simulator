@@ -82,8 +82,8 @@ position:absolute;
     background: url("./Stab.png") center no-repeat;
     background-size: contain;
 } 
-#drawFeder{
-    background: url("./feder.png") center no-repeat;
+#placeKraft{
+    background: url("./kraft.png") center no-repeat;
     background-size: contain;
 }
 #placeFestLager{
@@ -99,6 +99,17 @@ position:absolute;
     background-size: contain;
 }
 #removeAll {
+    background-color: rgb(48, 24, 51);
+    color: white;
+    width: 2em;
+    height: 2em;
+    flex-basis: 90%;
+    font-size: 0.7em;
+    margin: auto 0;
+    text-align: center;
+    line-height: 2em;
+}
+#svgDownload {
     background-color: rgb(48, 24, 51);
     color: white;
     width: 2em;
