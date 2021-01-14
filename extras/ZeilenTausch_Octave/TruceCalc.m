@@ -11,15 +11,13 @@ clear all
 addpath("Functions")
 
 # Get beispiel Knotenmatrix and Elementmatrix
-knotenMatrix = getKnotenMatrix_bsp();
-elementMatrix = getElementMatrix_bsp();
-aussenkraefteVektor = [0;0;0;4;-5;0;0];
-lagerVector = [1;2;6];     # Lager in Knoten 1 Y Richtung: 2 und so
 knotenMatrix = [0,0;1,0;2,0;3,0;4,0;5,0;1,-1;2,-1;3,-1]
+rows(knotenMatrix)
 elementMatrix = [1,2;2,3;3,4;4,5;1,6;6,2;6,3;6,7;7,3;7,8;3,8;8,4;8,5]
-aussenkraefteVektor = zeros(16,1);
-aussenkraefteVektor(6)=1000
-aussenkraefteVektor(8)=2000
+rows(elementMatrix)
+aussenkraefteVektor = zeros(18,1);
+aussenkraefteVektor(6)=1000;
+aussenkraefteVektor(8)=2000;
 lagerVector = [1;2;10]     # Lager in Knoten 1 Y Richtung: 2 und so
 ######################
 # Calculate k
@@ -34,7 +32,7 @@ K = mCell2m2mbinary22Matrix(ATk,A);
 K_matrx = cell2mat(K);
 
 # Bringe Lagerknoten runter
-multiplicand_sorting_vector = [1;2;3;4;5;6;7;8;9;10]; #1,2 -> 1x1y; 23 -> 2x2y ...
+multiplicand_sorting_vector = [1;2;3;4;5;6;7;8;9;10;11;12;13;14;15;16;17;18]; #1,2 -> 1x1y; 23 -> 2x2y ...
 
 neweq = conservativeRowBottomPush(K_matrx,multiplicand_sorting_vector,lagerVector);   
 K_matrx = neweq{1};
@@ -68,10 +66,11 @@ endfunction
 
 
 # Bilde pF from aussenKraefteVector
-pF = aussenKraefteVectorTopF(aussenkraefteVektor_ERS, multiplicand_sorting_vector, rows(lagerVector))
+pF = aussenKraefteVectorTopF(aussenkraefteVektor, multiplicand_sorting_vector, rows(lagerVector))
 
+det(K_matrx_11)
 # Berechne Knotenverschiebungen vF
-vF = inv(K_matrx_11) * pF;
+vF = inv(K_matrx_11) * pF
 
 # Ermittlung Auflagerreaktionsgroessen
 pR = K_matrx_21 * vF
