@@ -1,6 +1,12 @@
-function array = conservativeRowBottomPush(A,b,rows_to_push)  
+function array = conservativeRowBottomPush(A,rows_to_push)  
   # Transform rows to push
   trf_rows_to_push = rows_to_push;
+  
+  # Create multiplicand sorting vector
+  vector = zeros(rows(A),1)
+  for i=1:rows(vector)
+    vector(i) = i
+  endfor
   
   backpush=0;
   for i=1:rows(rows_to_push)
@@ -9,7 +15,6 @@ function array = conservativeRowBottomPush(A,b,rows_to_push)
   endfor
 
   matrix = A;
-  vector = b;
   
   for i=1:rows(rows_to_push)
     #new matrix
