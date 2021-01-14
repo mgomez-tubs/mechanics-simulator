@@ -3,9 +3,9 @@ function array = conservativeRowBottomPush(A,rows_to_push)
   trf_rows_to_push = rows_to_push;
   
   # Create multiplicand sorting vector
-  vector = zeros(rows(A),1)
+  vector = zeros(rows(A),1);
   for i=1:rows(vector)
-    vector(i) = i
+    vector(i) = i;
   endfor
   
   backpush=0;
