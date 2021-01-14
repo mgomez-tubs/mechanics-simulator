@@ -1,7 +1,6 @@
 #
 # Careful: this does only work for Staebe with the same EA and auch gleiche L�nge
 #
-#
 
 # Clean Terminal and variables
 clc
@@ -11,13 +10,13 @@ clear all
 addpath("Functions")
 
 # Get beispiel Knotenmatrix and Elementmatrix
-knotenMatrix = [0,0;1,0;2,0;3,0;4,0;5,0;1,-1;2,-1;3,-1]
-rows(knotenMatrix)
+knotenMatrix = [0,0;1,0;2,0;3,0;4,0;1,-1;2,-1;3,-1]
 elementMatrix = [1,2;2,3;3,4;4,5;1,6;6,2;6,3;6,7;7,3;7,8;3,8;8,4;8,5]
-rows(elementMatrix)
-aussenkraefteVektor = zeros(18,1);
-aussenkraefteVektor(6)=1000;
-aussenkraefteVektor(8)=2000;
+
+aussenkraefteVektor = zeros(16,1);
+aussenkraefteVektor(6)=-1000;
+aussenkraefteVektor(8)=-2000;
+
 lagerVector = [1;2;10]     # Lager in Knoten 1 Y Richtung: 2 und so
 ######################
 # Calculate k
@@ -61,16 +60,15 @@ function vector = aussenKraefteVectorTopF(input_vector, sorting_vector, anzahlLa
   for i=1:rows(vector)
     vector(i) = input_vector(sorting_vector(i));
   endfor
-  vector
 endfunction
 
 
 # Bilde pF from aussenKraefteVector
-pF = aussenKraefteVectorTopF(aussenkraefteVektor, multiplicand_sorting_vector, rows(lagerVector))
+pF = aussenKraefteVectorTopF(aussenkraefteVektor, multiplicand_sorting_vector, rows(lagerVector));
 
-det(K_matrx_11)
 # Berechne Knotenverschiebungen vF
-vF = inv(K_matrx_11) * pF
+vF = inv(K_matrx_11) * pF;
 
-# Ermittlung Auflagerreaktionsgroessen
+# Output Auflagerreaktionsgroessen to console
+format short g
 pR = K_matrx_21 * vF
