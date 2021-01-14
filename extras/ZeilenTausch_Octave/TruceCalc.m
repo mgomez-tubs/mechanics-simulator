@@ -11,10 +11,14 @@ clear all
 addpath("Functions")
 
 # Get beispiel Knotenmatrix and Elementmatrix
-knotenMatrix = getKnotenMatrix_bsp();
-elementMatrix = getElementMatrix_bsp();
-aussenkraefteVektor = [0;0;0;4;-5;0;0]
-lagerVector = [1;2;6]     # Lager in Knoten 1 Y Richtung: 2 und so
+knotenMatrix = [0,0;1,0;2,0;3,0;4,0;5,0;1,-1;2,-1;3,-1]
+elementMatrix = [1,2;2,3;3,4;4,5;1,6;6,2;6,3;6,7;7,3;7,8;3,8;8,4;8,5]
+aussenkraefteVektor = zeros(16,1);
+aussenkraefteVektor(6)=1000
+aussenkraefteVektor(8)=2000
+
+
+lagerVector = [1;2;10]     # Lager in Knoten 1 Y Richtung: 2 und so
 ######################
 # Calculate k
 k_pseudo = getk_pseudo_hypermatrix(elementMatrix, knotenMatrix); # Returns 7x1 Cell
