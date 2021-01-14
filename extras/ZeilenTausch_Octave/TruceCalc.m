@@ -23,31 +23,30 @@ A = buildZuordnungsMatrix(elementMatrix, rows(knotenMatrix));    # Returns 5x14 
 
 ATk = mbinary22MatrixCell2m2m(A',k);  
 K = mCell2m2mbinary22Matrix(ATk,A);
-K_matrx = cell2mat(K)
+K_matrx = cell2mat(K);
 
 # Bringe Lagerknoten runter
-v = [1;2;3;4;5;6;7;8;9;10]
+multiplicand_sorting_vector = [1;2;3;4;5;6;7;8;9;10] #1,2 -> 1x1y; 23 -> 2x2y ...
 
-K_matrx*v
+K_matrx*multiplicand_sorting_vector;
 
 #R1X
-neweq = conservativeRowBottomPush(K_matrx,v,1);
+neweq = conservativeRowBottomPush(K_matrx,multiplicand_sorting_vector,1);
 K_matrx = neweq{1};
-v= neweq{2};
-K_matrx*v
+multiplicand_sorting_vector= neweq{2}
+K_matrx*multiplicand_sorting_vector;
 
 #R1Y
-neweq = conservativeRowBottomPush(K_matrx,v,1); # careful, the 2 ist shifted upwards
+neweq = conservativeRowBottomPush(K_matrx,multiplicand_sorting_vector,1); # careful, the 2 ist shifted upwards
 K_matrx = neweq{1};
-v= neweq{2};
-K_matrx*v
+multiplicand_sorting_vector= neweq{2}
+K_matrx*multiplicand_sorting_vector;
 
 #R1X
-neweq = conservativeRowBottomPush(K_matrx,v,4); # same as above
+neweq = conservativeRowBottomPush(K_matrx,multiplicand_sorting_vector,4); # same as above
 K_matrx = neweq{1};
-v= neweq{2};
-K_matrx
-K_matrx*v
+multiplicand_sorting_vector= neweq{2};
+K_matrx*multiplicand_sorting_vector;
 # fix: pass a vector
 
 

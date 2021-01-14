@@ -1,7 +1,7 @@
 function array = conservativeRowBottomPush(A,b,i)
   #new matrix
   matrix = shiftColumnToLast(shiftRowToLast(A,i),i);
-  #new vector 
+  #new multiplicand sorting vector 
   vector = shiftRowToLast(b,i);
   
   array = {matrix,vector};
