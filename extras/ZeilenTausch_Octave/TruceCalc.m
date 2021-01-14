@@ -1,5 +1,5 @@
 #
-# Careful: this does only work for Staebe with the same EA and auch gleiche Länge
+# Careful: this does only work for Staebe with the same EA and auch gleiche Lï¿½nge
 #
 #
 
@@ -38,11 +38,23 @@ neweq = conservativeRowBottomPush(K_matrx,multiplicand_sorting_vector,lagerVecto
 K_matrx = neweq{1};
 multiplicand_sorting_vector= neweq{2};
 
+function array = extractSubmatricesFromK(K_matrx, anzahlLaeger)
+  array = cell(2,2);
+  a = rows(K_matrx)-anzahlLaeger;
+  b = rows(K_matrx);
+  array(1,1) = K_matrx([1:a],[1:a]);
+  array(1,2) = K_matrx([1:a],[a+1:b]);
+  array(2,1) = K_matrx([a+1:b],[1:a]);
+  array(2,2) = K_matrx([a+1:b],[a+1:b]);
+endfunction
+
+K_matrx_submatrices = extractSubmatricesFromK(K_matrx, rows(lagerVector));
+
 # Extrahiere Submatrizen von K
-K_matrx_11 = K_matrx([1:7],[1:7]);
-K_matrx_12 = K_matrx([1:7],[8:10]);
-K_matrx_21 = K_matrx([8:10],[1:7]);
-K_matrx_22 = K_matrx([8:10],[8:10]);
+K_matrx_11 = K_matrx_submatrices{1,1};
+K_matrx_12 = K_matrx_submatrices{1,2};
+K_matrx_21 = K_matrx_submatrices{2,1};
+K_matrx_22 = K_matrx_submatrices{2,2};
 
 # Bilde pF
 pF = aussenkraefteVektor;
