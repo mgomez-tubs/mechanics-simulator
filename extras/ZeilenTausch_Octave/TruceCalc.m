@@ -13,6 +13,7 @@ addpath("Functions")
 # Get beispiel Knotenmatrix and Elementmatrix
 knotenMatrix = getKnotenMatrix_bsp();
 elementMatrix = getElementMatrix_bsp();
+aussenkraefteVektor_ERS = [0;0;0;0;0;0;4;-5;0;0]; # Transform!
 aussenkraefteVektor = [0;0;0;4;-5;0;0];
 lagerVector = [1;2;6];     # Lager in Knoten 1 Y Richtung: 2 und so
 ######################
@@ -52,8 +53,17 @@ K_matrx_12 = K_matrx_submatrices{1,2};
 K_matrx_21 = K_matrx_submatrices{2,1};
 K_matrx_22 = K_matrx_submatrices{2,2};
 
-# Bilde pF
-pF = aussenkraefteVektor;
+function vector = aussenKraefteVectorTopF(input_vector, sorting_vector, anzahlLaeger)
+  vector = zeros(rows(input_vector)-anzahlLaeger,1);
+  for i=1:rows(vector)
+    vector(i) = input_vector(sorting_vector(i));
+  endfor
+  vector
+endfunction
+
+
+# Bilde pF from aussenKraefteVector
+pF = aussenKraefteVectorTopF(aussenkraefteVektor_ERS, multiplicand_sorting_vector, rows(lagerVector))
 
 # Berechne Knotenverschiebungen vF
 vF = inv(K_matrx_11) * pF;
