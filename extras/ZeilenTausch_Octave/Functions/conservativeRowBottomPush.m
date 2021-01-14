@@ -1,14 +1,22 @@
-function array = conservativeRowBottomPush(A,b,rows_to_push)
-  # Store original sequence
-  original_sequence = b;
+function array = conservativeRowBottomPush(A,b,rows_to_push)  
+  # Transform rows to push
+  trf_rows_to_push = rows_to_push;
+  
+  backpush=0;
+  for i=1:rows(rows_to_push)
+    trf_rows_to_push(i) = rows_to_push(i) - backpush;
+    backpush++;
+  endfor
+
+  matrix = A;
+  vector = b;
   
   for i=1:rows(rows_to_push)
     #new matrix
-    matrix = shiftColumnToLast(shiftRowToLast(A,rows_to_push),rows_to_push);
+    matrix = shiftColumnToLast(shiftRowToLast(matrix,trf_rows_to_push(i)),trf_rows_to_push(i));
     #new multiplicand sorting vector 
-    vector = shiftRowToLast(b,rows_to_push);  
+    vector = shiftRowToLast(vector,trf_rows_to_push(i));  
   endfor
-  
   
   array = {matrix,vector};
 endfunction
