@@ -665,18 +665,39 @@ class KraftTool extends Tool{
     this.componentManager = componentManager
     this.tool = new paper.Tool();
     this.color = "black"
-    this.cursor = null
-
+    this.cursor = null;
+    this.creatingByDragging = false;
+    
+    this.options = {
+      class: paper.Group,
+      position: true,
+      tolerance: 10
+    }
+    
     this.kraftGroup = new paper.Group(
-      new paper.PointText({
+      new paper.PointText({   //0
         point: [10, 10],
         content: 'F',
         fillColor: this.color,
-        fontFamily: 'Courier New',
+        fontFamily: 'Heuristica-Regular',
         fontWeight: 'bold',
-        fontSize: 25
-      })      
-    )
+        fontSize: 15
+      }),
+      new paper.Path.Line({        //1
+        from: [0,0],
+        to: [10,0],
+        strokeWidth: 2,
+        strokeColor: "black"
+      })
+      )
+
+      this.vectorArrow = new paper.Path({
+        strokeColor: "black",
+        strokeWidth: 2
+      });
+
+      this.kraftGroup.addChild(this.vectorArrow)
+
       this.kraftGroup.scale(1,-1)
       this.kraftGroup.scale(2)
 
@@ -691,7 +712,7 @@ class KraftTool extends Tool{
     this.cursor = this.kraftGroup.rasterize(90)
 
     // Remove the group
-    this.kraftGroup.remove();
+    //this.kraftGroup.remove();
 
     this.configurePaperJSToolMouseEvents();
   }
@@ -708,15 +729,48 @@ class KraftTool extends Tool{
 
   configurePaperJSToolMouseEvents(){
     this.tool.onMouseMove = (event) =>{
-      var point = super.snapToGrid(event.point)
-      this.cursor.position = point;
+
     }
 
-    this.tool.onMouseDown = (event) => {
-      console.log("pressed")
-      var groupToExport = this.kraftGroup.clone()
-      groupToExport.position = super.snapToGrid(event.point);
-      Tool.userContentLayer.addChild(groupToExport)
+    this.tool.onMouseDown = (event) => {    // You can only add Kräfte at joints
+      console.log(this.kraftGroup.children[1])
+      this.creatingByDragging = true;
+      
+      let hit = Tool.userContentLayer.hitTest(event.point, this.options)
+      
+      if(hit){
+        if(hit.item.data.type == "handle"){
+          console.log("Handle")
+          this.kraftGroup.children[1].segments[0].point = super.snapToGrid(event.point);
+          this.creatingByDragging = true;
+        }
+      }
+    }
+
+    this.tool.onMouseDrag = (event) => {
+      if(this.creatingByDragging){
+        
+        this.kraftGroup.children[1].segments[1].point = super.snapToGrid(event.point);
+        
+        var originPoint =   this.kraftGroup.children[1].segments[0].point.clone();
+        var endingPoint =   this.kraftGroup.children[1].segments[1].point.clone();
+        var normalizedVector = originPoint.subtract(endingPoint).normalize(15)
+        
+
+        this.vectorArrow.segments = [
+          originPoint.add(normalizedVector.rotate(-135)),
+          originPoint,
+          originPoint.add(normalizedVector.rotate(135)),
+        ]        
+
+        this.kraftGroup.children[0].position = super.snapToGrid(event.point)
+        var newpos = this.kraftGroup.children[0].position.add(new paper.Point(-20,0))
+        this.kraftGroup.children[0].position = newpos
+      }
+    }
+
+    this.tool.onMouseUp = (event) => {
+      this.kraftGroup.clone();
     }
   }
 }

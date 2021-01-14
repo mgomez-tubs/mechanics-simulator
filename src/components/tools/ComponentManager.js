@@ -42,7 +42,8 @@ export default class ComponentManager {
   class MechanicComponent {
     constructor(name, vectorGroup){
       this._name = name;
-      this.vectorGroup = vectorGroup
+      this.parentVectorGroup = vectorGroup
+      this._hitboxProperties = null
     }
     get name(){
       return this._name;
@@ -54,6 +55,24 @@ export default class ComponentManager {
     reposition(point){
       this.vectorGroup.position = point
     }
+
+    set hitboxes(properties){
+
+      if(Array.isArray(properties)){
+        console.log(properties)
+        properties.forEach(element => {
+          element.vectorGroup.data.parentComponent  = element.parentComponent
+          element.vectorGroup.data.type             = element.type
+        })
+      } else {
+        properties.vectorGroup.data.parentComponent = properties.parentComponent
+        properties.vectorGroup.data.type            = properties.type
+      }
+    }
+
+    get hitboxes(){
+      return this._properties
+    }
   }
 
   class Fachwerk extends MechanicComponent{
@@ -61,10 +80,26 @@ export default class ComponentManager {
       super("Fachwerk", vectorGroup);
       // Receive Values
       this.vectorGroup = vectorGroup;
-      console.log(this.vectorGroup.children['handle0'])
-      this.vectorGroup.children['handle1'].data.parentComponent = this
-      this.vectorGroup.children['handle0'].data.parentComponent = this
-      this.vectorGroup.data.parentComponent = this;
+
+      super.hitboxes = 
+        [
+          {
+            vectorGroup: this.vectorGroup,
+            parentComponent: this,
+            type: "center"
+          },
+          {
+            vectorGroup: vectorGroup.children['handle0'],
+            parentComponent: this,
+            type: "handle"
+          },
+          {
+            vectorGroup: vectorGroup.children['handle1'],
+            parentComponent: this,
+            type: "handle"
+          }
+        ]
+
       this._reposition = this.repositionComponent
     }
 
@@ -108,7 +143,13 @@ export default class ComponentManager {
     constructor(vectorGroup){
       super("Loslager", vectorGroup);
       this.vectorGroup = vectorGroup
-      this.vectorGroup.data.parentComponent = this;
+
+      super.hitboxes = {
+        vectorGroup: this.vectorGroup,
+        parentComponent: this,
+        type: "center"
+      }
+
       this.position = this.vectorGroup.position;
       this.raster = this.vectorGroup.rasterize();
       this.raster.visible = false
