@@ -1,6 +1,5 @@
 #
-# Careful: this does only work for Staebe with the same EA and auch gleiche Länge
-#
+# Careful: this does only work for Staebe with the same EA and auch gleiche Lï¿½nge
 #
 
 # Clean Terminal and variables
@@ -11,11 +10,14 @@ clear all
 addpath("Functions")
 
 # Get beispiel Knotenmatrix and Elementmatrix
-knotenMatrix = getKnotenMatrix_bsp();
-elementMatrix = getElementMatrix_bsp();
-aussenkraefteVektor_ERS = [0;0;0;0;0;0;4;-5;0;0]; # Transform!
-aussenkraefteVektor = [0;0;0;4;-5;0;0];
-lagerVector = [1;2;6];     # Lager in Knoten 1 Y Richtung: 2 und so
+knotenMatrix = [0,0;1,0;2,0;3,0;4,0;1,-1;2,-1;3,-1]
+elementMatrix = [1,2;2,3;3,4;4,5;1,6;6,2;6,3;6,7;7,3;7,8;3,8;8,4;8,5]
+
+aussenkraefteVektor = zeros(16,1);
+aussenkraefteVektor(6)=-1000;
+aussenkraefteVektor(8)=-2000;
+
+lagerVector = [1;2;10]     # Lager in Knoten 1 Y Richtung: 2 und so
 ######################
 # Calculate k
 k_pseudo = getk_pseudo_hypermatrix(elementMatrix, knotenMatrix); # Returns 7x1 Cell
@@ -29,7 +31,7 @@ K = mCell2m2mbinary22Matrix(ATk,A);
 K_matrx = cell2mat(K);
 
 # Bringe Lagerknoten runter
-multiplicand_sorting_vector = [1;2;3;4;5;6;7;8;9;10]; #1,2 -> 1x1y; 23 -> 2x2y ...
+multiplicand_sorting_vector = [1;2;3;4;5;6;7;8;9;10;11;12;13;14;15;16;17;18]; #1,2 -> 1x1y; 23 -> 2x2y ...
 
 neweq = conservativeRowBottomPush(K_matrx,multiplicand_sorting_vector,lagerVector);   
 K_matrx = neweq{1};
@@ -58,15 +60,15 @@ function vector = aussenKraefteVectorTopF(input_vector, sorting_vector, anzahlLa
   for i=1:rows(vector)
     vector(i) = input_vector(sorting_vector(i));
   endfor
-  vector
 endfunction
 
 
 # Bilde pF from aussenKraefteVector
-pF = aussenKraefteVectorTopF(aussenkraefteVektor_ERS, multiplicand_sorting_vector, rows(lagerVector))
+pF = aussenKraefteVectorTopF(aussenkraefteVektor, multiplicand_sorting_vector, rows(lagerVector));
 
 # Berechne Knotenverschiebungen vF
 vF = inv(K_matrx_11) * pF;
 
-# Ermittlung Auflagerreaktionsgroessen
+# Output Auflagerreaktionsgroessen to console
+format short g
 pR = K_matrx_21 * vF
