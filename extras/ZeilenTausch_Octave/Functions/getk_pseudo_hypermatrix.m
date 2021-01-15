@@ -24,9 +24,16 @@ function k = getk_stab(stab, elementMatrix, knotenMatrix)
   # Fill k_stab
   c = cos(angle);
   s = sin(angle);
-  origMatrix = [c*c,s*c;s*c,s*s];
-  origMatrix_neg = origMatrix * -1;
-  k = cell(2,2);
-  k(1,1) = k(2,2) = origMatrix;
-  k(1,2) = k(2,1) = origMatrix_neg;
+  
+  k = zeros(4,4);
+  
+  k(1,1) = k(3,3) = c*c;
+  k(1,3) = k(3,1) = -c*c;
+  
+  k(2,2) = k(4,4) = s*s;
+  k(4,2) = k(2,4) = -s*s;
+  
+  k(1,2) = k(2,1) = k(3,4) = k(4,3) = s*c;
+  k(1,4) = k(2,3) = k(3,2) = k(4,1) = -s*c;
+  
 endfunction
