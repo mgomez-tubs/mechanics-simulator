@@ -14,14 +14,14 @@ lagerVector = [1;2;10];     # Lager in Knoten 1 Y Richtung: 2 und so
 
 ######################
 function K_mtrx = buildSystemSteifigkeitsMatrix(knotenAnzahl, kStab_liste, IV)
-  K_mtrx = zeros(knotenAnzahl*2,knotenAnzahl*2)
+  K_mtrx = zeros(knotenAnzahl*2,knotenAnzahl*2);
   knotenAnzahl
-  for currentStab=6
+  for currentStab=1:columns(IV)
     for j=1:4
       for k =1:4    
         #
-        K_mtrx(IV{currentStab}(j),IV{currentStab}(k)) = 1
-        #K_mtrx(IV{currentStab}(j),IV{currentStab}(k)) += kStab_liste{currentStab}(j,k);
+        #K_mtrx(IV{currentStab}(j),IV{currentStab}(k)) = 1;
+        K_mtrx(IV{currentStab}(j),IV{currentStab}(k)) += kStab_liste{currentStab}(j,k);
       endfor
     endfor
   endfor
@@ -39,4 +39,30 @@ for i=1:columns(elementIndexVector)   # Staying in the same row (looping thrugh 
 endfor
 
 
-k_matrx = buildSystemSteifigkeitsMatrix(rows(knotenMatrix), kStab_liste, elementIndexVector);
+
+K_matrx = buildSystemSteifigkeitsMatrix(rows(knotenMatrix), kStab_liste, elementIndexVector);
+
+# Bringe Lagerknoten runter
+neweq = conservativeRowBottomPush(K_matrx,lagerVector);   
+K_matrx = neweq{1};
+multiplicand_sorting_vector= neweq{2};
+
+K_matrx_submatrices = extractSubmatricesFromK(K_matrx, rows(lagerVector));
+
+# Extrahiere Submatrizen von K
+K_matrx_11 = K_matrx_submatrices{1,1};
+K_matrx_12 = K_matrx_submatrices{1,2};
+K_matrx_21 = K_matrx_submatrices{2,1};
+K_matrx_22 = K_matrx_submatrices{2,2};
+
+# Bilde pF from aussenKraefteVector
+pF = aussenKraefteVectorTopF(aussenkraefteVektor, multiplicand_sorting_vector, rows(lagerVector));
+
+# Berechne Knotenverschiebungen vF
+vF = inv(K_matrx_11) * pF;
+
+# Ermittlung Auflagerreaktionsgroessen
+format short g
+pR = K_matrx_21 * vF;
+
+endergebniss = pR
