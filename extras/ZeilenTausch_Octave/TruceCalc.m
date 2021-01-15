@@ -13,6 +13,6 @@ lagerVector = [1;2;6];     # Lager in Knoten 1 Y Richtung: 2 und so
 
 
 ######################
-
+dbstop in "berechnungLagerkraefte" at 37
 erg = berechnungLagerkraefte(knotenMatrix, elementMatrix, aussenkraefteVektor, lagerVector)
 
