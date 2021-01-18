@@ -1,3 +1,0 @@
-g++ -Os -I ..\eigen-master\ ..\main.cpp ..\trucecalculation.cpp -o a
-strip a.exe -s -R .comment -R .gnu.version
-
