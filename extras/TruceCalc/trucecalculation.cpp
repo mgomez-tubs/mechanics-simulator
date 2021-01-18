@@ -1,6 +1,7 @@
 #include "trucecalculation.h"
+#include <chrono>
 
-TruceCalculation::TruceCalculation(ArrayX2d elementMatrix, ArrayX2i knotenMatrix, ArrayXd aussenKraefteVector, ArrayXi lagerVector)
+TruceCalculation::TruceCalculation(ArrayX2i elementMatrix, ArrayX2d knotenMatrix, ArrayXd aussenKraefteVector, ArrayXi lagerVector)
 {
     // Store input variables
     this->elementMatrix = elementMatrix;
@@ -8,12 +9,19 @@ TruceCalculation::TruceCalculation(ArrayX2d elementMatrix, ArrayX2i knotenMatrix
     this-> aussenKraefteVector = aussenKraefteVector;
     this->lagerVector = lagerVector;
 
-    calculateLagerkraefte(elementMatrix, knotenMatrix, aussenKraefteVector, lagerVector);
+    auto t1 = std::chrono::high_resolution_clock::now();
 
-    std::cout << "Good!" << std::endl;
+    MatrixXd ergebniss = calculateLagerkraefte(elementMatrix, knotenMatrix, aussenKraefteVector, lagerVector);
+
+    auto t2 = std::chrono::high_resolution_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+
+    std::cout << "Elapsed time :" << duration << "us" << endl ;
+    cout << endl;
 }
 
-MatrixX2d TruceCalculation::calculateLagerkraefte(ArrayX2d elementMatrix, ArrayX2i knotenMatrix, ArrayXd aussenKraefteVector, ArrayXi lagerVector){
+MatrixXd TruceCalculation::calculateLagerkraefte(ArrayX2i elementMatrix, ArrayX2d knotenMatrix, ArrayXd aussenKraefteVector, ArrayXi lagerVector){
     // Bilde Liste der Elementsteifigkeiten kStab_liste (> Tested)
     Array<Matrix4d,Eigen::Dynamic,1> kStab_liste = this->buildkStab_liste(elementMatrix, knotenMatrix);
 
@@ -23,12 +31,8 @@ MatrixX2d TruceCalculation::calculateLagerkraefte(ArrayX2d elementMatrix, ArrayX
     // Bilde Systemsteifigkeitsmatrix K_mtrx
     MatrixXd K_mtrx = buildSystemSteifigkeitsMatrix(knotenMatrix.rows(), kStab_liste, elementIndexVector);
 
-    cout << " " << endl << K_mtrx;
-
     // Bringe Lagerknoten runter
     rearrangedMatrixXd rearrangedMatrix = conservativeRowBottomPush(K_mtrx, lagerVector);
-
-
 
     // Store new K matrix and the sorted sequence
     K_mtrx = rearrangedMatrix.matrix;
@@ -42,17 +46,14 @@ MatrixX2d TruceCalculation::calculateLagerkraefte(ArrayX2d elementMatrix, ArrayX
 
     // Berechne Knotenverschiebungen K_11 * vF = pF
     MatrixXd vF = K_mtrx_submatrices(0,0).partialPivLu().solve(pF);
-    cout << " " << endl << K_mtrx_submatrices(0,0);
-    cout << " " << endl << pF;
-    cout << " " << endl << vF;
 
-    MatrixX2d pR(2,2);
-    pR << 1,1,1,1;
+    MatrixXd pR = K_mtrx_submatrices(1,0) * vF;
+
     return pR;
 }
 
 // Build k_stab_liste
-Array<Matrix4d,Eigen::Dynamic,1> TruceCalculation::buildkStab_liste(ArrayX2d elementMatrix, ArrayX2i knotenMatrix){
+Array<Matrix4d,Eigen::Dynamic,1> TruceCalculation::buildkStab_liste(ArrayX2i elementMatrix, ArrayX2d knotenMatrix){
     // Store anzahl Staebe in a variable
     int anzStaebe = elementMatrix.rows();
 
@@ -68,14 +69,14 @@ Array<Matrix4d,Eigen::Dynamic,1> TruceCalculation::buildkStab_liste(ArrayX2d ele
 }
 
 // Calculate K_stab
-Matrix4d TruceCalculation::calculate_k_stab(int stab, ArrayX2d elementMatrix, ArrayX2i knotenMatrix){
+Matrix4d TruceCalculation::calculate_k_stab(int stab, ArrayX2i elementMatrix, ArrayX2d knotenMatrix){
     // Get knoten of the stab
     int startKnoten_number  = elementMatrix(stab, 0);
     int endKnoten_number    = elementMatrix(stab, 1);
 
     // Get start and ending position of the stab
-    ArrayXi stabStart = knotenMatrix.row(startKnoten_number);
-    ArrayXi stabEnd   = knotenMatrix.row(endKnoten_number);
+    ArrayXd stabStart = knotenMatrix.row(startKnoten_number);
+    ArrayXd stabEnd   = knotenMatrix.row(endKnoten_number);
 
     // Get angle of Stab, relative to X-Axis
     double angle = getAngleRelativeToXAxis(stabStart, stabEnd);
@@ -100,7 +101,7 @@ Matrix4d TruceCalculation::calculate_k_stab(int stab, ArrayX2d elementMatrix, Ar
 }
 
 // Build Element Index Vector
-Array<Array4i, Eigen::Dynamic, 1> TruceCalculation::buildElementIndexVector(ArrayX2d elementMatrix){
+Array<Array4i, Eigen::Dynamic, 1> TruceCalculation::buildElementIndexVector(ArrayX2i elementMatrix){
     Array<Array4i, Eigen::Dynamic, 1> elementIndexVector(elementMatrix.rows());
 
     for(int i = 0; i<elementIndexVector.rows(); i++){
@@ -115,7 +116,6 @@ Array<Array4i, Eigen::Dynamic, 1> TruceCalculation::buildElementIndexVector(Arra
 // Build Systemsteifigkeitsmatrix
 MatrixXd TruceCalculation::buildSystemSteifigkeitsMatrix(int knotenAnzahl, Array<Matrix4d,Eigen::Dynamic,1> kStab_liste, Array<Array4i, Eigen::Dynamic, 1> IV){
     MatrixXd K_mtrx(knotenAnzahl*2, knotenAnzahl*2);
-    std::cout << "Knotenanzahl ist " << knotenAnzahl << std::endl;
     // Fill with zeroes
     K_mtrx = MatrixXd::Zero(knotenAnzahl*2, knotenAnzahl*2);
 
@@ -211,11 +211,10 @@ VectorXd TruceCalculation::buildPf(ArrayXd input_vector, ArrayXd sorted_row_sequ
     for(int i = 0; i < vector.rows(); i++){
         vector(i) = input_vector((int) sorted_row_sequence(i)); // TODO: Fix this
     }
-    cout << vector << endl;
     return vector;
 }
 
-double TruceCalculation::getAngleRelativeToXAxis(ArrayXi stabStart,ArrayXi stabEnd){
+double TruceCalculation::getAngleRelativeToXAxis(ArrayXd stabStart,ArrayXd stabEnd){
     double steigung = (stabEnd(1)-stabStart(1))/(stabEnd(0)-stabStart(0));
     double angle =  atan(steigung);
     return angle;

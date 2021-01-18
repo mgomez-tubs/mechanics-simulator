@@ -9,7 +9,7 @@ int main()
 {
     std::cout << "Program starting..." << std::endl;
 
-    ArrayX2d elementMatrix(7,2);
+    ArrayX2i elementMatrix(7,2);
     elementMatrix <<    1,2,
                         2,3,
                         4,5,
@@ -22,7 +22,7 @@ int main()
 
     //std::cout <<    elementMatrix << std::endl;
 
-    ArrayX2i knotenMatrix(5,2);
+    ArrayX2d knotenMatrix(5,2);
     knotenMatrix<<      0,    0,
                         270,  468,
                         540,  0,

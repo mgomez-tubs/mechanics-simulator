@@ -32,17 +32,17 @@ struct rearrangedMatrixXd {
 class TruceCalculation
 {
 public:
-    TruceCalculation(ArrayX2d, ArrayX2i, ArrayXd, ArrayXi);
+    TruceCalculation(ArrayX2i, ArrayX2d, ArrayXd, ArrayXi);
 
 private:
     // Calculate
-    MatrixX2d calculateLagerkraefte(ArrayX2d, ArrayX2i, ArrayXd, ArrayXi);
-    Matrix4d  calculate_k_stab(int, ArrayX2d, ArrayX2i);
+    MatrixXd calculateLagerkraefte(ArrayX2i, ArrayX2d, ArrayXd, ArrayXi);
+    Matrix4d  calculate_k_stab(int, ArrayX2i, ArrayX2d);
 
     // Builders
-    Array<Matrix4d,Eigen::Dynamic,1> buildkStab_liste(ArrayX2d, ArrayX2i);
-    double getAngleRelativeToXAxis(ArrayXi stabStart, ArrayXi stabEnd);
-    Array<Array4i, Eigen::Dynamic, 1> buildElementIndexVector(ArrayX2d);
+    Array<Matrix4d,Eigen::Dynamic,1> buildkStab_liste(ArrayX2i, ArrayX2d);
+    double getAngleRelativeToXAxis(ArrayXd stabStart, ArrayXd stabEnd);
+    Array<Array4i, Eigen::Dynamic, 1> buildElementIndexVector(ArrayX2i);
     MatrixXd buildSystemSteifigkeitsMatrix(int, Array<Matrix4d,Eigen::Dynamic,1>, Array<Array4i, Eigen::Dynamic, 1>);
     rearrangedMatrixXd conservativeRowBottomPush(MatrixXd, ArrayXi);
     VectorXd buildPf(ArrayXd, ArrayXd, int);
@@ -55,8 +55,8 @@ private:
     MatrixXd shiftColumnToLast(MatrixXd, int);
 
     // Input variables
-    ArrayX2d elementMatrix;
-    ArrayX2i knotenMatrix;
+    ArrayX2i elementMatrix;
+    ArrayX2d knotenMatrix;
     ArrayXd  aussenKraefteVector;
     ArrayXi  lagerVector;
 
