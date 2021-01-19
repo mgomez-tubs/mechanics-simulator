@@ -1,10 +1,10 @@
 TEMPLATE = app
-CONFIG += c++11
+CONFIG += c++17
 CONFIG -= app_bundle
 
 SOURCES += \
         main.cpp \
-        main_ems.cpp \
+        #main_ems.cpp \
         trucecalculation.cpp
 
 HEADERS += \

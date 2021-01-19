@@ -1,18 +1,38 @@
 #include "trucecalculation.h"
 #include <chrono>
+#include <iterator>
 
 TruceCalculation::TruceCalculation(ArrayX2i elementMatrix, ArrayX2d knotenMatrix, ArrayXd aussenKraefteVector, ArrayXi lagerVector)
 {
     // Store input variables
+    // Transform elementMatrix to C++ friendly index numbers
+    elementMatrix-=1;
     this->elementMatrix = elementMatrix;
     this->knotenMatrix  = knotenMatrix;
     this-> aussenKraefteVector = aussenKraefteVector;
     this->lagerVector = lagerVector;
 
-    this->result = calculateLagerkraefte(elementMatrix, knotenMatrix, aussenKraefteVector, lagerVector);
+
+    //this->result = calculateLagerkraefte(elementMatrix, knotenMatrix, aussenKraefteVector, lagerVector);
 }
 
-VectorXd TruceCalculation::calculateLagerkraefte(ArrayX2i elementMatrix, ArrayX2d knotenMatrix, ArrayXd aussenKraefteVector, ArrayXi lagerVector){
+TruceCalculation::TruceCalculation(int elementMatrix[], int anz_Elemente, double* knotenMatrix, int anz_Knoten, double* aussenKraefteVector, int* lagerVector, int anz_Lager)
+{
+    // Store input variables
+
+    this->elementMatrix = Eigen::Map<Eigen::Matrix<int,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>> (elementMatrix,anz_Elemente,2);
+    // Transform elementMatrix to C++ friendly index numbers
+    this->elementMatrix-=1;
+    cout <<this->elementMatrix << endl;
+
+    this->knotenMatrix  = Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>> (knotenMatrix,anz_Knoten,2);
+    this->aussenKraefteVector = Eigen::Map<Eigen::ArrayXd> (aussenKraefteVector, anz_Knoten*2);
+    this->lagerVector = Eigen::Map<Eigen::ArrayXi> (lagerVector, anz_Lager);
+
+}
+
+
+void TruceCalculation::calculateLagerkraefte(){
     // Bilde Liste der Elementsteifigkeiten kStab_liste (> Tested)
     Array<Matrix4d,Eigen::Dynamic,1> kStab_liste = this->buildkStab_liste(elementMatrix, knotenMatrix);
 
@@ -40,7 +60,9 @@ VectorXd TruceCalculation::calculateLagerkraefte(ArrayX2i elementMatrix, ArrayX2
 
     MatrixXd pR = K_mtrx_submatrices(1,0) * vF;
 
-    return pR;
+    this->result = pR;
+
+    // return pR;
 }
 
 // Build k_stab_liste

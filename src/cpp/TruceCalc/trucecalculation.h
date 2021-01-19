@@ -32,17 +32,20 @@ struct rearrangedMatrixXd {
 class TruceCalculation
 {
 public:
+    // Constructors
     TruceCalculation(ArrayX2i, ArrayX2d, ArrayXd, ArrayXi);
+    TruceCalculation(int[], int, double*, int, double*, int*, int);
+
     VectorXd result;
 
     // Public Methods
+    void calculateLagerkraefte();
     VectorXd getResult();
     double* getResultAsArray();
 
 private:
     // Calculate
-    VectorXd calculateLagerkraefte(ArrayX2i, ArrayX2d, ArrayXd, ArrayXi);
-    Matrix4d  calculate_k_stab(int, ArrayX2i, ArrayX2d);
+    Matrix4d calculate_k_stab(int, ArrayX2i, ArrayX2d);
 
     // Builders
     Array<Matrix4d,Eigen::Dynamic,1> buildkStab_liste(ArrayX2i, ArrayX2d);
