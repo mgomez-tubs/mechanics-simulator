@@ -1,5 +1,5 @@
 #include <emscripten/bind.h>
-double number_array[5] = {0,1,2,3,4};
+double number_array[5] = {0.00, 0.01,0.02,0.03,0.04};
 extern "C" {
     double* get_array();
 }

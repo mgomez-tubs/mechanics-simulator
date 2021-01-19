@@ -22,7 +22,6 @@
     <Toolbar :toolbarId="'solution'" :toolbarName = "'Solution'" :passedClass = "'table-container'">
       <SolutionTable/>
     </Toolbar>
-    <Solver/>
   </div>
   
   <!-- Bottom Left Notifications-->
