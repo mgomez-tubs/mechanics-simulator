@@ -24,3 +24,5 @@ pnpm-debug.log*
 extras/TruceCalc_CPP/Eigen/
 
 extras/TruceCalc/eigen-master/
+
+src/cpp/TruceCalc/eigen-master/

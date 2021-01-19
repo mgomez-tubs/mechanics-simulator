@@ -3,6 +3,9 @@ import { reactive } from 'vue'
 import App from './App.vue'
 import mitt from 'mitt'
 
+// Emscripten imports
+
+
 import ComponentManager from './components/tools/ComponentManager'
 
 // Mount app
@@ -17,7 +20,6 @@ const toolbarEvents = mitt();                                   // Create an emi
 app.config.globalProperties.toolbarEvents = toolbarEvents;      // Set emitter object as global property
 
 // Make ComponentManager global and reactive
-
 var _componentManager = new ComponentManager();
 
 const $reactiveGlobals = reactive({

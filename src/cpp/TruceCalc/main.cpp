@@ -42,5 +42,8 @@ int main()
     //std::cout <<    lagerVector << std::endl;
 
     TruceCalculation truceCalculation(elementMatrix, knotenMatrix, aussenKraefteVector, lagerVector);
+    cout << truceCalculation.getResultAsArray()[0] << endl;
+    cout << truceCalculation.getResultAsArray()[1] << endl;
+    cout << truceCalculation.getResultAsArray()[2] << endl;
     return 0;
 }

@@ -4,6 +4,7 @@ CONFIG -= app_bundle
 
 SOURCES += \
         main.cpp \
+        main_ems.cpp \
         trucecalculation.cpp
 
 HEADERS += \

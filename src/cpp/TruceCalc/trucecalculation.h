@@ -33,10 +33,15 @@ class TruceCalculation
 {
 public:
     TruceCalculation(ArrayX2i, ArrayX2d, ArrayXd, ArrayXi);
+    VectorXd result;
+
+    // Public Methods
+    VectorXd getResult();
+    double* getResultAsArray();
 
 private:
     // Calculate
-    MatrixXd calculateLagerkraefte(ArrayX2i, ArrayX2d, ArrayXd, ArrayXi);
+    VectorXd calculateLagerkraefte(ArrayX2i, ArrayX2d, ArrayXd, ArrayXi);
     Matrix4d  calculate_k_stab(int, ArrayX2i, ArrayX2d);
 
     // Builders

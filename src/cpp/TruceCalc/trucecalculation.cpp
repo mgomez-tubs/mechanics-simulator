@@ -9,19 +9,10 @@ TruceCalculation::TruceCalculation(ArrayX2i elementMatrix, ArrayX2d knotenMatrix
     this-> aussenKraefteVector = aussenKraefteVector;
     this->lagerVector = lagerVector;
 
-    auto t1 = std::chrono::high_resolution_clock::now();
-
-    MatrixXd ergebniss = calculateLagerkraefte(elementMatrix, knotenMatrix, aussenKraefteVector, lagerVector);
-
-    auto t2 = std::chrono::high_resolution_clock::now();
-
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
-
-    std::cout << "Elapsed time :" << duration << "us" << endl ;
-    cout << endl;
+    this->result = calculateLagerkraefte(elementMatrix, knotenMatrix, aussenKraefteVector, lagerVector);
 }
 
-MatrixXd TruceCalculation::calculateLagerkraefte(ArrayX2i elementMatrix, ArrayX2d knotenMatrix, ArrayXd aussenKraefteVector, ArrayXi lagerVector){
+VectorXd TruceCalculation::calculateLagerkraefte(ArrayX2i elementMatrix, ArrayX2d knotenMatrix, ArrayXd aussenKraefteVector, ArrayXi lagerVector){
     // Bilde Liste der Elementsteifigkeiten kStab_liste (> Tested)
     Array<Matrix4d,Eigen::Dynamic,1> kStab_liste = this->buildkStab_liste(elementMatrix, knotenMatrix);
 
@@ -218,4 +209,12 @@ double TruceCalculation::getAngleRelativeToXAxis(ArrayXd stabStart,ArrayXd stabE
     double steigung = (stabEnd(1)-stabStart(1))/(stabEnd(0)-stabStart(0));
     double angle =  atan(steigung);
     return angle;
+}
+
+VectorXd TruceCalculation::getResult(){
+    return this->result;
+}
+
+double* TruceCalculation::getResultAsArray(){
+    return this->result.data();
 }

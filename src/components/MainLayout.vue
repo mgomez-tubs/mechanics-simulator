@@ -18,6 +18,11 @@
     <Toolbar :toolbarId="'components'" :toolbarName = "'Components'" :passedClass = "'table-container'">
       <ComponentTable/>
     </Toolbar>
+
+    <Toolbar :toolbarId="'solution'" :toolbarName = "'Solution'" :passedClass = "'table-container'">
+      <SolutionTable/>
+    </Toolbar>
+    <Solver/>
   </div>
   
   <!-- Bottom Left Notifications-->
@@ -29,6 +34,7 @@
 <script>
 import CanvasWrapper from './CanvasWrapper.vue'
 import ComponentTable from './ComponentTable'
+import SolutionTable from './SolutionTable'
 import Toolbar from './Toolbar'
 import MenuBar from './MenuBar'
 export default {
@@ -60,7 +66,8 @@ export default {
     CanvasWrapper,
     Toolbar,
     MenuBar,
-    ComponentTable
+    ComponentTable,
+    SolutionTable
   },
   mounted() {
     this.toolbarEvents.on("userClickedOnTool", id => {
