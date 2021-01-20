@@ -1,5 +1,6 @@
 <template>
     <button @click="solve">Calculate!</button>
+    <button @click="printKnotenArray">Print Knoten Data!</button>
 </template>
 
 <script>
@@ -69,6 +70,9 @@ export default {
             console.log("Value 0 is: " + moduleInstance.getValue(return_ptr_from_get_array, 'double'));
             console.log("Value 1 is: " + moduleInstance.getValue(return_ptr_from_get_array+SIZE_OF_DOUBLE, 'double'));
             console.log("Value 2 is: " + moduleInstance.getValue(return_ptr_from_get_array+SIZE_OF_DOUBLE*2, 'double'));
+        },
+        printKnotenArray(){
+            console.log(this.$reactiveGlobals.componentManager.getSimulationData());
         }
     },
     mounted() {

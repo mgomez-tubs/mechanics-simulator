@@ -70,6 +70,9 @@ export default{
     // Create new ToolManager
     this.toolManager = new ToolManager(this.paperScope, this.$reactiveGlobals.componentManager);
 
+    // Set up component manager
+    this.$reactiveGlobals.componentManager.transformationMatrix = this.paperScope.project.layers['grid-layer'].matrix;
+
     // Set up default tool
     this.toolManager.currentActiveTool = this.toolManager.selectionTool;
 

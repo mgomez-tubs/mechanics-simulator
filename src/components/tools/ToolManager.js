@@ -100,6 +100,10 @@ class Tool {   // scope and tool can be in the constrcutor. consider adding
     return this._userContentLayer;
   }
 
+  getPointInSimulationCoordinates(point){
+    return Tool.gridMatrix.inverseTransform(point);
+  }
+
   snapToGrid(point) {
     var translated_point = Tool.gridMatrix.inverseTransform(point)
     // Upscale

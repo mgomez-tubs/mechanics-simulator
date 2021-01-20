@@ -2,6 +2,7 @@ export default class ComponentManager {
     constructor(){      
       this._components = []
       this._componentCount = 0;
+      this._transformationMatrix = null;
     }
 
     set components(components){
@@ -18,6 +19,15 @@ export default class ComponentManager {
 
     get componentCount(){     // For vue to detect changes, make a getter functon!!!
       return this.components.length
+    }
+
+    set transformationMatrix(transformationMatrix){
+      console.log("This was set")
+      this._transformationMatrix = transformationMatrix;
+    }
+
+    get transformationMatrix() {
+      return this._transformationMatrix;
     }
     
     addFachwerk(startPosition, endPosition){
@@ -36,6 +46,15 @@ export default class ComponentManager {
         this.components.pop();
         console.log(this.components)  
       }
+    }
+
+    getSimulationData(){
+      // Build Knoten Matrix
+      var data = [];
+        for(let i = 0; i < this.componentCount; i++)
+          var transformedKnoten = this.components[i].getElementKnoten();
+          data.push(this.transformationMatrix.inverseTransform(transformedKnoten))
+      return data;
     }
   }
 
@@ -137,6 +156,12 @@ export default class ComponentManager {
         console.log("Removed raster of Fachwerk")
         this.vectorGroup.remove();
     }   
+
+    // Simulation related properties
+    getElementKnoten(){
+      var knoten = [this.vectorGroup.children['handle0'].position.x, this.vectorGroup.children['handle1'].position.y];
+      return knoten
+    }
   }
 
   class Loslager extends MechanicComponent{
