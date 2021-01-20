@@ -22,7 +22,7 @@ int main()
     // Element matrix - as double[] and Column Major!
     int elementMatrix2[14] = {1,2,2,3,4,5,1,4,2,5,2,4,3,5};
 
-    const int anz_Elemente = 7;
+    int anz_Elemente = 7;
 
     //std::cout <<    elementMatrix << std::endl;
 

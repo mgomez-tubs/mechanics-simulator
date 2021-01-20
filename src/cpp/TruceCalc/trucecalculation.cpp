@@ -5,30 +5,22 @@
 TruceCalculation::TruceCalculation(ArrayX2i elementMatrix, ArrayX2d knotenMatrix, ArrayXd aussenKraefteVector, ArrayXi lagerVector)
 {
     // Store input variables
-    // Transform elementMatrix to C++ friendly index numbers
-    elementMatrix-=1;
+    elementMatrix-=1;   // Transform elementMatrix to C++ friendly index numbers
     this->elementMatrix = elementMatrix;
     this->knotenMatrix  = knotenMatrix;
     this-> aussenKraefteVector = aussenKraefteVector;
     this->lagerVector = lagerVector;
-
-
-    //this->result = calculateLagerkraefte(elementMatrix, knotenMatrix, aussenKraefteVector, lagerVector);
 }
 
 TruceCalculation::TruceCalculation(int elementMatrix[], int anz_Elemente, double* knotenMatrix, int anz_Knoten, double* aussenKraefteVector, int* lagerVector, int anz_Lager)
 {
     // Store input variables
-
     this->elementMatrix = Eigen::Map<Eigen::Matrix<int,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>> (elementMatrix,anz_Elemente,2);
-    // Transform elementMatrix to C++ friendly index numbers
-    this->elementMatrix-=1;
-    cout <<this->elementMatrix << endl;
+    this->elementMatrix-=1; // Transform elementMatrix to C++ friendly index numbers
 
     this->knotenMatrix  = Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>> (knotenMatrix,anz_Knoten,2);
     this->aussenKraefteVector = Eigen::Map<Eigen::ArrayXd> (aussenKraefteVector, anz_Knoten*2);
-    this->lagerVector = Eigen::Map<Eigen::ArrayXi> (lagerVector, anz_Lager);
-
+    this->lagerVector = Eigen::Map<Eigen::ArrayXi> (lagerVector, anz_Lager);    
 }
 
 
@@ -239,4 +231,8 @@ VectorXd TruceCalculation::getResult(){
 
 double* TruceCalculation::getResultAsArray(){
     return this->result.data();
+}
+
+void TruceCalculation::printResultToConsole(){
+    cout << "Das Ergebnis ist" << this->result << endl;
 }

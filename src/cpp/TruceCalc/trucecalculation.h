@@ -42,6 +42,7 @@ public:
     void calculateLagerkraefte();
     VectorXd getResult();
     double* getResultAsArray();
+    void printResultToConsole();
 
 private:
     // Calculate
