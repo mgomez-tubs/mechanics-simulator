@@ -3,6 +3,12 @@ export default class ComponentManager {
       this._components = []
       this._componentCount = 0;
       this._transformationMatrix = null;
+      this.knoten = {
+        array : [],
+        add : function(vector){
+          this.array.push(vector)
+        },
+      }
     }
 
     set components(components){
@@ -30,8 +36,12 @@ export default class ComponentManager {
       return this._transformationMatrix;
     }
     
-    addFachwerk(startPosition, endPosition){
-      this.components.push(new Fachwerk(startPosition, endPosition))
+    addFachwerk(vectorGroup, startPosition, endPosition){
+      this.components.push(new Fachwerk(vectorGroup))
+      
+      
+      //this.knoten.add(endPosition.x)
+      //this.knoten.add(endPosition.y)
     }
     addFestlager(position, raster){
       this.components.push(new Festlager(position, raster))
@@ -51,9 +61,14 @@ export default class ComponentManager {
     getSimulationData(){
       // Build Knoten Matrix
       var data = [];
-        for(let i = 0; i < this.componentCount; i++)
+      console.log(this.componentCount)
+        for(let i = 0; i < this.componentCount; i++){
           var transformedKnoten = this.components[i].getElementKnoten();
-          data.push(this.transformationMatrix.inverseTransform(transformedKnoten))
+          console.log(transformedKnoten)
+          data.push(this.transformationMatrix.inverseTransform(transformedKnoten)[0])
+          data.push(this.transformationMatrix.inverseTransform(transformedKnoten)[1])
+          
+        }
       return data;
     }
   }
@@ -159,7 +174,18 @@ export default class ComponentManager {
 
     // Simulation related properties
     getElementKnoten(){
-      var knoten = [this.vectorGroup.children['handle0'].position.x, this.vectorGroup.children['handle1'].position.y];
+      var knoten = [this.vectorGroup.children['handle0'].position.x, 
+                    this.vectorGroup.children['handle0'].position.y,
+                    this.vectorGroup.children['handle1'].position.x,
+                    this.vectorGroup.children['handle1'].position.y];
+      return knoten
+    }
+
+    getElementKnoten_viewport_coords(){
+      var knoten = [this.vectorGroup.children['handle0'].position.x, 
+                    this.vectorGroup.children['handle0'].position.y,
+                    this.vectorGroup.children['handle1'].position.x,
+                    this.vectorGroup.children['handle1'].position.y];
       return knoten
     }
   }

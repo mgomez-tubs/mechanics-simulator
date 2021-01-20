@@ -72,7 +72,8 @@ export default {
             console.log("Value 2 is: " + moduleInstance.getValue(return_ptr_from_get_array+SIZE_OF_DOUBLE*2, 'double'));
         },
         printKnotenArray(){
-            console.log(this.$reactiveGlobals.componentManager.getSimulationData());
+            //console.log(this.$reactiveGlobals.componentManager.getSimulationData());
+            console.log(this.$reactiveGlobals.componentManager.knoten.array)
         }
     },
     mounted() {
