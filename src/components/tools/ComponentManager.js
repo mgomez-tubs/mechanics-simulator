@@ -220,27 +220,18 @@ export default class ComponentManager {
           }
         ]
 
-      this._reposition = this.repositionComponent
+      this.reposition = this.repositionComponent
     }
 
     setActivePivot(pivot){
       if(pivot == "handle0"){
-        console.log("Reposition handle 0")
-        this._reposition = this.repositionHandle0
+        this.reposition = this.repositionHandle0
       } else if(pivot == "handle1"){
-        console.log("Reposition handle 1")
-        this._reposition = this.repositionHandle1
+        this.reposition = this.repositionHandle1
       } else {
         console.log("This message should not appear!")
-        this._reposition = this.repositionComponent
+        this.reposition = this.repositionComponent
       }
-    }
-
-    set reposition(reposition){
-      this.reposition = reposition
-    }
-    get reposition(){
-      return this._reposition
     }
 
     repositionComponent(point){
