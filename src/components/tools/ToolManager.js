@@ -187,7 +187,7 @@ class SelectionTool extends Tool{
           hitResult.item.selected = true;
           if(hitResult.item.name == 'handle0' || hitResult.item.name == 'handle1'){
             // If a In- or Out Handle are found, set up mechanic component accordingly
-            hitResult.item.data.parentComponent.reposition = hitResult.item.name
+            hitResult.item.data.parentComponent.setActivePivot(hitResult.item.name)
           }
         } else {        
           this.singleClickSelection = true;

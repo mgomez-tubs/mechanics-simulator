@@ -78,6 +78,20 @@ export default class ComponentManager {
             }
           },
           knotenList : [],
+          get knotenMatrixAsArray(){
+            console.log(this.knotenList.length)
+            var array = []
+            var j = 0;
+            for(let i = 0; i < this.knotenList.length; i++){
+
+              console.log(this.transformationMatrix)
+              let new_point = this.transformationMatrix.inverseTransform(this.knotenList[i]) 
+              array[j]   =  new_point.x  
+              array[j+1] =  new_point.y
+              j+=2
+            }
+            return array
+          },
           counter: 0
         }
 
@@ -127,14 +141,14 @@ export default class ComponentManager {
 
       this.KnotenFactory.addKnoten(startPoint.x, startPoint.y)
       this.KnotenFactory.addKnoten(endPoint.x, endPoint.y)
-
-      console.log(this.KnotenFactory.knotenList)
     }
-    addFestlager(position, raster){
-      this.components.push(new Festlager(position, raster))
+    addFestlager(vectorGroup){
+      this.components.push(new Festlager(vectorGroup))
+      this.KnotenFactory.addKnoten(vectorGroup.position.x,vectorGroup.position.y)
     }
-    addLoslager(position, raster){
-      this.components.push(new Loslager(position, raster))
+    addLoslager(vectorGroup){
+      this.components.push(new Loslager(vectorGroup))
+      this.KnotenFactory.addKnoten(vectorGroup.position.x,vectorGroup.position.y)
     }
     
     removeAllElements(){
@@ -184,7 +198,6 @@ export default class ComponentManager {
   class Fachwerk extends MechanicComponent{
     constructor(vectorGroup){
       super("Fachwerk", vectorGroup);
-      // DONT FORGET TO DESTROY INCOMING GROUP
       // Receive Values
       this.vectorGroup = vectorGroup;
 
@@ -210,7 +223,7 @@ export default class ComponentManager {
       this._reposition = this.repositionComponent
     }
 
-    set reposition(pivot){
+    setActivePivot(pivot){
       if(pivot == "handle0"){
         console.log("Reposition handle 0")
         this._reposition = this.repositionHandle0
@@ -221,6 +234,10 @@ export default class ComponentManager {
         console.log("This message should not appear!")
         this._reposition = this.repositionComponent
       }
+    }
+
+    set reposition(reposition){
+      this.reposition = reposition
     }
     get reposition(){
       return this._reposition
@@ -264,9 +281,9 @@ export default class ComponentManager {
   }
 
   class Loslager extends MechanicComponent{
-    constructor(vectorGroup){
+    constructor(vectorGroup, knoten){
       super("Loslager", vectorGroup);
-      this.vectorGroup = vectorGroup
+      this.vectorGroup = vectorGroup;
 
       super.hitboxes = {
         vectorGroup: this.vectorGroup,
