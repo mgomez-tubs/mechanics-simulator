@@ -1,22 +1,78 @@
+// According to SO this is supposed to be fast
+function makeRec(len, acc) {
+  if (acc == null) acc = [];
+  if (len <= 1) return acc;
+  var b = makeRec(len >> 1, [0]);
+  b = b.concat(b);
+  if (len & 1) b = b.concat([0]);
+  return b;
+}
+
 export default class ComponentManager {
     constructor(){      
-      this._components = []
+      this._components = {
+        all: [],
+        get lager(){
+          let lager = [];
+          this.all.forEach((element, index) => {
+            if(element.name == 'Festlager' || element.name == 'Loslager')
+              lager.push(element)
+          });
+          return lager
+        }
+      }
+
       this._componentCount = 0;
       this._transformationMatrix = null;
       this.knoten = {
         array : [],
+        transformationMatrix : null,
         add : function(vector){
           this.array.push(vector)
         },
+        get knotenMatrix(){
+          let array = new Array(this.array.length*2);        
+          var j = 0;
+          for(let i = 0; i < this.array.length; i++){
+            let new_point = this.transformationMatrix.inverseTransform(this.array[i].position) 
+            array[j]   =  new_point.x  
+            array[j+1] =  new_point.y
+            j+=2
+          }
+          return array
+        }
       }
+      this.lagerHandler = {
+        knotenMatrix : null,       //ugly
+        components: null,
+        get lagerVector(){
+          var array = [];
+          //let array = makeRec(this.components.lager.length)
+          this.components.lager.forEach( (element, index) => {
+            array.push(index)
+          });
+          return array
+        }
+      }
+      // Bindings
+      this.lagerHandler.knotenMatrix = this.knoten.knotenMatrix
+      this.lagerHandler.components = this._components
     }
 
     set components(components){
-      this._components = components;
+      this._components.all = components;
     }
     
     get components(){
-      return this._components
+      return this._components.all
+    }
+
+    set lager(lager){
+      this._components.lager = lager
+    }
+
+    get lager(){
+      return this._components.lager
     }
 
     set componentCount(componentCount){
@@ -28,20 +84,21 @@ export default class ComponentManager {
     }
 
     set transformationMatrix(transformationMatrix){
-      console.log("This was set")
       this._transformationMatrix = transformationMatrix;
+      this.knoten.transformationMatrix=transformationMatrix
     }
 
     get transformationMatrix() {
       return this._transformationMatrix;
     }
     
-    addFachwerk(vectorGroup, startPosition, endPosition){
-      this.components.push(new Fachwerk(vectorGroup))
-      
-      
-      //this.knoten.add(endPosition.x)
-      //this.knoten.add(endPosition.y)
+    addFachwerk(vectorGroup, startPoint, endPoint){
+      let fachwerk =  new Fachwerk(vectorGroup)
+      this.components.push(fachwerk)
+      this.knoten.add(fachwerk.vectorGroup.children['handle0'])
+      this.knoten.add(fachwerk.vectorGroup.children['handle1'])
+
+      console.log(this.knoten.knotenMatrix)
     }
     addFestlager(position, raster){
       this.components.push(new Festlager(position, raster))
@@ -56,20 +113,6 @@ export default class ComponentManager {
         this.components.pop();
         console.log(this.components)  
       }
-    }
-
-    getSimulationData(){
-      // Build Knoten Matrix
-      var data = [];
-      console.log(this.componentCount)
-        for(let i = 0; i < this.componentCount; i++){
-          var transformedKnoten = this.components[i].getElementKnoten();
-          console.log(transformedKnoten)
-          data.push(this.transformationMatrix.inverseTransform(transformedKnoten)[0])
-          data.push(this.transformationMatrix.inverseTransform(transformedKnoten)[1])
-          
-        }
-      return data;
     }
   }
 
@@ -93,7 +136,6 @@ export default class ComponentManager {
     set hitboxes(properties){
 
       if(Array.isArray(properties)){
-        console.log(properties)
         properties.forEach(element => {
           element.vectorGroup.data.parentComponent  = element.parentComponent
           element.vectorGroup.data.type             = element.type
@@ -112,6 +154,7 @@ export default class ComponentManager {
   class Fachwerk extends MechanicComponent{
     constructor(vectorGroup){
       super("Fachwerk", vectorGroup);
+      // DONT FORGET TO DESTROY INCOMING GROUP
       // Receive Values
       this.vectorGroup = vectorGroup;
 

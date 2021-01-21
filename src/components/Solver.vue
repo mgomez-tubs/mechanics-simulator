@@ -1,6 +1,6 @@
 <template>
     <button @click="solve">Calculate!</button>
-    <button @click="printKnotenArray">Print Knoten Data!</button>
+    <button @click="printKnotenArray">Print Component Manager Data!</button>
 </template>
 
 <script>
@@ -73,8 +73,10 @@ export default {
         },
         printKnotenArray(){
             //console.log(this.$reactiveGlobals.componentManager.getSimulationData());
-            console.log(this.$reactiveGlobals.componentManager.knoten.array)
-        }
+            console.log(this.$reactiveGlobals.componentManager.knoten.knotenMatrix)
+            console.log("LagerVector :")
+            console.log(this.$reactiveGlobals.componentManager.lagerHandler.lagerVector)
+        },
     },
     mounted() {
         

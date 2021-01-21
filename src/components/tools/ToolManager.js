@@ -155,7 +155,7 @@ class SelectionTool extends Tool{
   }
 
   enable(){
-    console.log("selectionTool: enable() called");
+    //console.log("selectionTool: enable() called");
     this.tool.activate();
   }
 
@@ -293,8 +293,8 @@ class SelectionTool extends Tool{
       else {
         //this.deselectEverything();
       }
-      console.log("Selected objects after mouse up: " + this.selectedObjects.length)
-      console.log(this.selectedObjects)
+      //console.log("Selected objects after mouse up: " + this.selectedObjects.length)
+      //console.log(this.selectedObjects)
 
       // Hide the selection square
       this.selectSquare.visible = false
@@ -402,7 +402,7 @@ class FachwerkCreateTool extends Tool{
 
         // Create a new Fachwerk object
         if(this.mouseWasDragged === true){
-          console.log("Created a new fachwerk object")
+          //console.log("Created a new fachwerk object")
 
           // Create a PaperJS group
           // First create groups for the handles
@@ -451,7 +451,7 @@ class FachwerkCreateTool extends Tool{
     this.mouseWasDragged = false;
   }
   enable(){
-    console.log("FachwerkTool: enable() called")
+    //console.log("FachwerkTool: enable() called")
     this.cursor.visible = true;
     this.tool.activate();
   }
