@@ -57,6 +57,32 @@ export default class ComponentManager {
       // Bindings
       this.lagerHandler.knotenMatrix = this.knoten.knotenMatrix
       this.lagerHandler.components = this._components
+
+      // Build Knoten Prototype
+        
+        this.KnotenFactory = {
+          Knoten(x,y,knotenNummer){
+            this.position = [x,y],
+            this.knotenNummer = knotenNummer;
+          },
+          addKnoten(x,y){
+            adder:{
+              for(const element of this.knotenList){
+                if(element.position[0] == x && element.position[1]== y){
+                  console.log("WONT BE ADDING THIS ONE!")
+                  break adder
+                }
+              }
+              this.counter++;
+              this.knotenList.push(new this.Knoten(x,y,this.counter))
+            }
+          },
+          knotenList : [],
+          counter: 0
+        }
+
+        console.log(this.KnotenFactory.knotenList)
+        
     }
 
     set components(components){
@@ -92,13 +118,17 @@ export default class ComponentManager {
       return this._transformationMatrix;
     }
     
-    addFachwerk(vectorGroup, startPoint, endPoint){
+    addFachwerk(vectorGroup){
       let fachwerk =  new Fachwerk(vectorGroup)
       this.components.push(fachwerk)
-      this.knoten.add(fachwerk.vectorGroup.children['handle0'])
-      this.knoten.add(fachwerk.vectorGroup.children['handle1'])
 
-      console.log(this.knoten.knotenMatrix)
+      let startPoint = vectorGroup.children['handle0'].position;
+      let endPoint = vectorGroup.children['handle1'].position;
+
+      this.KnotenFactory.addKnoten(startPoint.x, startPoint.y)
+      this.KnotenFactory.addKnoten(endPoint.x, endPoint.y)
+
+      console.log(this.KnotenFactory.knotenList)
     }
     addFestlager(position, raster){
       this.components.push(new Festlager(position, raster))
