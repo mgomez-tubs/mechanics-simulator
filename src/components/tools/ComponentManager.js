@@ -1,4 +1,4 @@
-// According to SO this is supposed to be fast
+// According to SO this is supposed to be the fastest way of creating 0-filled arrays
 function makeRec(len, acc) {
 	if (acc == null) acc = [];
 	if (len <= 1) return acc;
@@ -72,12 +72,12 @@ export default class ComponentManager {
 			this.lagerHandler.components = this._components
 
 			// Build Knoten Prototype
-				
 			this.KnotenFactory = {
+				transformationMatrix: null,
 				addKnoten(point){
 					adder:{
 						for(const element of this.knotenList){
-							if(element.position[0].x == point.x && element.position[1].y == point.y){
+							if(element.position[0] == point.x && element.position[1] == point.y){
 								console.log("WONT BE ADDING THIS ONE!")
 								break adder
 							}
@@ -87,23 +87,30 @@ export default class ComponentManager {
 					}
 				},
 				knotenList : [],
-				get knotenMatrixAsArray(){
-					console.log(this.knotenList.length)
-					var array = []
-					//var j = 0;
+				get knotenMatrixAsArray(){					
+					var array = Array(this.knotenList.length)
+					var j = 0;
 					for(let i = 0; i < this.knotenList.length; i++){
-						console.log(this.transformationMatrix)
-						//let new_point = this.knotenList[i]
-						array[i]   =  this.knotenList[i]
-						//array[j+1] =  new_point.y
-						//j+=2
+						array[j]   =  this.knotenList[i].position[0]
+						array[j+1] =  this.knotenList[i].position[1]
+						j+=2
+					}
+					return array
+				},
+				get knotenMatrixAsArray_viewport_coords(){
+					var array = Array(this.knotenList.length)
+					var j = 0;
+
+					console.log(this.transformationMatrix)
+					for(let i = 0; i < this.knotenList.length; i++){
+						array[j]   =  this.transformationMatrix.inverseTransform(this.knotenList[i].position[0]).x
+						array[j+1] =  this.transformationMatrix.inverseTransform(this.knotenList[i].position[1]).y
+						j+=2
 					}
 					return array
 				},
 				counter: 0
-			}      
-
-			
+			}   
 		}
 
 		set components(components){
@@ -132,7 +139,8 @@ export default class ComponentManager {
 
 		set transformationMatrix(transformationMatrix){
 			this._transformationMatrix = transformationMatrix;
-			this.knoten.transformationMatrix=transformationMatrix
+			this.knoten.transformationMatrix=transformationMatrix;
+			this.KnotenFactory.transformationMatrix = transformationMatrix 
 		}
 
 		get transformationMatrix() {
@@ -142,9 +150,6 @@ export default class ComponentManager {
 		addFachwerk(vectorGroup){
 			var fachwerk =  new Fachwerk(vectorGroup)
 			this.components.push(fachwerk)
-
-			//let startPoint = vectorGroup.children['handle0'].position;
-			//let endPoint = vectorGroup.children['handle1'].position;
 
 			this.KnotenFactory.addKnoten(fachwerk.startKnoten)
 			this.KnotenFactory.addKnoten(fachwerk.endKnoten)

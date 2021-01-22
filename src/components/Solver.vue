@@ -76,9 +76,8 @@ export default {
             //console.log(this.$reactiveGlobals.componentManager.knoten.knotenMatrix)
             //console.log("LagerVector :")
             //console.log(this.$reactiveGlobals.componentManager.lagerHandler.lagerVector)
-            console.log("knotenMatrix:")
-            console.log(this.$reactiveGlobals.componentManager.KnotenFactory.knotenList)
-            //console.log("knotenMatrix as Array:")
+            console.log("knotenMatrixAsArray:")
+             console.log(this.$reactiveGlobals.componentManager.KnotenFactory.knotenMatrixAsArray_viewport_coords)            //console.log("knotenMatrix as Array:")
             //console.log(this.$reactiveGlobals.componentManager.KnotenFactory.knotenMatrixAsArray)
         },
     },
