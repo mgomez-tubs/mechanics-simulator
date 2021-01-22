@@ -8,6 +8,19 @@ function makeRec(len, acc) {
 	return b;
 }
 
+function Knoten(paperJSpoint,knotenNummer){
+	this.paperJSpoint = paperJSpoint
+	this.knotenNummer = knotenNummer
+}
+Knoten.prototype = {
+	get position(){
+		return [this.paperJSpoint._owner.position.x,this.paperJSpoint._owner.position.y]
+	},
+	set position(point){
+		this.position = point
+	}
+}
+
 export default class ComponentManager {
 		constructor(){      
 			this._components = {
@@ -61,10 +74,6 @@ export default class ComponentManager {
 			// Build Knoten Prototype
 				
 			this.KnotenFactory = {
-				Knoten(paperJSpoint,knotenNummer){
-					this.paperJSpoint = paperJSpoint
-					this.knotenNummer = knotenNummer
-				},
 				addKnoten(point){
 					adder:{
 						for(const element of this.knotenList){
@@ -74,7 +83,7 @@ export default class ComponentManager {
 							}
 						}
 						this.counter++;
-						this.knotenList.push(new this.Knoten(point,this.counter))
+						this.knotenList.push(new Knoten(point,this.counter))
 					}
 				},
 				knotenList : [],
@@ -94,14 +103,7 @@ export default class ComponentManager {
 				counter: 0
 			}      
 
-			this.KnotenFactory.Knoten.prototype = {
-				get position(){
-					return [this.paperJSpoint._owner.position.x,this.paperJSpoint._owner.position.y]
-				},
-				set position(point){
-					this.position = point
-				}
-			}
+			
 		}
 
 		set components(components){
@@ -240,7 +242,6 @@ class Fachwerk extends MechanicComponent{
 	}
 
 	set endKnoten(point){
-		
 		this.vectorGroup.children['handle1'].position = point;
 	}
 
