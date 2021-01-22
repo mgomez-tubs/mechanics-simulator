@@ -73,8 +73,14 @@ export default class ComponentManager {
 					return new_knoten
 				},
 				addElement(startKnoten, endKnoten){
-
+					// Assuming you can not place a Fachwerk exactly above another one
+					this.elementList.push(startKnoten)
+					this.elementList.push(endKnoten)
 				},
+				addLager(knoten){
+					this.lagerVector.push(knoten)
+				},
+				/* KNOTEN LISTE */
 				knotenList : [],
 				get knotenMatrixAsArray(){					
 					var array = Array(this.knotenList.length)
@@ -96,8 +102,28 @@ export default class ComponentManager {
 					}
 					return array
 				},
+
+				/* ELEMENT LISTE */
+				elementList: [],
+				get elementListAsArray(){
+					var array = Array(this.elementList.length)
+					for(let i = 0; i < this.elementList.length; i++){
+						array[i]   =  this.elementList[i].knotenNummer
+					}
+					return array
+				},
+
+				/* LAGER LISTE */
+				lagerVector: [],
+				get lagerVectorAsArray(){
+					var array = Array(this.lagerVector.length)
+					for(let i = 0; i < this.lagerVector.length; i++){
+						array[i]   =  this.lagerVector[i].knotenNummer
+					}
+					return array
+				},
 				counter: 0
-			}   
+			}
 		}
 
 		set components(components){
@@ -137,23 +163,23 @@ export default class ComponentManager {
 			var fachwerk =  new Fachwerk(vectorGroup)
 			this.components.push(fachwerk)
 
-			var startKnoten = this.SimulationData.addKnoten(fachwerk.startKnoten)
-			console.log("Startknoten: ")
-			console.log(startKnoten)
-
-			var endKnoten   = this.SimulationData.addKnoten(fachwerk.endKnoten)
-			console.log("Endknoten:")
-			console.log(endKnoten)
+			let startKnoten = this.SimulationData.addKnoten(fachwerk.startKnoten)
+			let endKnoten   = this.SimulationData.addKnoten(fachwerk.endKnoten)
+			this.SimulationData.addElement(startKnoten, endKnoten)
 		}
 		addFestlager(vectorGroup){
 			var festlager = new Festlager(vectorGroup)
 			this.components.push(festlager)
-			this.SimulationData.addKnoten(festlager.position)
+
+			let knoten 		= this.SimulationData.addKnoten(festlager.position)
+			this.SimulationData.addLager(knoten)
 		}
 		addLoslager(vectorGroup){
 			var loslager = new Loslager(vectorGroup)
 			this.components.push(loslager)
-			this.SimulationData.addKnoten(loslager.position)
+
+			let knoten 		= this.SimulationData.addKnoten(loslager.position)
+			this.SimulationData.addLager(knoten)
 		}
 		
 		removeAllElements(){
@@ -278,6 +304,7 @@ class Loslager extends MechanicComponent{
 	constructor(vectorGroup, knoten){
 		super("Loslager", vectorGroup);
 		this.vectorGroup = vectorGroup;
+		this.position = this.vectorGroup.position;
 
 		super.hitboxes = {
 			vectorGroup: this.vectorGroup,
@@ -285,8 +312,8 @@ class Loslager extends MechanicComponent{
 			type: "center"
 		}
 
-		this.raster = this.vectorGroup.rasterize();
-		this.raster.visible = false
+		//this.raster = this.vectorGroup.rasterize();
+		//this.raster.visible = false
 		console.log("Loslager created")
 	}
 	
@@ -311,10 +338,20 @@ class Festlager extends MechanicComponent {                             // Raste
 		this.vectorGroup = vectorGroup
 		this.vectorGroup.data.parentComponent = this;
 		this.position = this.vectorGroup.position;
-		this.raster = this.vectorGroup.rasterize();
-		this.raster.visible = false   // Lets work with the vectors only, for now!
+		
+		//this.raster = this.vectorGroup.rasterize();
+		//this.raster.visible = false   // Lets work with the vectors only, for now!
 		console.log("Festlager created")
 	}
+
+	set knotenPosition(point){
+		this.vectorGroup.position = point;
+	}
+
+	get knotenPosition(){
+		return this.vectorGroup.position
+	}
+
 	remove(){
 		// Remove Raster
 		console.log("Removed Festlager")

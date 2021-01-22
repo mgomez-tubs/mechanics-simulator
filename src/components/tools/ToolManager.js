@@ -736,15 +736,15 @@ class KraftTool extends Tool{
 
     }
 
-    this.tool.onMouseDown = (event) => {    // You can only add Kräfte at joints
+    this.tool.onMouseDown = (event) => {    // You can only add Forces at handlers of Fachwerke, which arent a Lager 
       console.log(this.kraftGroup.children[1])
       this.creatingByDragging = true;
       
       let hit = Tool.userContentLayer.hitTest(event.point, this.options)
       
       if(hit){
-        if(hit.item.data.type == "handle"){
-          console.log("Handle")
+        if(hit.item.data.type == "handle"){ // TODO: Shouldnt be possible to place forces at lager
+          console.log("Handle found")
           this.kraftGroup.children[1].segments[0].point = super.snapToGrid(event.point);
           this.creatingByDragging = true;
         }

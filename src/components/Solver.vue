@@ -74,6 +74,10 @@ export default {
         printKnotenArray(){
             console.log("knotenMatrixAsArray:")
             console.log(this.$reactiveGlobals.componentManager.SimulationData.knotenMatrixAsArray_viewport_coords)            //console.log("knotenMatrix as Array:")
+            console.log("elementListAsArray:")
+            console.log(this.$reactiveGlobals.componentManager.SimulationData.elementListAsArray)
+            console.log("lagerVectorAsArray:")
+            console.log(this.$reactiveGlobals.componentManager.SimulationData.lagerVectorAsArray)
         },
     },
     mounted() {
