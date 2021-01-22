@@ -52,20 +52,28 @@ export default class ComponentManager {
 			// Bindings
 			this.lagerHandler.components = this._components
 
-			// Build Knoten Prototype
+			// Simulation Data Object. Careful: some dark magic arts are to be found here
 			this.SimulationData = {
 				transformationMatrix: null,
 				addKnoten(point){
+					var new_knoten
 					adder:{
 						for(const element of this.knotenList){
 							if(element.position[0] == point.x && element.position[1] == point.y){
-								console.log("WONT BE ADDING THIS ONE!")
+								console.log("Knoten does already exist!")
+								new_knoten = element
 								break adder
 							}
 						}
 						this.counter++;
-						this.knotenList.push(new Knoten(point,this.counter))
+						// Build Knoten
+						new_knoten = new Knoten(point,this.counter)
+						this.knotenList.push(new_knoten)
 					}
+					return new_knoten
+				},
+				addElement(startKnoten, endKnoten){
+
 				},
 				knotenList : [],
 				get knotenMatrixAsArray(){					
@@ -81,8 +89,6 @@ export default class ComponentManager {
 				get knotenMatrixAsArray_viewport_coords(){
 					var array = Array(this.knotenList.length)
 					var j = 0;
-
-					console.log(this.transformationMatrix)
 					for(let i = 0; i < this.knotenList.length; i++){
 						array[j]   =  this.transformationMatrix.inverseTransform(this.knotenList[i].position[0]).x
 						array[j+1] =  this.transformationMatrix.inverseTransform(this.knotenList[i].position[1]).y
@@ -131,8 +137,13 @@ export default class ComponentManager {
 			var fachwerk =  new Fachwerk(vectorGroup)
 			this.components.push(fachwerk)
 
-			this.SimulationData.addKnoten(fachwerk.startKnoten)
-			this.SimulationData.addKnoten(fachwerk.endKnoten)
+			var startKnoten = this.SimulationData.addKnoten(fachwerk.startKnoten)
+			console.log("Startknoten: ")
+			console.log(startKnoten)
+
+			var endKnoten   = this.SimulationData.addKnoten(fachwerk.endKnoten)
+			console.log("Endknoten:")
+			console.log(endKnoten)
 		}
 		addFestlager(vectorGroup){
 			var festlager = new Festlager(vectorGroup)
@@ -172,7 +183,6 @@ class MechanicComponent {
 	}
 
 	set hitboxes(properties){
-
 		if(Array.isArray(properties)){
 			properties.forEach(element => {
 				element.vectorGroup.data.parentComponent  	= element.parentComponent
@@ -222,7 +232,6 @@ class Fachwerk extends MechanicComponent{
 	}
 
 	get startKnoten(){
-		console.log("Called Startknoten")
 		return this.vectorGroup.children['handle0'].position;
 	}
 
@@ -231,7 +240,6 @@ class Fachwerk extends MechanicComponent{
 	}
 
 	get endKnoten(){
-		console.log("Called Endknoten")
 		return this.vectorGroup.children['handle1'].position;
 	}
 
