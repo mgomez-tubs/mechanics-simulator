@@ -37,26 +37,8 @@ export default class ComponentManager {
 
 			this._componentCount = 0;
 			this._transformationMatrix = null;
-			this.knoten = {
-				array : [],
-				transformationMatrix : null,
-				add : function(vector){
-					this.array.push(vector)
-				},
-				get knotenMatrix(){
-					let array = new Array(this.array.length*2);        
-					var j = 0;
-					for(let i = 0; i < this.array.length; i++){
-						let new_point = this.transformationMatrix.inverseTransform(this.array[i].position) 
-						array[j]   =  new_point.x  
-						array[j+1] =  new_point.y
-						j+=2
-					}
-					return array
-				}
-			}
+			
 			this.lagerHandler = {
-				knotenMatrix : null,       //ugly
 				components: null,
 				get lagerVector(){
 					var array = [];
@@ -68,11 +50,10 @@ export default class ComponentManager {
 				}
 			}
 			// Bindings
-			this.lagerHandler.knotenMatrix = this.knoten.knotenMatrix
 			this.lagerHandler.components = this._components
 
 			// Build Knoten Prototype
-			this.KnotenFactory = {
+			this.SimulationData = {
 				transformationMatrix: null,
 				addKnoten(point){
 					adder:{
@@ -139,8 +120,7 @@ export default class ComponentManager {
 
 		set transformationMatrix(transformationMatrix){
 			this._transformationMatrix = transformationMatrix;
-			this.knoten.transformationMatrix=transformationMatrix;
-			this.KnotenFactory.transformationMatrix = transformationMatrix 
+			this.SimulationData.transformationMatrix = transformationMatrix 
 		}
 
 		get transformationMatrix() {
@@ -151,18 +131,18 @@ export default class ComponentManager {
 			var fachwerk =  new Fachwerk(vectorGroup)
 			this.components.push(fachwerk)
 
-			this.KnotenFactory.addKnoten(fachwerk.startKnoten)
-			this.KnotenFactory.addKnoten(fachwerk.endKnoten)
+			this.SimulationData.addKnoten(fachwerk.startKnoten)
+			this.SimulationData.addKnoten(fachwerk.endKnoten)
 		}
 		addFestlager(vectorGroup){
 			var festlager = new Festlager(vectorGroup)
 			this.components.push(festlager)
-			this.KnotenFactory.addKnoten(festlager.position)
+			this.SimulationData.addKnoten(festlager.position)
 		}
 		addLoslager(vectorGroup){
 			var loslager = new Loslager(vectorGroup)
 			this.components.push(loslager)
-			this.KnotenFactory.addKnoten(loslager.position)
+			this.SimulationData.addKnoten(loslager.position)
 		}
 		
 		removeAllElements(){
@@ -195,12 +175,12 @@ class MechanicComponent {
 
 		if(Array.isArray(properties)){
 			properties.forEach(element => {
-				element.vectorGroup.data.parentComponent  = element.parentComponent
-				element.vectorGroup.data.type             = element.type
+				element.vectorGroup.data.parentComponent  	= element.parentComponent
+				element.vectorGroup.data.type             	= element.type
 			})
 		} else {
-			properties.vectorGroup.data.parentComponent = properties.parentComponent
-			properties.vectorGroup.data.type            = properties.type
+			properties.vectorGroup.data.parentComponent 	= properties.parentComponent
+			properties.vectorGroup.data.type            	= properties.type
 		}
 	}
 
@@ -283,23 +263,6 @@ class Fachwerk extends MechanicComponent{
 	remove(){
 			console.log("Removed raster of Fachwerk")
 			this.vectorGroup.remove();
-	}   
-
-	// Simulation related properties
-	getElementKnoten(){
-		var knoten = [this.vectorGroup.children['handle0'].position.x, 
-									this.vectorGroup.children['handle0'].position.y,
-									this.vectorGroup.children['handle1'].position.x,
-									this.vectorGroup.children['handle1'].position.y];
-		return knoten
-	}
-
-	getElementKnoten_viewport_coords(){
-		var knoten = [this.vectorGroup.children['handle0'].position.x, 
-									this.vectorGroup.children['handle0'].position.y,
-									this.vectorGroup.children['handle1'].position.x,
-									this.vectorGroup.children['handle1'].position.y];
-		return knoten
 	}
 }
 
@@ -328,9 +291,9 @@ class Loslager extends MechanicComponent{
 	}
 
 	remove(){
-			// Remove Raster
-			console.log("Removed Loslager")
-			this.vectorGroup.remove();
+		// Remove Raster
+		console.log("Removed Loslager")
+		this.vectorGroup.remove();
 	} 
 }
 
@@ -345,8 +308,8 @@ class Festlager extends MechanicComponent {                             // Raste
 		console.log("Festlager created")
 	}
 	remove(){
-			// Remove Raster
-			console.log("Removed Festlager")
-			this.vectorGroup.remove();
+		// Remove Raster
+		console.log("Removed Festlager")
+		this.vectorGroup.remove();
 	}  
 }

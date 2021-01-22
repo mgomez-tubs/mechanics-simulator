@@ -72,13 +72,8 @@ export default {
             console.log("Value 2 is: " + moduleInstance.getValue(return_ptr_from_get_array+SIZE_OF_DOUBLE*2, 'double'));
         },
         printKnotenArray(){
-            //console.log(this.$reactiveGlobals.componentManager.getSimulationData());
-            //console.log(this.$reactiveGlobals.componentManager.knoten.knotenMatrix)
-            //console.log("LagerVector :")
-            //console.log(this.$reactiveGlobals.componentManager.lagerHandler.lagerVector)
             console.log("knotenMatrixAsArray:")
-             console.log(this.$reactiveGlobals.componentManager.KnotenFactory.knotenMatrixAsArray_viewport_coords)            //console.log("knotenMatrix as Array:")
-            //console.log(this.$reactiveGlobals.componentManager.KnotenFactory.knotenMatrixAsArray)
+            console.log(this.$reactiveGlobals.componentManager.SimulationData.knotenMatrixAsArray_viewport_coords)            //console.log("knotenMatrix as Array:")
         },
     },
     mounted() {
