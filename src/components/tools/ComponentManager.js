@@ -61,38 +61,47 @@ export default class ComponentManager {
 			// Build Knoten Prototype
 				
 			this.KnotenFactory = {
-				Knoten(x,y,knotenNummer){
-					this.position = [x,y],
-					this.knotenNummer = knotenNummer;
+				Knoten(paperJSpoint,knotenNummer){
+					this.paperJSpoint = paperJSpoint
+					this.knotenNummer = knotenNummer
 				},
-				addKnoten(x,y){
+				addKnoten(point){
 					adder:{
 						for(const element of this.knotenList){
-							if(element.position[0] == x && element.position[1]== y){
+							if(element.position[0].x == point.x && element.position[1].y == point.y){
 								console.log("WONT BE ADDING THIS ONE!")
 								break adder
 							}
 						}
 						this.counter++;
-						this.knotenList.push(new this.Knoten(x,y,this.counter))
+						this.knotenList.push(new this.Knoten(point,this.counter))
 					}
 				},
 				knotenList : [],
 				get knotenMatrixAsArray(){
 					console.log(this.knotenList.length)
 					var array = []
-					var j = 0;
+					//var j = 0;
 					for(let i = 0; i < this.knotenList.length; i++){
 						console.log(this.transformationMatrix)
-						let new_point = this.transformationMatrix.inverseTransform(this.knotenList[i]) 
-						array[j]   =  new_point.x  
-						array[j+1] =  new_point.y
-						j+=2
+						//let new_point = this.knotenList[i]
+						array[i]   =  this.knotenList[i]
+						//array[j+1] =  new_point.y
+						//j+=2
 					}
 					return array
 				},
 				counter: 0
-			}        
+			}      
+
+			this.KnotenFactory.Knoten.prototype = {
+				get position(){
+					return [this.paperJSpoint._owner.position.x,this.paperJSpoint._owner.position.y]
+				},
+				set position(point){
+					this.position = point
+				}
+			}
 		}
 
 		set components(components){
@@ -129,22 +138,24 @@ export default class ComponentManager {
 		}
 		
 		addFachwerk(vectorGroup){
-			let fachwerk =  new Fachwerk(vectorGroup)
+			var fachwerk =  new Fachwerk(vectorGroup)
 			this.components.push(fachwerk)
 
-			let startPoint = vectorGroup.children['handle0'].position;
-			let endPoint = vectorGroup.children['handle1'].position;
+			//let startPoint = vectorGroup.children['handle0'].position;
+			//let endPoint = vectorGroup.children['handle1'].position;
 
-			this.KnotenFactory.addKnoten(startPoint.x, startPoint.y)
-			this.KnotenFactory.addKnoten(endPoint.x, endPoint.y)
+			this.KnotenFactory.addKnoten(fachwerk.startKnoten)
+			this.KnotenFactory.addKnoten(fachwerk.endKnoten)
 		}
 		addFestlager(vectorGroup){
-			this.components.push(new Festlager(vectorGroup))
-			this.KnotenFactory.addKnoten(vectorGroup.position.x,vectorGroup.position.y)
+			var festlager = new Festlager(vectorGroup)
+			this.components.push(festlager)
+			this.KnotenFactory.addKnoten(festlager.position)
 		}
 		addLoslager(vectorGroup){
-			this.components.push(new Loslager(vectorGroup))
-			this.KnotenFactory.addKnoten(vectorGroup.position.x,vectorGroup.position.y)
+			var loslager = new Loslager(vectorGroup)
+			this.components.push(loslager)
+			this.KnotenFactory.addKnoten(loslager.position)
 		}
 		
 		removeAllElements(){
@@ -224,14 +235,17 @@ class Fachwerk extends MechanicComponent{
 	}
 
 	get startKnoten(){
+		console.log("Called Startknoten")
 		return this.vectorGroup.children['handle0'].position;
 	}
 
 	set endKnoten(point){
+		
 		this.vectorGroup.children['handle1'].position = point;
 	}
 
 	get endKnoten(){
+		console.log("Called Endknoten")
 		return this.vectorGroup.children['handle1'].position;
 	}
 
