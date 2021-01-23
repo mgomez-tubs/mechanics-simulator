@@ -3,6 +3,7 @@
     KnotenMatrix :<br/> {{knotenMatrix}} <br/>
     ElementMatrix :<br/> {{elementMatrix}}<br/>
     LagerListe :<br/> {{lagerListe}}<br/>
+    KräfteVector :<br/> {{kraefteVector}}<br/>
 </div>
 </template>
 
@@ -17,7 +18,11 @@ export default {
             },
             lagerListe : function(){
                 return this.$reactiveGlobals.componentManager.SimulationData.lagerVectorAsArray
+            },
+            kraefteVector: function(){
+                return this.$reactiveGlobals.componentManager.SimulationData.kraefteVector
             }
+
     }
 }
 </script>

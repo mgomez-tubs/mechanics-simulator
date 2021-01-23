@@ -77,7 +77,7 @@ export default {
             console.log("elementListAsArray:")
             console.log(this.$reactiveGlobals.componentManager.SimulationData.elementListAsArray)
             console.log("lagerVectorAsArray:")
-            console.log(this.$reactiveGlobals.componentManager.SimulationData.lagerVectorAsArray)
+            console.log(this.$reactiveGlobals.componentManager.SimulationData.lagerVectorAsArray)        
         },
     },
     mounted() {

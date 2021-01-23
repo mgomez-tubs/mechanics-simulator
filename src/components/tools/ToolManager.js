@@ -719,8 +719,12 @@ class KraftTool extends Tool{
     // Hide the tool
     this.kraftGroup.visible = false
 
+    //
+
     // Remove the group
     //this.kraftGroup.remove();
+
+    this.assignedKnoten = null;
 
     this.configurePaperJSToolMouseEvents();
   }
@@ -744,6 +748,7 @@ class KraftTool extends Tool{
         if(hit.item.data.type == "handle"){ // TODO: Shouldnt be possible to place forces at lager
           console.log("Handle found")
           console.log(hit.item.data.assignedKnoten)
+          this.assignedKnoten = hit.item.data.assignedKnoten
           this.kraftGroup.children[1].segments[0].point = super.snapToGrid(event.point);
           this.creatingByDragging = true;
         }
@@ -774,13 +779,21 @@ class KraftTool extends Tool{
     }
 
     this.tool.onMouseUp = (event) => {
-      // Clone the Force Group
-      let groupToExport = this.kraftGroup.clone();
-      // Reset the tool
-      this.kraftGroup.visible = false
-      this.creatingByDragging = false;
-
-      this.componentManager.addKraft(Tool.userContentLayer.addChild(groupToExport))
+      if(this.creatingByDragging){
+        // Clone the Force Group
+        let groupToExport = this.kraftGroup.clone();
+        // Reset the tool
+        this.kraftGroup.visible = false
+        this.creatingByDragging = false;
+  
+        var x_component = 1000
+        var y_component = 2000
+  
+        this.componentManager.addKraft(Tool.userContentLayer.addChild(groupToExport), this.assignedKnoten, x_component, y_component)
+        
+        // Clear assigned knoten
+        this.assignedKnoten = null
+      }
     }
   }
 }

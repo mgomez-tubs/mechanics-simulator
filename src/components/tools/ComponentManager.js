@@ -69,6 +69,9 @@ export default class ComponentManager {
 						// Build Knoten
 						new_knoten = new Knoten(point,this.counter)
 						this.knotenList.push(new_knoten)
+
+						// Also add an empty force array to the kraefteVectir
+						this.kraefteVector.push([0,0])
 					}
 					return new_knoten
 				},
@@ -76,13 +79,14 @@ export default class ComponentManager {
 					// Assuming you can not place a Fachwerk exactly above another one
 					this.elementList.push(startKnoten)
 					this.elementList.push(endKnoten)
+
+					// Since forces can only be applied to knots of truces, add empty element to forces array
 				},
 				addLager(knoten){
 					this.lagerVector.push(knoten)
 				},
-				addKraft(vectorGroup){
-					console.log(vectorGroup)
-					//this.kraefteVector.push(vectorGroup.data.)
+				addKraft(knoten, F_x, F_y){
+					this.kraefteVector[knoten.knotenNummer-1] = [F_x, F_y]
 					return 0
 				},
 				/* KNOTEN LISTE */
@@ -131,7 +135,10 @@ export default class ComponentManager {
 				/* KRÄFTE LISTE */
 				kraefteVector: [],
 				get kraefteVectorAsArray(){
-					var array = []
+					var array = Array(this.lagerVector.length)
+					for(let i = 0; i < this.lagerVector.length; i++){
+						array[i]   =  this.lagerVector[i].knotenNummer
+					}
 					return array
 				},
 				counter: 0
@@ -172,16 +179,8 @@ export default class ComponentManager {
 		}
 		
 		addFachwerk(vectorGroup){
-			let fachwerk =  new Fachwerk(vectorGroup)
-			this.components.push(fachwerk)
-
-			let startKnoten = this.SimulationData.addKnoten(fachwerk.startKnotenPosition)
-			fachwerk.startKnotenObject = startKnoten;
-			
-			let endKnoten   = this.SimulationData.addKnoten(fachwerk.endKnotenPosition)
-			fachwerk.endKnotenObject = endKnoten;
-
-			this.SimulationData.addElement(startKnoten, endKnoten)
+			let fachwerk =  new Fachwerk(vectorGroup, this.SimulationData)
+			this.components.push(fachwerk)			
 		}
 		addFestlager(vectorGroup){
 			let festlager = new Festlager(vectorGroup)
@@ -198,8 +197,8 @@ export default class ComponentManager {
 			this.SimulationData.addLager(knoten)
 		}
 
-		addKraft(vectorGroup){
-			this.SimulationData.addKraft(vectorGroup)
+		addKraft(vectorGroup, assignedKnoten, F_x, F_y){
+			this.SimulationData.addKraft(assignedKnoten, F_x, F_y)
 		}
 		
 		removeAllElements(){
@@ -248,13 +247,15 @@ class MechanicComponent {
 }
 
 class Fachwerk extends MechanicComponent{
-	constructor(vectorGroup){
+	constructor(vectorGroup, simulationDataObject){
 		super("Fachwerk", vectorGroup);
 		// Receive Values
 		this.vectorGroup = vectorGroup;
 
-		this.startKnotenObject = null
-		this.endKnotenObject = null
+		// Set Up Knoten Object
+		this.startKnotenObject = simulationDataObject.addKnoten(this.startKnotenPosition)
+		this.endKnotenObject   = simulationDataObject.addKnoten(this.endKnotenPosition)
+		simulationDataObject.addElement(this.startKnotenObject, this.endKnotenObject)
 
 		super.hitboxes = 
 			[

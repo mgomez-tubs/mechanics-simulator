@@ -81,6 +81,8 @@ export default class Grid {
             let clonedLine = this.hgridline.clone()
             clonedLine.position.y = -i;
         }
+
+        // Remove template lines
         this.vgridline.remove();
         this.hgridline.remove();
     }
