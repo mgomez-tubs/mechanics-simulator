@@ -198,3 +198,36 @@ position:absolute;
     align-items: center;
     align-content: space-around;
 }
+
+/* Debug */
+
+.debug-container{
+    width: 10em;
+    overflow: hidden;
+    float: top;
+    height: auto !important;
+    background-color: yellow;
+
+    
+
+    top: 10em;
+    right: 1em;
+}
+
+.debug-content{
+    font-size: .8em;
+}
+/* Solution */
+
+.solution-container{
+    width: 10em;
+    overflow: hidden;
+    float: top;
+    height: auto !important;
+    background-color: yellow;
+
+    
+
+    top: 20em;
+    left: 1em;
+}

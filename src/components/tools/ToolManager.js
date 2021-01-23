@@ -29,7 +29,6 @@ export default class ToolManager {
     this._drawLosLagerTool  = new LosLagerCreateTool(this.componentManager);
     this._drawFestLagerTool = new FestLagerCreateTool(this.componentManager);
     this._selectionTool     = new SelectionTool(this.componentManager);
-    
 
     // Define starting Tool (skipping setter)
     this._currentActiveTool = this._selectionTool
@@ -671,6 +670,8 @@ class KraftTool extends Tool{
     this.color = "black"
     this.cursor = null;
     this.creatingByDragging = false;
+
+    this.targetKnoten = null;
     
     this.options = {
       class: paper.Group,
@@ -704,16 +705,19 @@ class KraftTool extends Tool{
 
       this.kraftGroup.scale(1,-1)
       this.kraftGroup.scale(2)
-
+/*
     this.kraftGroup.addChild(
       new paper.Path.Rectangle({
         from: [-25,-25],
         to:   [ 25, 25]
       })
-    )
+    )*/
 
     // Build the cursor
-    this.cursor = this.kraftGroup.rasterize(90)
+    this.cursor = null
+
+    // Hide the tool
+    this.kraftGroup.visible = false
 
     // Remove the group
     //this.kraftGroup.remove();
@@ -723,28 +727,23 @@ class KraftTool extends Tool{
 
   enable(){
     console.log("KraftTool enabled")
-    this.cursor.visible = true
+    //this.cursor.visible = true
     this.tool.activate();
   }
 
   disable(){
-    this.cursor.visible = false
+    //this.cursor.visible = false
   }
 
   configurePaperJSToolMouseEvents(){
-    this.tool.onMouseMove = (event) =>{
-
-    }
-
     this.tool.onMouseDown = (event) => {    // You can only add Forces at handlers of Fachwerke, which arent a Lager 
-      console.log(this.kraftGroup.children[1])
-      this.creatingByDragging = true;
-      
+      //this.creatingByDragging = true;
       let hit = Tool.userContentLayer.hitTest(event.point, this.options)
       
       if(hit){
         if(hit.item.data.type == "handle"){ // TODO: Shouldnt be possible to place forces at lager
           console.log("Handle found")
+          console.log(hit.item.data.assignedKnoten)
           this.kraftGroup.children[1].segments[0].point = super.snapToGrid(event.point);
           this.creatingByDragging = true;
         }
@@ -753,18 +752,19 @@ class KraftTool extends Tool{
 
     this.tool.onMouseDrag = (event) => {
       if(this.creatingByDragging){
+        // Enable the tool
+        this.kraftGroup.visible = true
         
         this.kraftGroup.children[1].segments[1].point = super.snapToGrid(event.point);
         
         var originPoint =   this.kraftGroup.children[1].segments[0].point.clone();
         var endingPoint =   this.kraftGroup.children[1].segments[1].point.clone();
         var normalizedVector = originPoint.subtract(endingPoint).normalize(15)
-        
 
         this.vectorArrow.segments = [
-          originPoint.add(normalizedVector.rotate(-135)),
+          originPoint.add(normalizedVector.rotate(-160)),
           originPoint,
-          originPoint.add(normalizedVector.rotate(135)),
+          originPoint.add(normalizedVector.rotate(160)),
         ]        
 
         this.kraftGroup.children[0].position = super.snapToGrid(event.point)
@@ -774,7 +774,13 @@ class KraftTool extends Tool{
     }
 
     this.tool.onMouseUp = (event) => {
-      this.kraftGroup.clone();
+      // Clone the Force Group
+      let groupToExport = this.kraftGroup.clone();
+      // Reset the tool
+      this.kraftGroup.visible = false
+      this.creatingByDragging = false;
+
+      this.componentManager.addKraft(Tool.userContentLayer.addChild(groupToExport))
     }
   }
 }

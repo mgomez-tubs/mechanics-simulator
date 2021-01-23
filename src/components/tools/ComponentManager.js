@@ -14,7 +14,7 @@ function Knoten(paperJSpoint,knotenNummer){
 }
 Knoten.prototype = {
 	get position(){
-		return [this.paperJSpoint._owner.position.x,this.paperJSpoint._owner.position.y]
+		return [this.paperJSpoint._owner.position.x, this.paperJSpoint._owner.position.y]
 	},
 	set position(point){
 		this.position = point
@@ -80,6 +80,11 @@ export default class ComponentManager {
 				addLager(knoten){
 					this.lagerVector.push(knoten)
 				},
+				addKraft(vectorGroup){
+					console.log(vectorGroup)
+					//this.kraefteVector.push(vectorGroup.data.)
+					return 0
+				},
 				/* KNOTEN LISTE */
 				knotenList : [],
 				get knotenMatrixAsArray(){					
@@ -122,6 +127,13 @@ export default class ComponentManager {
 					}
 					return array
 				},
+
+				/* KRÄFTE LISTE */
+				kraefteVector: [],
+				get kraefteVectorAsArray(){
+					var array = []
+					return array
+				},
 				counter: 0
 			}
 		}
@@ -160,26 +172,34 @@ export default class ComponentManager {
 		}
 		
 		addFachwerk(vectorGroup){
-			var fachwerk =  new Fachwerk(vectorGroup)
+			let fachwerk =  new Fachwerk(vectorGroup)
 			this.components.push(fachwerk)
 
-			let startKnoten = this.SimulationData.addKnoten(fachwerk.startKnoten)
-			let endKnoten   = this.SimulationData.addKnoten(fachwerk.endKnoten)
+			let startKnoten = this.SimulationData.addKnoten(fachwerk.startKnotenPosition)
+			fachwerk.startKnotenObject = startKnoten;
+			
+			let endKnoten   = this.SimulationData.addKnoten(fachwerk.endKnotenPosition)
+			fachwerk.endKnotenObject = endKnoten;
+
 			this.SimulationData.addElement(startKnoten, endKnoten)
 		}
 		addFestlager(vectorGroup){
-			var festlager = new Festlager(vectorGroup)
+			let festlager = new Festlager(vectorGroup)
 			this.components.push(festlager)
 
 			let knoten 		= this.SimulationData.addKnoten(festlager.position)
 			this.SimulationData.addLager(knoten)
 		}
 		addLoslager(vectorGroup){
-			var loslager = new Loslager(vectorGroup)
+			let loslager = new Loslager(vectorGroup)
 			this.components.push(loslager)
 
 			let knoten 		= this.SimulationData.addKnoten(loslager.position)
 			this.SimulationData.addLager(knoten)
+		}
+
+		addKraft(vectorGroup){
+			this.SimulationData.addKraft(vectorGroup)
 		}
 		
 		removeAllElements(){
@@ -213,10 +233,12 @@ class MechanicComponent {
 			properties.forEach(element => {
 				element.vectorGroup.data.parentComponent  	= element.parentComponent
 				element.vectorGroup.data.type             	= element.type
+				element.vectorGroup.data.assignedKnoten		= element.assignedKnoten
 			})
 		} else {
 			properties.vectorGroup.data.parentComponent 	= properties.parentComponent
 			properties.vectorGroup.data.type            	= properties.type
+			properties.vectorGroup.data.assignedKnoten		= properties.assignedKnoten
 		}
 	}
 
@@ -231,6 +253,9 @@ class Fachwerk extends MechanicComponent{
 		// Receive Values
 		this.vectorGroup = vectorGroup;
 
+		this.startKnotenObject = null
+		this.endKnotenObject = null
+
 		super.hitboxes = 
 			[
 				{
@@ -241,31 +266,33 @@ class Fachwerk extends MechanicComponent{
 				{
 					vectorGroup: vectorGroup.children['handle0'],
 					parentComponent: this,
-					type: "handle"
+					type: "handle",
+					assignedKnoten: this.startKnotenObject
 				},
 				{
 					vectorGroup: vectorGroup.children['handle1'],
 					parentComponent: this,
-					type: "handle"
+					type: "handle",
+					assignedKnoten: this.endKnotenObject
 				}
 			]
 		
 		this.reposition = this.repositionComponent
 	}
 
-	set startKnoten(point){
+	set startKnotenPosition(point){
 		this.vectorGroup.children['handle0'].position = point;
 	}
 
-	get startKnoten(){
+	get startKnotenPosition(){
 		return this.vectorGroup.children['handle0'].position;
 	}
 
-	set endKnoten(point){
+	set endKnotenPosition(point){
 		this.vectorGroup.children['handle1'].position = point;
 	}
 
-	get endKnoten(){
+	get endKnotenPosition(){
 		return this.vectorGroup.children['handle1'].position;
 	}
 
@@ -285,12 +312,12 @@ class Fachwerk extends MechanicComponent{
 	}
 	
 	repositionHandle0(point){
-		this.startKnoten = point
+		this.startKnotenPosition = point
 		this.vectorGroup.children['line'].segments[0].point = point
 	}
 
 	repositionHandle1(point){
-		this.endKnoten = point
+		this.endKnotenPosition = point
 		this.vectorGroup.children['line'].segments[1].point = point
 	}
 
@@ -357,4 +384,10 @@ class Festlager extends MechanicComponent {                             // Raste
 		console.log("Removed Festlager")
 		this.vectorGroup.remove();
 	}  
+}
+
+class Force {
+	constructor(targetKnoten){
+		this.targetKnoten = targetKnoten;
+	}
 }
