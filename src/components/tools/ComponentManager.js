@@ -84,9 +84,15 @@ export default class ComponentManager {
 				},
 				addLager(type, knoten){
 					if(type == "Festlager"){
-						this.lagerVector.push([2,knoten])
+						this.lagerVector.push({
+							type: "Festlager",
+							knotenNummer: knoten.knotenNummer
+						})
 					} else if(type == "Loslager"){
-						this.lagerVector.push([1,knoten])
+						this.lagerVector.push({
+							type: "Loslager",
+							knotenNummer: knoten.knotenNummer
+					})
 					} else {
 						console.log("LAGER VALIDATION ERROR")
 					}
@@ -132,13 +138,14 @@ export default class ComponentManager {
 				/* LAGER LISTE */
 				lagerVector: [],
 				get lagerVectorAsArray(){
+					console.log(this.lagerVector)
 					var array = []
 					for(let i = 0; i < this.lagerVector.length; i++){
-						if(this.lagerVector[i][0]== 1)		// Loslager
-							array.push(this.lagerVector[i][1].knotenNummer+1*2) 
-						if(this.lagerVector[i][0]== 2){		// Festlager
-							array.push(this.lagerVector[i][1].knotenNummer*2) 	
-							array.push(this.lagerVector[i][1].knotenNummer+1*2) 
+						if(this.lagerVector[i].type == "Loslager")			// Loslager - y achse
+							array.push(this.lagerVector[i].knotenNummer*2) 
+						if(this.lagerVector[i].type == "Festlager"){		// Festlager
+							array.push(this.lagerVector[i].knotenNummer*2-1) 	
+							array.push(this.lagerVector[i].knotenNummer*2) 
 						}		
 					}
 					return array

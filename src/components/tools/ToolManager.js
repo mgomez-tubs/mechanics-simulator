@@ -173,7 +173,6 @@ class SelectionTool extends Tool{
       visible: false
     })
   }
-
   configurePaperJSToolMouseEvents(){  
     this.tool.onMouseDown = (event) => {
       // Deselect everything
@@ -185,20 +184,19 @@ class SelectionTool extends Tool{
           this.singleComponentHeldOnMousedown = true;
           this.selectedObjects.push(hitResult)
           hitResult.item.selected = true;
-          if(hitResult.item.name == 'handle0' || hitResult.item.name == 'handle1'){
+          if(hitResult.item.name == 'handle0' || hitResult.item.name == 'handle1'){       /* Result is a Knoten */
             // If a In- or Out Handle are found, set up mechanic component accordingly
             hitResult.item.data.parentComponent.setActivePivot(hitResult.item.name)
           }
-        } else {        
+        } else {    // No element selected
           this.singleClickSelection = true;
-          this.selectSquare.segments[0].point = event.point       // Top Left
-          this.selectSquare.segments[1].point = event.point       // Bottom Left
-          this.selectSquare.segments[2].point = event.point       // Bottom Right
+          this.selectSquare.segments[0].point = event.point;      // Top Left
+          this.selectSquare.segments[1].point = event.point;      // Bottom Left
+          this.selectSquare.segments[2].point = event.point;      // Bottom Right
           this.selectSquare.segments[3].point = event.point;      // Top Right
           this.selectSquare.visible = true;
-      }   
-    } 
-
+      }
+    }
     this.tool.onMouseDrag = (event) => {
       // Since we are dragging, this isnt a single click selection anymore
       this.singleClickSelection = false
@@ -279,13 +277,13 @@ class SelectionTool extends Tool{
 
 
     }
-    this.tool.onMouseUp = (event) => {
+    this.tool.onMouseUp   = (event) => {
       /*
           Single click selection:   mouse up
       */
      this.singleComponentHeldOnMousedown = false
       if(this.singleClickSelection){
-        // Don't do anything at mouseup
+        // Don't do anything at mouseup ... for now
       } 
       /*
           Double click selection:   mouse up
