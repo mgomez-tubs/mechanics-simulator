@@ -1,18 +1,20 @@
 <template>
-<Toolbar    :toolbarId="'editForce'"            :toolbarName = "'Edit Force'" 
-            :passedClass = "'table-container'"  v-if = "displayForceEditionPrompt">
-        <EditForce :test = "'HOLA'"/>
-</Toolbar>
+<Prompt   :toolbarName = "'Edit Force'" 
+          :passedClass = "'table-container'"  v-if = "displayForceEditionPrompt"
+          :promptPosition = "promptPosition">
+          <EditForce :forceToBeEdited = "forceToBeEdited"/>
+</Prompt>
 </template>
 
 <script>
 import EditForce from './EditForce'
-import Toolbar from './Toolbar'
+import Prompt from './Prompt'
 export default {
     data(){
         return{
             displayForceEditionPrompt : false,
-            forceToBeEdited: null
+            forceToBeEdited: null,
+            promptPosition: 123
         }
     },
     mounted(){
@@ -37,7 +39,7 @@ export default {
     },
     components : {
       EditForce,
-      Toolbar
+      Prompt
     }
 }
 </script>

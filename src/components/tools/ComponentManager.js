@@ -82,8 +82,14 @@ export default class ComponentManager {
 
 					// Since forces can only be applied to knots of truces, add empty element to forces array
 				},
-				addLager(knoten){
-					this.lagerVector.push(knoten)
+				addLager(type, knoten){
+					if(type == "Festlager"){
+						this.lagerVector.push([2,knoten])
+					} else if(type == "Loslager"){
+						this.lagerVector.push([1,knoten])
+					} else {
+						console.log("LAGER VALIDATION ERROR")
+					}
 				},
 				addKraft(forceObject){
 					this.kraefteVector.push(forceObject)
@@ -126,9 +132,14 @@ export default class ComponentManager {
 				/* LAGER LISTE */
 				lagerVector: [],
 				get lagerVectorAsArray(){
-					var array = Array(this.lagerVector.length)
+					var array = []
 					for(let i = 0; i < this.lagerVector.length; i++){
-						array[i]   =  this.lagerVector[i].knotenNummer
+						if(this.lagerVector[i][0]== 1)		// Loslager
+							array.push(this.lagerVector[i][1].knotenNummer+1*2) 
+						if(this.lagerVector[i][0]== 2){		// Festlager
+							array.push(this.lagerVector[i][1].knotenNummer*2) 	
+							array.push(this.lagerVector[i][1].knotenNummer+1*2) 
+						}		
 					}
 					return array
 				},
@@ -191,14 +202,14 @@ export default class ComponentManager {
 			this.components.push(festlager)
 
 			let knoten 		= this.SimulationData.addKnoten(festlager.position)
-			this.SimulationData.addLager(knoten)
+			this.SimulationData.addLager("Festlager", knoten)
 		}
 		addLoslager(vectorGroup){
 			let loslager = new Loslager(vectorGroup)
 			this.components.push(loslager)
 
 			let knoten 		= this.SimulationData.addKnoten(loslager.position)
-			this.SimulationData.addLager(knoten)
+			this.SimulationData.addLager("Loslager", knoten)
 		}
 
 		addKraft(vectorGroup, targetKnoten){
