@@ -20,7 +20,7 @@ export default {
                 return this.$reactiveGlobals.componentManager.SimulationData.lagerVectorAsArray
             },
             kraefteVector: function(){
-                return this.$reactiveGlobals.componentManager.SimulationData.kraefteVector
+                return this.$reactiveGlobals.componentManager.SimulationData.kraefteVectorAsArray
             }
 
     }

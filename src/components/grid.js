@@ -7,7 +7,6 @@ export default class Grid {
         this.gridLayer.name = "grid-layer"
         this.gridLayer.matrix = new this.paper.Matrix(1,0,0,-1,0,0);
         this.gridLayer.applyMatrix = false;
-        this.gridLayer.center = [0,0]
         this.gridLayer.scale(40)
 
         // Widths
@@ -22,13 +21,13 @@ export default class Grid {
         }
 
         // Page Padding
-        this.padding =1.5
+        this.padding = 1.5
 
         // Coordinates limits
         this.xmin = -10;
         this.xmax = 10;
         this.ymin = -5;      
-        this.ymax = 5;       
+        this.ymax = 5;
 
         // Step configs ( same in x and y direction!!! )
         this.step = 1;
@@ -52,7 +51,7 @@ export default class Grid {
             fillColor  : "white",
             shadowBlur : 0.2,
             shadowColor: new this.paper.Color(0, 0, 0),
-            shadowOffset: new this.paper.Point([0.1,0.1]),
+            shadowOffset: new this.paper.Point([0.1,-0.1]),
             strokeColor: "black",
             strokeWidth: this.lineWidths.verythick
         })
@@ -81,6 +80,22 @@ export default class Grid {
             let clonedLine = this.hgridline.clone()
             clonedLine.position.y = -i;
         }
+
+        // Draw x Axis
+        this.x_axis = new this.paper.Path.Line({
+            from:           [this.xmin, 0],
+            to:             [this.xmax , 0],
+            strokeColor:    "black",
+            strokeWidth:    2
+        })
+
+        // Draw y Axis
+        this.y_axis = new this.paper.Path.Line({
+            from:           [0, this.ymin],
+            to:             [0, this.ymax],
+            strokeColor:    "black",
+            strokeWidth:    2
+        })
 
         // Remove template lines
         this.vgridline.remove();

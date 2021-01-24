@@ -17,7 +17,10 @@ let app = createApp(App)
 
 // Global event bus
 const toolbarEvents = mitt();                                   // Create an emitter object
-app.config.globalProperties.toolbarEvents = toolbarEvents;      // Set emitter object as global property
+const componentEditionEvents = mitt();
+
+app.config.globalProperties.toolbarEvents = toolbarEvents;                          // Set emitter object as global property
+app.config.globalProperties.componentEditionEvents = componentEditionEvents;
 
 // Make ComponentManager global and reactive
 var _componentManager = new ComponentManager();

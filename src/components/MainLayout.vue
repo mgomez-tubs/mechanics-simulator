@@ -26,7 +26,10 @@
     <Toolbar :toolbarId="'debug'" :toolbarName = "'Debug'" :passedClass = "'debug-container'">
       <DebugInfo/>
     </Toolbar>
-  </div>
+
+    <!-- Edit Force Panel -->
+    <ComponentEditionPrompts/>
+  </div> 
   
   <!-- Bottom Left Notifications-->
   <transition name="fade">
@@ -41,6 +44,7 @@ import SolutionTable from './SolutionTable'
 import DebugInfo from './DebugInfo'
 import Toolbar from './Toolbar'
 import MenuBar from './MenuBar'
+import ComponentEditionPrompts from './ComponentEditionPrompts'
 export default {
   data() {
     return {
@@ -72,7 +76,8 @@ export default {
     MenuBar,
     ComponentTable,
     SolutionTable,
-    DebugInfo
+    DebugInfo,
+    ComponentEditionPrompts
   },
   mounted() {
     this.toolbarEvents.on("userClickedOnTool", id => {

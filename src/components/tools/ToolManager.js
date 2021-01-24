@@ -1,10 +1,11 @@
 var paper = null;   // this is terrible and i admit it, but i want paper to be global
 
 export default class ToolManager {
-  constructor(paperInstance, componentManager){
+  constructor(paperInstance, componentManager, componentEditionEvents){
     paper = paperInstance;
     this._currentActiveTool = null;
     this.componentManager = componentManager;
+    ToolManager.componentEditionEvents = componentEditionEvents;
     
     // Before creating anything, set up Tool static variables
     Tool.scope = paperInstance;
@@ -785,12 +786,21 @@ class KraftTool extends Tool{
         // Reset the tool
         this.kraftGroup.visible = false
         this.creatingByDragging = false;
-  
-        var x_component = 1000
-        var y_component = 2000
-  
-        this.componentManager.addKraft(Tool.userContentLayer.addChild(groupToExport), this.assignedKnoten, x_component, y_component)
+
+
         
+        let force = this.componentManager.addKraft(Tool.userContentLayer.addChild(groupToExport), this.assignedKnoten)
+        
+        console.log("force!")
+        console.log(force)
+
+        var editionBundle = {
+          component: "Force",
+          object: force
+        }
+        // Show Force Editor Screen
+        ToolManager.componentEditionEvents.emit("StartComponentEdition", editionBundle)
+
         // Clear assigned knoten
         this.assignedKnoten = null
       }

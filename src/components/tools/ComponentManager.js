@@ -71,7 +71,7 @@ export default class ComponentManager {
 						this.knotenList.push(new_knoten)
 
 						// Also add an empty force array to the kraefteVectir
-						this.kraefteVector.push([0,0])
+						//this.kraefteVector.push([0,0])
 					}
 					return new_knoten
 				},
@@ -85,9 +85,10 @@ export default class ComponentManager {
 				addLager(knoten){
 					this.lagerVector.push(knoten)
 				},
-				addKraft(knoten, F_x, F_y){
-					this.kraefteVector[knoten.knotenNummer-1] = [F_x, F_y]
-					return 0
+				addKraft(forceObject){
+					this.kraefteVector.push(forceObject)
+					//this.kraefteVector[knoten.knotenNummer-1] = [forceObject.comps.F_x, forceObject.comps.F_y]
+					//return 0
 				},
 				/* KNOTEN LISTE */
 				knotenList : [],
@@ -135,9 +136,12 @@ export default class ComponentManager {
 				/* KRÄFTE LISTE */
 				kraefteVector: [],
 				get kraefteVectorAsArray(){
-					var array = Array(this.lagerVector.length)
-					for(let i = 0; i < this.lagerVector.length; i++){
-						array[i]   =  this.lagerVector[i].knotenNummer
+					var array = makeRec(this.knotenList.length*2)
+
+					for(let i = 0; i < this.kraefteVector.length; i++){
+						let position = this.kraefteVector[i].targetKnoten.knotenNummer -1
+						array[position*2]   =  this.kraefteVector[i].forceVector.F_x
+						array[position*2+1]   =  this.kraefteVector[i].forceVector.F_y
 					}
 					return array
 				},
@@ -197,8 +201,10 @@ export default class ComponentManager {
 			this.SimulationData.addLager(knoten)
 		}
 
-		addKraft(vectorGroup, assignedKnoten, F_x, F_y){
-			this.SimulationData.addKraft(assignedKnoten, F_x, F_y)
+		addKraft(vectorGroup, targetKnoten){
+			let force = new Force(vectorGroup, targetKnoten);
+			this.SimulationData.addKraft(force, targetKnoten)
+			return force
 		}
 		
 		removeAllElements(){
@@ -388,7 +394,12 @@ class Festlager extends MechanicComponent {                             // Raste
 }
 
 class Force {
-	constructor(targetKnoten){
+	constructor(vectorGroup, targetKnoten){
+		this.vectorGroup = vectorGroup
 		this.targetKnoten = targetKnoten;
+		this.forceVector = {
+			F_x : 10,
+			F_y : 20
+		}
 	}
 }

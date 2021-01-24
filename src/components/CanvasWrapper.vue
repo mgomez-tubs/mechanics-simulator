@@ -68,7 +68,7 @@ export default{
     this.grid = new Grid(this.paperScope);
 
     // Create new ToolManager
-    this.toolManager = new ToolManager(this.paperScope, this.$reactiveGlobals.componentManager);
+    this.toolManager = new ToolManager(this.paperScope, this.$reactiveGlobals.componentManager, this.componentEditionEvents);
 
     // Set up component manager
     this.$reactiveGlobals.componentManager.transformationMatrix = this.paperScope.project.layers['grid-layer'].matrix;
