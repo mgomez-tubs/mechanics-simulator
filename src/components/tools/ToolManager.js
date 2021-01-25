@@ -65,7 +65,7 @@ export default class ToolManager {
 class Tool {   // scope and tool can be in the constrcutor. consider adding 
   constructor(){
     // Empty constructor
-    this.gridSize = 1;
+    this.gridSize = 2;
   }
 
   static _scope = null;

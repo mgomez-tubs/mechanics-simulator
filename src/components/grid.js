@@ -30,7 +30,7 @@ export default class Grid {
         this.ymax = 5;
 
         // Step configs ( same in x and y direction!!! )
-        this.step = 1;
+        this.step = .5;
         this.bigstep = 5;
 
         this.draw();
@@ -80,22 +80,6 @@ export default class Grid {
             let clonedLine = this.hgridline.clone()
             clonedLine.position.y = -i;
         }
-
-        // Draw x Axis
-        this.x_axis = new this.paper.Path.Line({
-            from:           [this.xmin, 0],
-            to:             [this.xmax , 0],
-            strokeColor:    "black",
-            strokeWidth:    2
-        })
-
-        // Draw y Axis
-        this.y_axis = new this.paper.Path.Line({
-            from:           [0, this.ymin],
-            to:             [0, this.ymax],
-            strokeColor:    "black",
-            strokeWidth:    2
-        })
 
         // Remove template lines
         this.vgridline.remove();

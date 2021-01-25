@@ -5,9 +5,11 @@
 </template> 
 
 <script>
-import ToolManager from './tools/ToolManager'
+import ToolManager      from './tools/ToolManager'
 import MouseCoordinates from './MouseCoordinates.vue'
-import Grid from './grid'
+import Grid        from './grid'
+import Coordinates from './CanvasCoordinates.js'
+import CanvasCoordinates from './CanvasCoordinates.js'
 
 /*
   Some PaperJS info
@@ -67,8 +69,12 @@ export default{
     // Set up grid
     this.grid = new Grid(this.paperScope);
 
+
     // Create new ToolManager
     this.toolManager = new ToolManager(this.paperScope, this.$reactiveGlobals.componentManager, this.componentEditionEvents);
+
+    // Set up coordinate
+    this.coordinates = new CanvasCoordinates(this.paperScope)
 
     // Set up component manager
     this.$reactiveGlobals.componentManager.transformationMatrix = this.paperScope.project.layers['grid-layer'].matrix;
@@ -106,7 +112,6 @@ export default{
       }
     });
 
-    
      //textGroup.scale(1,-1)
      //textGroup.scale(2)
      //this.paperScope.project.layers["user-content-layer"].addChild(textGroup)
