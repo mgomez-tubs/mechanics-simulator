@@ -8,6 +8,7 @@
 
 <script>
 import EmsModule from '../../js/index.js'
+
 const SIZE_OF_INT = 4;
 const SIZE_OF_DOUBLE = 8;
 
@@ -37,7 +38,17 @@ function roundTo(n, digits) {
 
 export default {
     beforeCreate(){
-        new EmsModule().then(myModule =>{  // When the promise resolves, 
+        
+        new EmsModule({
+            locateFile: function(path){
+                console.log("happends")
+                console.log(process.env.NODE_ENV)
+                console.log(process.env.VUE_APP_PUBLIC_PATH)
+                console.log("happends2")
+                return process.env.VUE_APP_PUBLIC_PATH + "data/wasm/"+ path
+            }
+        }).then(myModule =>{  // When the promise resolves, 
+            
             // Assign the created module instance to our variable
             moduleInstance = myModule;
             // Assign the function to the variable
@@ -53,6 +64,7 @@ export default {
     },
     data() {
         return {
+            publicPath: process.env.BASE_URL,
             res1 : 0,
             res2 : 0,
             res3: 0
@@ -77,8 +89,6 @@ export default {
             var knotenMatrix_ptr        = this.allocateArrayInHEAP_double(knotenMatrix);
             var aussenKraefteVector_ptr = this.allocateArrayInHEAP_double(aussenKraefteVector);
             var lagerVector_ptr         = this.allocateArrayInHEAP_int(lagerVector);
-
-            
 
             var return_ptr_from_get_array = calculateLagerKraefte   (   elementMatrix_ptr, elementMatrix.length/2, 
                                                                         knotenMatrix_ptr , knotenMatrix.length/2,
