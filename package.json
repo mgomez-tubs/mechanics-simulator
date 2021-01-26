@@ -13,16 +13,16 @@
     "draggable": "^4.2.0",
     "mitt": "^2.1.0",
     "paper": {
-      "version": "^0.12.11",
-      "no-optional": "true"
+      "no-optional": "true",
+      "version": "^0.12.11"
     },
-    "vue": "^3.0.4"
+    "vue": "^3.0.5"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.11",
     "@vue/cli-plugin-eslint": "^4.5.11",
     "@vue/cli-service": "^4.5.11",
-    "@vue/compiler-sfc": "^3.0.4",
+    "@vue/compiler-sfc": "^3.0.5",
     "babel-eslint": "^10.1.0",
     "core-js": "^3.8.0",
     "eslint": "^6.8.0",
