@@ -12,6 +12,7 @@ function Knoten(paperJSpoint,knotenNummer){
 	this.paperJSpoint = paperJSpoint
 	this.knotenNummer = knotenNummer
 }
+
 Knoten.prototype = {
 	get position(){
 		return [this.paperJSpoint._owner.position.x, this.paperJSpoint._owner.position.y]
@@ -413,20 +414,56 @@ class Festlager extends MechanicComponent {                             // Raste
 
 class Force {
 	constructor(vectorGroup, targetKnoten, startingForceVector){
-		this.vectorGroup = vectorGroup
+		this.vectorGroup  = vectorGroup
 		this.targetKnoten = targetKnoten;
-		this._forceVector = {
+		this.forceVector  = {
 			x : startingForceVector.x,
 			y : startingForceVector.y
 		}
+	}
 
+	// Remember, the line points in the opposite direction of the force ( maybe eventually change)
+	set xComponent(x){
+		var originPoint =   this.vectorGroup.children[1].segments[0].point;
+		var endingPoint =   this.vectorGroup.children[1].segments[1].point;
+		var normalizedVector = originPoint.subtract(endingPoint).normalize(15)
+		
+		this.vectorGroup.children[2].segments = [				// Child "Vectorarrow"
+			originPoint.add(normalizedVector.rotate(-160)),
+			originPoint,
+			originPoint.add(normalizedVector.rotate(160)),
+		] 
+
+		endingPoint.x = (originPoint.x) - x
+
+		// Move the F
+		this.vectorGroup.children[0].position = endingPoint
+		var newpos = this.vectorGroup.children[0].position.add([-20,0])
+        this.vectorGroup.children[0].position = newpos
+
+		this.forceVector.x = x
 	}
-	get forceVector(){
-		return this._forceVector
+	get xComponent(){return this.forceVector.x}
+
+	set yComponent(y){
+		var originPoint =   this.vectorGroup.children[1].segments[0].point;
+		var endingPoint =   this.vectorGroup.children[1].segments[1].point;
+		var normalizedVector = originPoint.subtract(endingPoint).normalize(15)
+
+		this.vectorGroup.children[2].segments = [				//Child "Vectorarrow"
+			originPoint.add(normalizedVector.rotate(-160)),
+			originPoint,
+			originPoint.add(normalizedVector.rotate(160)),
+		] 
+		
+		endingPoint.y = (originPoint.y) - y
+
+		// Move the F
+		this.vectorGroup.children[0].position = endingPoint
+		var newpos = this.vectorGroup.children[0].position.add([-20,0])
+		this.vectorGroup.children[0].position = newpos
+		
+		this.forceVector.y = y
 	}
-	
-	set forceVector(forceVector){
-		console.log("Force Vector been set")
-		this._forceVector = forceVector
-	}
+	get yComponent(){return this.forceVector.y}
 }

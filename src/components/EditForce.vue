@@ -22,8 +22,8 @@ export default {
     methods:{
         processChanges(){
             // Mutate Force object
-            this.force.forceVector.F_x = this.F_x;
-            this.force.forceVector.F_y = this.F_y;
+            this.force.xComponent = this.F_x;
+            this.force.yComponent = this.F_y;
 
             // Close Prompt
             this.componentEditionEvents.emit("EndComponentEdition", "Force")
