@@ -7,7 +7,7 @@
 <script>
 import ToolManager      from './tools/ToolManager'
 import MouseCoordinates from './MouseCoordinates.vue'
-import Grid        from './grid'
+import CanvasBackground from './CanvasBackground'
 import Coordinates from './CanvasCoordinates.js'
 import CanvasCoordinates from './CanvasCoordinates.js'
 
@@ -49,12 +49,9 @@ export default{
                                                         // Paper classes can only be accessed through PaperScope Objects
                                                         // It is possible to access the global paper variable, but im not sure if it works with vue.
     
-    // Setup paperScope
-    /***********************************************/
     this.paperScope.setup(this.canvasElement);          // Sets up a empty project. A canvas ID can be passed, in this case, a View is created for it
                                                         // Remember: the paperScope is a reference to the paperJS Object
     this.paperScope.activate();
-    /***********************************************/
     
     // Disable scaling of strokes 
     this.paperScope.project.currentStyle.strokeScaling = false;
@@ -62,17 +59,15 @@ export default{
     // Configure project coordinates
     this.paperScope.view.center = [0, 0];
     this.paperScope.view.scale(1,-1)
-
+  
     // Now that everything is positionated, lets shift a bit to the left
     this.paperScope.view.matrix.tx += 0.5;
     //this.paperScope.view.matrix.ty -= 0.5;
+    /***********************************************/
 
-    // Declare layers, for later use
-    var coordinateLayer   = new this.paperScope.Layer({
-      name : "coordinate-layer"
-    })
-    var gridLayer         = new this.paperScope.Layer({
-      name : "grid-layer",
+    // Declare layers
+    var backgroundLayer         = new this.paperScope.Layer({
+      name : "background-layer",
     })
     var userContentLayer  = new this.paperScope.Layer({
       name : "user-content-layer"
@@ -80,16 +75,18 @@ export default{
     var toolsLayer        = new this.paperScope.Layer({
       name : "tools-layer"
     })
+    var coordinateLayer   = new this.paperScope.Layer({
+      name : "coordinate-layer"
+    })
 
     // Set up coordinate
+    this.gridTrafoMtrx  = new this.paperScope.Matrix(40,0,0,40,0,0);
 
-    this.gridTrafoMtrx = new this.paperScope.Matrix(40,0,0,40,0,0);
+    // Build Coordinates Layer
+    this.coordinates    = new CanvasCoordinates(this.paperScope, this.gridTrafoMtrx)
 
-    this.coordinates = new CanvasCoordinates(this.paperScope, this.gridTrafoMtrx)
-    console.log(this.gridTrafoMtrx)
-
-    // Set up grid
-    this.grid = new Grid(this.paperScope);
+    // Set up Canvas background
+    this.canvasBackground   = new CanvasBackground(this.paperScope);
 
     // Create new ToolManager
     this.toolManager = new ToolManager(this.paperScope, this.$reactiveGlobals.componentManager, this.componentEditionEvents, this.gridTrafoMtrx);
@@ -129,8 +126,6 @@ export default{
           break;
       }
     });
-
-    console.log(this.paperScope)
   },  
   components : {
     MouseCoordinates

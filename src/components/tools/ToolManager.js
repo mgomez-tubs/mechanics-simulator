@@ -1,4 +1,7 @@
-var paper = null;   // this is terrible and i admit it, but i want paper to be global
+/*
+    LOCALLY GLOBAL VARIABLES
+*/
+var paper = null;
 
 export default class ToolManager {
   constructor(paperInstance, componentManager, componentEditionEvents, gridTrafoMtrx){
@@ -8,13 +11,12 @@ export default class ToolManager {
     ToolManager.componentEditionEvents = componentEditionEvents;
     
     // Before creating anything, set up Tool static variables
-    Tool.scope = paperInstance;
     Tool.gridMatrix = gridTrafoMtrx
-    //Tool.componentManager = componentManager
-    // Create a Layer for the user content and deactivate it
+    
+    // Get user content Layer
     Tool.userContentLayer = paperInstance.project.layers['user-content-layer']
     
-    // Create a Layer for the Tools and activate it
+    // Get tools Layer
     this.toolsLayer = paperInstance.project.layers['tools-layer']
 
     // Activate toolsLayer
@@ -64,37 +66,10 @@ class Tool {   // scope and tool can be in the constrcutor. consider adding
     this.gridSize = 2;
   }
 
-  static _scope = null;
-  static set scope(scope){
-    this._scope = scope;
-  }
-  static get scope(){
-    return this._scope;
-  }
-
-  static _gridMatrix = null;
-  static set gridMatrix(gridMatrix){
-    this._gridMatrix = gridMatrix;
-  }
-  static get gridMatrix(){
-    return this._gridMatrix;
-  }
-
-  static _componentManager = null;
-  static set componentManager(componentManager){
-    this._componentManager = componentManager;
-  }
-  static get componentManager(){
-    return this._componentManager;
-  }
-
-  static _userContentLayer = null;
-  static set userContentLayer(userContentLayer){
-    this._userContentLayer = userContentLayer;
-  }
-  static get userContentLayer(){
-    return this._userContentLayer;
-  }
+  // Declaring just to remember they exist
+  static gridMatrix = null;
+  static componentManager = null;
+  static userContentLayer = null;
 
   getPointInSimulationCoordinates(point){
     return Tool.gridMatrix.inverseTransform(point);
@@ -151,7 +126,6 @@ class SelectionTool extends Tool{
   }
 
   enable(){
-    //console.log("selectionTool: enable() called");
     this.tool.activate();
   }
 
@@ -445,7 +419,6 @@ class FachwerkCreateTool extends Tool{
     this.mouseWasDragged = false;
   }
   enable(){
-    //console.log("FachwerkTool: enable() called")
     this.cursor.visible = true;
     this.tool.activate();
   }
@@ -631,7 +604,6 @@ class FestLagerCreateTool extends Tool{
   }
 
   enable(){
-    console.log("FestlagerCreateTool : enable() called")
     // Display raster
     this.cursor.visible = true
     this.tool.activate();
@@ -725,7 +697,6 @@ class KraftTool extends Tool{
   }
 
   enable(){
-    console.log("KraftTool enabled")
     //this.cursor.visible = true
     this.tool.activate();
   }
@@ -741,8 +712,6 @@ class KraftTool extends Tool{
       
       if(hit){
         if(hit.item.data.type == "handle"){ // TODO: Shouldnt be possible to place forces at lager
-          console.log("Handle found")
-          console.log(hit.item.data.assignedKnoten)
           this.assignedKnoten = hit.item.data.assignedKnoten
           this.kraftGroup.children[1].segments[0].point = super.snapToGrid(event.point);
           this.creatingByDragging = true;
@@ -784,9 +753,6 @@ class KraftTool extends Tool{
 
         
         let force = this.componentManager.addKraft(Tool.userContentLayer.addChild(groupToExport), this.assignedKnoten)
-        
-        console.log("force!")
-        console.log(force)
 
         var editionBundle = {
           component: "Force",

@@ -2,7 +2,7 @@
   <MenuBar/>
   <div id="container">
     <CanvasWrapper/>
-    <Toolbar :toolbarId="'tools'" :toolbarName = "'Tools'" :passedClass = "'tools-container'">
+    <Toolbar :toolbarName = "'Tools'" :passedClass = "'tools-container'">
       <div class="tool-background">
             <div id="select"            class="button"  @click='toolbarEvents.emit("userClickedOnTool", "select")'/> 
             <div id="drawFachwerk"      class="button"  @click='toolbarEvents.emit("userClickedOnTool", "stab")'/> 
@@ -11,23 +11,24 @@
             <div id="placeLosLager"     class="button"  @click='toolbarEvents.emit("userClickedOnTool", "loslager")'/>
             <div id="drawBoden"         class="button"  @click='toolbarEvents.emit("userClickedOnTool", "boden")'/>
             <div id="removeAll"         @click='toolbarEvents.emit("userClickedOnTool", "remove-all")' > Remove all! </div>
-            <div id="svgDownload"   class="button">Download SVG</div>
+            <div id="svgDownload"       class="button">Download SVG</div>
       </div>
     </Toolbar>
     
-    <Toolbar :toolbarId="'components'" :toolbarName = "'Components'" :passedClass = "'table-container'">
+    <!--Toolbars-->
+    <Toolbar :toolbarName = "'Components'"  :passedClass = "'table-container'">
       <ComponentTable/>
     </Toolbar>
 
-    <Toolbar :toolbarId="'solution'" :toolbarName = "'Solution'" :passedClass = "'solution-container'">
+    <Toolbar :toolbarName = "'Solution'"    :passedClass = "'solution-container'">
       <SolutionTable/>
     </Toolbar>
 
-    <Toolbar :toolbarId="'debug'" :toolbarName = "'Debug'" :passedClass = "'debug-container'">
+    <Toolbar :toolbarName = "'Debug'"       :passedClass = "'debug-container'">
       <DebugInfo/>
     </Toolbar>
 
-    <!-- Edit Force Panel -->
+    <!-- Component edition prompts -->
     <ComponentEditionPrompts/>
   </div> 
   
@@ -38,17 +39,17 @@
 </template>
 
 <script>
-import CanvasWrapper from './CanvasWrapper.vue'
+import CanvasWrapper  from './CanvasWrapper.vue'
 import ComponentTable from './ComponentTable'
-import SolutionTable from './SolutionTable'
-import DebugInfo from './DebugInfo'
-import Toolbar from './Toolbar'
-import MenuBar from './MenuBar'
-import ComponentEditionPrompts from './ComponentEditionPrompts'
+import SolutionTable  from './SolutionTable'
+import DebugInfo      from './DebugInfo'
+import Toolbar        from './Toolbar'
+import MenuBar        from './MenuBar'
+import ComponentEditionPrompts  from './ComponentEditionPrompts'
+
 export default {
   data() {
     return {
-      container: null,
       showBottomLeftPopUp: false,
       bottomLeftPopUpText : null
     }

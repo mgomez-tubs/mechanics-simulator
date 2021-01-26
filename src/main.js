@@ -3,9 +3,7 @@ import { reactive } from 'vue'
 import App from './App.vue'
 import mitt from 'mitt'
 
-// Emscripten imports
-
-
+// Local imports
 import ComponentManager from './components/tools/ComponentManager'
 
 // Mount app
@@ -15,22 +13,21 @@ let app = createApp(App)
     GLOBAL VARIABLES
 */
 
-// Global event bus
-const toolbarEvents = mitt();                                   // Create an emitter object
+// Global event buses
+const toolbarEvents = mitt();                                   
 const componentEditionEvents = mitt();
 
-app.config.globalProperties.toolbarEvents = toolbarEvents;                          // Set emitter object as global property
+// Set emitter objects as global properties
+app.config.globalProperties.toolbarEvents = toolbarEvents;      
 app.config.globalProperties.componentEditionEvents = componentEditionEvents;
 
-// Make ComponentManager global and reactive
+// Make the ComponentManager object global and reactive
 var _componentManager = new ComponentManager();
-
 const $reactiveGlobals = reactive({
-    componentManager : _componentManager,
-    magico: 567
+    componentManager : _componentManager
 })
-
 app.config.globalProperties.$reactiveGlobals = $reactiveGlobals
+
 app.mount('#app')
 
 

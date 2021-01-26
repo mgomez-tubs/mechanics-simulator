@@ -1,15 +1,11 @@
-export default class Grid {
+export default class CanvasBackground {
     constructor(paperInstance){
         this.paper = paperInstance
-        
         // Set up layer
-        this.gridLayer = this.paper.project.layers['grid-layer']
+        this.gridLayer = this.paper.project.layers['background-layer']
         // Activate Layer
         this.gridLayer.activate()
-
-        this.gridLayer.matrix = new this.paper.Matrix(1,0,0,-1,0,0);
         this.gridLayer.applyMatrix = false;
-        this.gridLayer.scale(40)        // there isnt any reason for using this here
 
         // Widths
         this.lineWidths = {
@@ -18,31 +14,34 @@ export default class Grid {
             verythick: 3
         }
         this.colors = {
-            lines : '#248fe8',
-            stepIndicators: "black"
+            lines : '#248fe8'
         }
 
         // Page Padding
-        this.padding = 1.5
+        this.padding = 60
 
         // Coordinates limits
-        this.xmin = -10;
-        this.xmax = 10;
-        this.ymin = -5;      
-        this.ymax = 5;
+        this.xmin = -400;
+        this.xmax =  400;
+        this.ymin = -200;      
+        this.ymax =  200;
 
         // Step configs ( same in x and y direction!!! )
-        this.step = .5;
-        this.bigstep = 5;
+        this.step = 20;
 
         this.draw();
         
+        // Rasterizing the background was in the plans, but it looks too bad
+        /*
         // Rasterize for performance
-        // this.gridlayer_raster = this.gridLayer.rasterize(4500);
-        //console.log(this.gridlayer_raster)
+        this.gridlayer_raster = this.gridLayer.rasterize()
 
-        // Remove first layer
-        // this.gridLayer.remove();
+        // Remove all vectors
+        this.gridLayer.removeChildren();
+
+        // Add only the raster
+        this.gridLayer.addChild(this.gridlayer_raster)
+        */
     }
 
     draw(){
@@ -51,9 +50,9 @@ export default class Grid {
             from:   [this.xmin -this.padding,    this.ymin-this.padding],
             to:     [this.xmax +this.padding,    this.ymax+this.padding],
             fillColor  : "white",
-            shadowBlur : 0.2,
+            shadowBlur : 8,
             shadowColor: new this.paper.Color(0, 0, 0),
-            shadowOffset: new this.paper.Point([0.1,-0.1]),
+            shadowOffset: new this.paper.Point([8,-8]),
             strokeColor: "black",
             strokeWidth: this.lineWidths.verythick
         })

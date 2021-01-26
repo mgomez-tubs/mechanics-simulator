@@ -1,6 +1,7 @@
 <template>
     <div unselectable ="true"       v-bind:id="toolbarId"               v-bind:class="passedClass"  class="prompt-background">
-        <div unselectable ="true"   v-bind:id="toolbarId+'_handle'"     class = "prompt-handler">{{toolbarName}}</div>
+        <div unselectable ="true"   v-bind:id="toolbarId+'_handle'"     class = "prompt-handler">
+            {{toolbarName}}</div>
             <slot>
             </slot>
     </div>
