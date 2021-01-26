@@ -7,7 +7,7 @@
     "build": "vue-cli-service build --no-clean",
     "lint": "vue-cli-service lint",
     "deploy": "git subtree push --prefix dist heroku master",
-    "build-report" : "vue-cli-service build --report --no-clean"
+    "build-report": "vue-cli-service build --report --no-clean"
   },
   "dependencies": {
     "draggable": "^4.2.0",
@@ -19,12 +19,12 @@
     "vue": "^3.0.4"
   },
   "devDependencies": {
-    "core-js": "^3.8.0",
-    "@vue/cli-plugin-babel": "^4.5.9",
-    "@vue/cli-plugin-eslint": "^4.5.9",
-    "@vue/cli-service": "^4.5.9",
+    "@vue/cli-plugin-babel": "^4.5.11",
+    "@vue/cli-plugin-eslint": "^4.5.11",
+    "@vue/cli-service": "^4.5.11",
     "@vue/compiler-sfc": "^3.0.4",
     "babel-eslint": "^10.1.0",
+    "core-js": "^3.8.0",
     "eslint": "^6.8.0",
     "eslint-plugin-vue": "^7.2.0"
   },
