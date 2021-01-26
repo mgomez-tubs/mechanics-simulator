@@ -426,6 +426,8 @@ class Force {
 	set xComponent(x){
 		var originPoint =   this.vectorGroup.children[1].segments[0].point;
 		var endingPoint =   this.vectorGroup.children[1].segments[1].point;
+		endingPoint.x = (originPoint.x) - x
+
 		var normalizedVector = originPoint.subtract(endingPoint).normalize(15)
 		
 		this.vectorGroup.children[2].segments = [				// Child "Vectorarrow"
@@ -434,7 +436,6 @@ class Force {
 			originPoint.add(normalizedVector.rotate(160)),
 		] 
 
-		endingPoint.x = (originPoint.x) - x
 
 		// Move the F
 		this.vectorGroup.children[0].position = endingPoint
@@ -448,6 +449,8 @@ class Force {
 	set yComponent(y){
 		var originPoint =   this.vectorGroup.children[1].segments[0].point;
 		var endingPoint =   this.vectorGroup.children[1].segments[1].point;
+		endingPoint.y = (originPoint.y) - y
+		
 		var normalizedVector = originPoint.subtract(endingPoint).normalize(15)
 
 		this.vectorGroup.children[2].segments = [				//Child "Vectorarrow"
@@ -456,8 +459,6 @@ class Force {
 			originPoint.add(normalizedVector.rotate(160)),
 		] 
 		
-		endingPoint.y = (originPoint.y) - y
-
 		// Move the F
 		this.vectorGroup.children[0].position = endingPoint
 		var newpos = this.vectorGroup.children[0].position.add([-20,0])
