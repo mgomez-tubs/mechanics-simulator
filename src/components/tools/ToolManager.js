@@ -1,7 +1,7 @@
 var paper = null;   // this is terrible and i admit it, but i want paper to be global
 
 export default class ToolManager {
-  constructor(paperInstance, componentManager, componentEditionEvents){
+  constructor(paperInstance, componentManager, componentEditionEvents, gridTrafoMtrx){
     paper = paperInstance;
     this._currentActiveTool = null;
     this.componentManager = componentManager;
@@ -9,17 +9,13 @@ export default class ToolManager {
     
     // Before creating anything, set up Tool static variables
     Tool.scope = paperInstance;
-    Tool.gridMatrix = paperInstance.project.layers['grid-layer'].matrix
+    Tool.gridMatrix = gridTrafoMtrx
     //Tool.componentManager = componentManager
     // Create a Layer for the user content and deactivate it
-    Tool.userContentLayer = new paper.Layer({
-      name: "user-content-layer"
-    });
+    Tool.userContentLayer = paperInstance.project.layers['user-content-layer']
     
-    // Create a Layer for the Tools
-    this.toolsLayer = new paper.Layer({
-      name: "tools-layer"
-    });
+    // Create a Layer for the Tools and activate it
+    this.toolsLayer = paperInstance.project.layers['tools-layer']
 
     // Activate toolsLayer
     this.toolsLayer.activate();

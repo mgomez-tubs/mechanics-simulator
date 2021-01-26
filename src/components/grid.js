@@ -3,11 +3,13 @@ export default class Grid {
         this.paper = paperInstance
         
         // Set up layer
-        this.gridLayer = new this.paper.Layer();
-        this.gridLayer.name = "grid-layer"
+        this.gridLayer = this.paper.project.layers['grid-layer']
+        // Activate Layer
+        this.gridLayer.activate()
+
         this.gridLayer.matrix = new this.paper.Matrix(1,0,0,-1,0,0);
         this.gridLayer.applyMatrix = false;
-        this.gridLayer.scale(40)
+        this.gridLayer.scale(40)        // there isnt any reason for using this here
 
         // Widths
         this.lineWidths = {

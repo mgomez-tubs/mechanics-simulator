@@ -21,6 +21,7 @@ export default{
   name: "Canvas",
   data() {
     return{
+      gridTrafoMtrx: null,
       mouseMovedText: null,
       mouseCoordinates: [1,2],
       mouseCoordinateX: 1,
@@ -66,18 +67,35 @@ export default{
     this.paperScope.view.matrix.tx += 0.5;
     //this.paperScope.view.matrix.ty -= 0.5;
 
+    // Declare layers, for later use
+    var coordinateLayer   = new this.paperScope.Layer({
+      name : "coordinate-layer"
+    })
+    var gridLayer         = new this.paperScope.Layer({
+      name : "grid-layer",
+    })
+    var userContentLayer  = new this.paperScope.Layer({
+      name : "user-content-layer"
+    })
+    var toolsLayer        = new this.paperScope.Layer({
+      name : "tools-layer"
+    })
+
+    // Set up coordinate
+
+    this.gridTrafoMtrx = new this.paperScope.Matrix(40,0,0,40,0,0);
+
+    this.coordinates = new CanvasCoordinates(this.paperScope, this.gridTrafoMtrx)
+    console.log(this.gridTrafoMtrx)
+
     // Set up grid
     this.grid = new Grid(this.paperScope);
 
-
     // Create new ToolManager
-    this.toolManager = new ToolManager(this.paperScope, this.$reactiveGlobals.componentManager, this.componentEditionEvents);
-
-    // Set up coordinate
-    this.coordinates = new CanvasCoordinates(this.paperScope)
+    this.toolManager = new ToolManager(this.paperScope, this.$reactiveGlobals.componentManager, this.componentEditionEvents, this.gridTrafoMtrx);
 
     // Set up component manager
-    this.$reactiveGlobals.componentManager.transformationMatrix = this.paperScope.project.layers['grid-layer'].matrix;
+    this.$reactiveGlobals.componentManager.transformationMatrix = this.gridTrafoMtrx;
 
     // Set up default tool
     this.toolManager.currentActiveTool = this.toolManager.selectionTool;
@@ -112,9 +130,7 @@ export default{
       }
     });
 
-     //textGroup.scale(1,-1)
-     //textGroup.scale(2)
-     //this.paperScope.project.layers["user-content-layer"].addChild(textGroup)
+    console.log(this.paperScope)
   },  
   components : {
     MouseCoordinates

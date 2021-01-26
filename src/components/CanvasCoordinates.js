@@ -1,20 +1,18 @@
 export default class CanvasCoordinates{
-    constructor(paperInstance){
+    constructor(paperInstance, gridTrafoMtrx){
         this.paper= paperInstance
+        this.gridTrafoMtrx = gridTrafoMtrx
         
         // Set up layer
-        this.coordinateLayer = new this.paper.Layer();
-        this.coordinateLayer.name = "coordinate-layer"
+        this.coordinateLayer = this.paper.project.layers['coordinate-layer']
         this.coordinateLayer.applyMatrix = false;
-        this.coordinateLayer.matrix = new this.paper.Matrix(1,0,0,1,0,0);
 
         // Get reference to user content Layer
         var userContentLayer = this.paper.project.layers['user-content-layer']
 
         // Build an object
-
         var axis = {
-            transformationMatrix  : new this.paper.Matrix(1,0,0,1,0,0),
+            gridTrafoMtrx: null,
             setup(){
                 this.handle_group.addChild(axis.handle)
                 this.handle_group.data.parentComponent = this
@@ -26,11 +24,8 @@ export default class CanvasCoordinates{
                 this.handle_group.position = point
 
                 // After moving the point, update the transformation matrix
-                this.transformationMatrix.tx = point.x
-                this.transformationMatrix.ty = point.y
-                
-                console.log(this.transformationMatrix)
-                console.log(point)
+                this.gridTrafoMtrx.tx = point.x
+                this.gridTrafoMtrx.ty = point.y
             },
             x_axis : new this.paper.Path.Line({
                 from : [0,0],
@@ -55,9 +50,7 @@ export default class CanvasCoordinates{
             handle_group : new this.paper.Group()
         }
         axis.setup();
-
-        // For the object to be moved around the group needs to have some data
-
+        axis.gridTrafoMtrx = this.gridTrafoMtrx;
         
         // Pass the handle in a Group to the user content Layer so it becomes selectable
         userContentLayer.addChild(axis.handle_group)
