@@ -41,10 +41,6 @@ export default {
         
         new EmsModule({
             locateFile: function(path){
-                console.log("happends")
-                console.log(process.env.NODE_ENV)
-                console.log(process.env.VUE_APP_PUBLIC_PATH)
-                console.log("happends2")
                 return process.env.VUE_APP_PUBLIC_PATH + "data/wasm/"+ path
             }
         }).then(myModule =>{  // When the promise resolves, 

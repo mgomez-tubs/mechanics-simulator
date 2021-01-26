@@ -432,8 +432,8 @@ class LosLagerCreateTool extends Tool{
   constructor(componentManager){
     super();
     this.componentManager = componentManager;
-    this.tool = new paper.Tool();
-    this.color = "blue"
+    this.tool   = new paper.Tool();
+    this.color  = "black"
     this.cursor = null
 
     // Create a group with the vectorized Festlager
@@ -502,6 +502,7 @@ class LosLagerCreateTool extends Tool{
 
     // Hide raster until tool is enabled
     this.cursor.visible = false;
+
     // Remove the festLagerGroup from the project
     this.losLagerGroup.remove();
 
@@ -509,7 +510,6 @@ class LosLagerCreateTool extends Tool{
     this.configurePaperJSToolMouseEvents();
   }
   enable(){
-    console.log("LoslagerCreateTool : enable() called")
     this.cursor.visible = true
     this.tool.activate();
   }
@@ -522,9 +522,9 @@ class LosLagerCreateTool extends Tool{
         this.cursor.position = point;
     }
     this.tool.onMouseDown = (event) => {
-      var groupToExport = this.losLagerGroup.clone()
-      groupToExport.position = super.snapToGrid(event.point)
-      this.componentManager.addLoslager(Tool.userContentLayer.addChild(groupToExport))
+        var groupToExport = this.losLagerGroup.clone()
+        groupToExport.position = super.snapToGrid(event.point)
+        this.componentManager.addLoslager(Tool.userContentLayer.addChild(groupToExport))
     }
   }
 }
@@ -653,7 +653,7 @@ class KraftTool extends Tool{
         fillColor: this.color,
         fontFamily: 'Heuristica-Regular',
         fontWeight: 'bold',
-        fontSize: 15
+        fontSize: 25
       }),
       new paper.Path.Line({        //1
         from: [0,0],
@@ -661,32 +661,21 @@ class KraftTool extends Tool{
         strokeWidth: 2,
         strokeColor: "black"
       })
-      )
+    )
 
-      this.vectorArrow = new paper.Path({
-        strokeColor: "black",
-        strokeWidth: 2
-      });
+    this.vectorArrow = new paper.Path({
+      strokeColor: "black",
+      strokeWidth: 2
+    });
 
-      this.kraftGroup.addChild(this.vectorArrow)
-
-      this.kraftGroup.scale(1,-1)
-      this.kraftGroup.scale(2)
-/*
-    this.kraftGroup.addChild(
-      new paper.Path.Rectangle({
-        from: [-25,-25],
-        to:   [ 25, 25]
-      })
-    )*/
+    this.kraftGroup.addChild(this.vectorArrow)
+    this.kraftGroup.scale(1,-1)
 
     // Build the cursor
     this.cursor = null
 
     // Hide the tool
     this.kraftGroup.visible = false
-
-    //
 
     // Remove the group
     //this.kraftGroup.remove();
@@ -749,15 +738,24 @@ class KraftTool extends Tool{
         // Reset the tool
         this.kraftGroup.visible = false
         this.creatingByDragging = false;
-
-
         
-        let force = this.componentManager.addKraft(Tool.userContentLayer.addChild(groupToExport), this.assignedKnoten)
+        let originPoint =   groupToExport.children[1].segments[0].point.clone();
+        let endingPoint =   groupToExport.children[1].segments[1].point.clone();
 
+        let startingForceVector = {
+          x: -1*(endingPoint.x-originPoint.x), 
+          y: -1*(endingPoint.y-originPoint.y)
+        }
+        
+        let force = this.componentManager.addKraft(Tool.userContentLayer.addChild(groupToExport), this.assignedKnoten, startingForceVector)
+        
         var editionBundle = {
           component: "Force",
-          object: force
+          object: force,
+          startingFX : startingForceVector.x,
+          startingFY : startingForceVector.y
         }
+        
         // Show Force Editor Screen
         ToolManager.componentEditionEvents.emit("StartComponentEdition", editionBundle)
 

@@ -2,7 +2,7 @@
 <Prompt   :toolbarName = "'Edit Force'" 
           :passedClass = "'table-container'"  v-if = "displayForceEditionPrompt"
           :promptPosition = "promptPosition">
-          <EditForce :forceToBeEdited = "forceToBeEdited"/>
+          <EditForce :forceToBeEdited = "forceToBeEdited" :startingFX = "startingFX" :startingFY = "startingFY"/>
 </Prompt>
 </template>
 
@@ -14,7 +14,9 @@ export default {
         return{
             displayForceEditionPrompt : false,
             forceToBeEdited: null,
-            promptPosition: 123
+            promptPosition: 123,
+            startingFX: 0,
+            startingFY: 0
         }
     },
     mounted(){
@@ -24,6 +26,8 @@ export default {
           // Show Edit Force window
           this.displayForceEditionPrompt  = true
           this.forceToBeEdited            = bundle.object
+          this.startingFX                 = bundle.startingFX
+          this.startingFY                 = bundle.startingFY
           break;
       }
     })

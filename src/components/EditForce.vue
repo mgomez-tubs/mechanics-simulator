@@ -10,12 +10,14 @@ export default {
     data(){
         return {
             force: this.forceToBeEdited,
-            F_x : 0,
-            F_y : 0
+            F_x : this.startingFX,
+            F_y : this.startingFY
         }
     },
     props: {
       forceToBeEdited: Object,
+      startingFX: Number,
+      startingFY: Number
     },
     methods:{
         processChanges(){

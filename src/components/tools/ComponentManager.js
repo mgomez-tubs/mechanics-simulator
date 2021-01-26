@@ -158,8 +158,8 @@ export default class ComponentManager {
 
 					for(let i = 0; i < this.kraefteVector.length; i++){
 						let position = this.kraefteVector[i].targetKnoten.knotenNummer -1
-						array[position*2]   =  this.kraefteVector[i].forceVector.F_x
-						array[position*2+1]   =  this.kraefteVector[i].forceVector.F_y
+						array[position*2]   =  this.kraefteVector[i].forceVector.x
+						array[position*2+1] =  this.kraefteVector[i].forceVector.y
 					}
 					return array
 				},
@@ -219,8 +219,8 @@ export default class ComponentManager {
 			this.SimulationData.addLager("Loslager", knoten)
 		}
 
-		addKraft(vectorGroup, targetKnoten){
-			let force = new Force(vectorGroup, targetKnoten);
+		addKraft(vectorGroup, targetKnoten, startingForceVector){
+			let force = new Force(vectorGroup, targetKnoten, startingForceVector);
 			this.SimulationData.addKraft(force, targetKnoten)
 			return force
 		}
@@ -412,12 +412,21 @@ class Festlager extends MechanicComponent {                             // Raste
 }
 
 class Force {
-	constructor(vectorGroup, targetKnoten){
+	constructor(vectorGroup, targetKnoten, startingForceVector){
 		this.vectorGroup = vectorGroup
 		this.targetKnoten = targetKnoten;
-		this.forceVector = {
-			F_x : 10,
-			F_y : 20
+		this._forceVector = {
+			x : startingForceVector.x,
+			y : startingForceVector.y
 		}
+
+	}
+	get forceVector(){
+		return this._forceVector
+	}
+	
+	set forceVector(forceVector){
+		console.log("Force Vector been set")
+		this._forceVector = forceVector
 	}
 }
