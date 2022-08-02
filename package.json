@@ -12,10 +12,7 @@
   "dependencies": {
     "draggable": "^4.2.0",
     "mitt": "^2.1.0",
-    "paper": {
-      "no-optional": "true",
-      "version": "^0.12.11"
-    },
+    "paper": "^0.12.11",
     "vue": "^3.0.5"
   },
   "devDependencies": {
