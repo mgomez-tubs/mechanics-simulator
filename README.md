@@ -1,4 +1,6 @@
-# ptest1
+# Mechanics Simulator
+
+Mechanics simulator to calculate forces in a truss system. Features a VueJS Frontend (using PaperJS for the graphics) and a WebAssembly Layer (with the help of [Emscripten](https://emscripten.org/) which handles the calculation of the trusses. The source code for the calculation is located under src/cpp/TruceCalc
 
 ## Project setup
 ```
@@ -20,5 +22,5 @@ npm run build
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Screenshot
+<img src="./screenshots/0.png"/>
