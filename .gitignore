@@ -1,6 +1,5 @@
 .DS_Store
 node_modules
-/dist
 
 
 # local env files
@@ -21,3 +20,9 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+extras/TruceCalc_CPP/Eigen/
+
+extras/TruceCalc/eigen-master/
+
+src/cpp/TruceCalc/eigen-master/

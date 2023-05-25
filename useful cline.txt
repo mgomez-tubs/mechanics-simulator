@@ -1,0 +1,5 @@
+run production build:
+rpm run deploy
+
+push dist folder to heroku:
+git subtree push --prefix dist heroku master
